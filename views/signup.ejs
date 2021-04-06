@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+		<script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="../stylesheets/bootstrap/bootstrap.min.css">
+		<link rel="stylesheet" href="../stylesheets/main_styles.css">
+	</head>
+	<body>	
+
+
+		<section class='form'>
+	<form action="signup" class="needs-validation" method="post" id="regform">
+		<fieldset>
+		<div class="container signup">
+			<div class="card mt-5">
+			<div class="card-header">
+			<div class="row justify-content-center">
+				<div class="col-12">
+					<h5 style="text-align: center;" class="card-title">Regisztráció <span style="width: 30px; height: 30px;" class="iconify" data-icon="heroicons-solid:user-add" data-inline="false"></span></h5>
+				</div>
+
+			</div>
+
+			</div>
+				<div class="form-group mb-3 username"> 
+					<label class="form-label" for="username"><b>Felhasználónév:</b></label>
+					<input class="form-control" onchange="user_validator()" type="text" id="username" name="username">
+					<div class="valid-feedback">
+					<span id="valid-text"></span>
+					</div>
+					<div class="invalid-feedback">
+					<span id="invalid-text"></span>
+					</div>
+				</div>
+				
+				<div class="form-group mb-3 mt-2 password"> 
+					<label class="form-label" for="password"><b>Jelszó</b></label>
+					<input class="form-control" onblur="pw_validator()"  type="password" id="password" name="password">
+					<div class="valid-feedback">
+					<span id="valid-text"></span>
+					</div>
+					<div class="invalid-feedback">
+					<span id="invalid-text"></span>
+					</div>
+				</div>
+				<div class="form-group mb-3 mt-2 passwordc"> 
+					<label class="form-label" for="passwordc"><b>Jelszó megerősítése</b></label>
+					<input class="form-control" onblur="pw_validator()"  type="password" id="passwordc" name="passwordc">
+				</div>
+				<div class="form-group mb-3 mt-2"> 
+					<label class="form-label" for="email"><b>E-mail cím</b></label>
+					<input class="form-control" onblur="email_validator()"  type="email" id="email" name="email">
+				</div>
+
+				<button class="btn btn-primary mt-2" type="submit" id="gomb" >Regisztráció</button>
+			</div>
+		</div>
+		</fieldset>
+	</form>
+</section>
+<!--
+	<% if (typeof locals.loggedIn !== 'undefined') { %>
+		<% if (!loggedIn) { %>
+			<p>Hibás felhasználónév vagy jelszó!</p>
+		<% } %>
+	<% } %>
+-->
+<script>
+	var exists_username = false;
+	var exists_email = false;
+	var pw_not_match = false;
+    var validate = false;
+
+		function user_validator()
+		{
+
+			if ($( "#username" ).val() != "") {
+			//user nem üres
+				if ($("#username").val().match(/^[A-Za-z0-9]{3,20}$/)){
+					//ha megfelel az elvártaknak
+					$.ajax({url:"signup_validator", type:"POST", data: ({target: 'username', username: $("#username").val()}), async:true, cache:false, success:function(result) 
+						{
+						var data = JSON.parse(JSON.stringify(result));
+						console.log(data);
+						if (data.exists) {
+							//létezik már a username
+							$(".username #invalid-text").text( "A felhasználó név már foglalt!" );
+							$('#username').removeClass('is-valid');
+							$('#username').addClass('is-invalid');
+							return false;
+						} else {
+							//szabad a felhasználónév
+							$('#username').removeClass('is-invalid');
+							$('#username').addClass('is-valid');
+							$(".username #valid-text").text( "Elfogadva!" );
+							return true;
+						}
+					}});
+				} else {
+					//nem felel meg az elvártaknak
+					$(".username #invalid-text").text( "A felhasználónév csak alfanumerikus karaktereket tartalmazhat, és minimum 3 legfeljebb 20 karakter hosszúságú lehet." );
+						$('#password').removeClass('is-valid');
+						$('#password').addClass('is-invalid');
+						return false;
+				}
+			} else {
+						$(".username #invalid-text").text( "A mező kitöltése kötelező!" );
+						$('#username').removeClass('is-valid');
+						$('#username').addClass('is-invalid');
+						return false;
+				//nincs kitöltve a mező
+			}
+
+
+		};
+
+		function pw_validator()
+		{
+			if ($( "#password" ).val() != "") {
+				//jelszó nem üres
+				if ($("#password").val().match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/))
+				{
+					//a jelszó megfelel az elvártaknak
+
+					if ($("#password").val() == $("#passwordc").val()) {
+						//a két jelszó egyezik
+						$(".password #valid-text").text( "Elfogadva!" );
+						$('#password').removeClass('is-invalid');
+						$('#password').addClass('is-valid');
+						$(".passwordc #valid-text").text( "Elfogadva!" );
+						$('#passwordc').removeClass('is-invalid');
+						$('#passwordc').addClass('is-valid');
+					} else {
+						//a két jelszó nem egyezik
+						$(".password #invalid-text").text( "A két jelszó nem egyezik!" );
+						$('#password').removeClass('is-valid');
+						$('#password').addClass('is-invalid');
+						$(".passwordc #valid-text").text( "A két jelszó nem egyezik!" );
+						$('#passwordc').removeClass('is-valid');
+						$('#passwordc').addClass('is-invalid');
+					}
+				} else {
+					//a jelszó nem megfelelő
+					$(".password #invalid-text").text( "A jelszónak legalább 8 karaktert kell tartalmaznia, melyben van legalább egy kisbetű és nagybetű, valamint egy szám." );
+						$('#password').removeClass('is-valid');
+						$('#password').addClass('is-invalid');
+				}
+			} else {
+				//a jelszó üres
+				$('#password').removeClass('is-valid');
+			    $('#password').addClass('is-invalid');
+                $('#passwordc').removeClass('is-valid');
+                $('#passwordc').addClass('is-invalid');
+				$( ".password #invalid-text" ).text( "A mező kitöltése kötelező!" );
+			}
+		};
+
+		function email_validator()
+		{
+		   $.ajax({url:"signup_validator", type:"POST", data: ({target: 'email', email: $("#email").val()}), async:true, cache:false, success:function(result)
+		{
+			var data = JSON.parse(JSON.stringify(result));
+			console.log(data);
+			if (data.exists) {
+			$("#email").css("color", "red");
+			$("#email").css("border-color", "red");
+			exists_email = true;
+			} else {
+			$("#email").css("color", "#212529");
+			$("#email").css("border-color", "#ced4da");
+			exists_email = false;
+			}
+			reg_enable();
+		}});
+		};
+/*
+		(function () {
+		'use strict'
+
+		// Fetch all the forms we want to apply custom Bootstrap validation styles to
+		var forms = document.querySelectorAll('.needs-validation')
+
+		// Loop over them and prevent submission
+		Array.prototype.slice.call(forms)
+			.forEach(function (form) {
+			form.addEventListener('submit', function (event) {
+				if (!form.checkValidity()){
+				event.preventDefault()
+				event.stopPropagation()
+				console.log('valami nem valid!');
+				}
+				$('#username').addClass('is-invalid');
+				form.classList.add('was-validated')
+			}, false)
+			})
+		})()
+*/
+	</script>
+
+<script>
+	 /*$("#regform" ).submit(function( event ) {
+			if (!exists_username && !exists_email && !pw_not_match) {
+                alert('jo');
+				if ( $( "#username" ).val() != "" && $( "#password" ).val() != "" && $( "#passwordc" ).val() != "" && $( "#email" ).val() != "") {
+					console.log('elvileg mindenhova van írva');
+				alert('Siker!');
+				return;
+			}
+			$( "span" ).text( "Not valid!" ).show().fadeOut( 1000 );
+			event.preventDefault();
+			//$("#gomb").attr("disabled", false);
+			} else {
+			$("#gomb").attr("disabled", true);
+			}
+	 });*/
+
+     function logSubmit(event) {
+         validate = true;
+		 user_validator() ? console.log('OK') : console.log('NOK');
+				if ( $( "#username" ).val() != "" && $( "#password" ).val() != "" && $( "#passwordc" ).val() != "" && $( "#email" ).val() != "") {
+                    user_validator();
+                    email_validator();
+                    pw_validator();
+                    if (!exists_username && !exists_email && !pw_not_match) {
+                    alert('Siker!');
+                    return;
+			}
+        } else {
+
+        }
+        event.preventDefault();
+        }
+
+        const form = document.getElementById('regform');
+        form.addEventListener('submit', logSubmit);
+
+	</script>
+
+<script>
+	function reg_enable() 
+	{
+
+	};
+	</script>	
+
+
+
+
+	</body>
+</html>
