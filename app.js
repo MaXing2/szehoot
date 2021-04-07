@@ -74,7 +74,7 @@ app.get('/logout', function (req, res) { // logout get kérés esetén a session
   })
 })
 //-------------------------------------------------------POST kérések kezelése-----------------------------------------------------------
-// Gyökérre való post esetén
+// Gyökérre való post esetén (bejelentkezés)
 app.post('/', function(req, res) {
   var username = req.body.username; // felhasználónév, jelszó lekérés a postból
   var password = req.body.password;
@@ -120,7 +120,7 @@ app.post('/signup', function(req, res) {
   var password = req.body.password;
   var passwordc = req.body.passwordc;
   var email = req.body.email;
-  if (password == passwordc) { //ha a jelszavak egyeznek
+  if ((password == passwordc) && (password != "") && (passwordc != "") && (email != ""))  { //backend ellenőrzések
     connection.query("SELECT * FROM users WHERE username=" + connection.escape(username) + "",
     function(err, result, fields) {
       if (err) throw err;
@@ -147,7 +147,7 @@ app.post('/signup', function(req, res) {
           } else res.send("A felhasználónév már foglalt");
     }
   }
-  )} else res.send("Nem egyezik a két jelszó!");
+  )} else res.send("Súlyos hiba!");
 });
 
 app.post('/signup_validator',function (req, res) {
