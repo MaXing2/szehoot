@@ -6,6 +6,10 @@ var logger = require('morgan');
 // MySQL kapcsolati beállítások
 var mysql = require ('mysql');
 var config = require('./inc/db.js');
+// Get kérések
+var get = require ('./inc/get_request.js');
+// Post kérések
+//var post = require ('./inc/post_request.js');
 var connection = mysql.createConnection(config.databaseOptions);
 var bcrypt = require('bcrypt');
 var session = require('express-session');
@@ -38,42 +42,7 @@ app.use(session({secret:'Szehoot2021'
 
 
 //------------------------------------------------------GET kérések kezelése-----------------------------------------------------------
-app.get('/ajaxtest',function (req, res) {
-   res.render('ajaxtest.ejs',{});
-})
-
-app.post('/ajaxtest',function (req, res) {
-  res.send('Hello');
-})
-
-// Dashboard esetén
-app.get('/dashboard',function (req, res) {
-    if (req.session.loggedIn) { // be van jelentkezve?
-      res.render('dashboard.ejs',{});
-    } 
-    else
-      res.redirect('/');
-  })
-
-// Signup esetén
-app.get('/signup',function (req, res) {
-  if (req.session.loggedIn) { // be van jelentkezve?
-    res.render('dashboard.ejs',{});
-  } 
-  else {
-    res.render('signup.ejs',{});
-  } 
-})
-
-// Logout esetén
-app.get('/logout', function (req, res) { // logout get kérés esetén a session bontása
-  req.session.destroy(function (err) { 
-    if (err) throw err;
-    else {
-     res.send('Sikeresen kijelentkeztél!');
-    }
-  })
-})
+get.adat(app);
 //-------------------------------------------------------POST kérések kezelése-----------------------------------------------------------
 // Gyökérre való post esetén (bejelentkezés)
 app.post('/', function(req, res) {
