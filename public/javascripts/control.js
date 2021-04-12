@@ -6,6 +6,8 @@ var helyes = 0;
 var osszvalasz;
 var globalid;
 var teacher = 0;
+var pontom = 0;
+var time = 0 ;
 window.onload = (event) => {
     var name = "kod";
     getCookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || '';
@@ -117,6 +119,7 @@ function startTimer(duration, display) {
         function idozit () {
         minutes = parseInt(timer / 60, 10);
         seconds = parseInt(timer % 60, 10);
+        time = minutes*60 + seconds;
         minutes = minutes < 10 ? "0" + minutes : minutes;
         seconds = seconds < 10 ? "0" + seconds : seconds;
         display.textContent = minutes + ":" + seconds;
@@ -136,14 +139,22 @@ function startTimer(duration, display) {
 //adatok_rogzitese
 function subm (ertek){
     socket.emit('rogzit',ertek,getCookieValue);
-    if (ertek== atad[0].jovalasz){
+    if (atad[0].pont == null){
+       if (ertek == atad[0].jovalasz){
+           helyes++;
+           document.getElementById('jo').innerHTML = "A jó válaszok száma: " + helyes;
+       };
+       if ((osszvalasz) == atad[0].idtest){
+           var szazalek = Math.floor((helyes / osszvalasz * 100) * 10) / 10;
+           document.getElementById('vege').innerHTML = "A teszt végetért és " + helyes + " pontot és " + szazalek + "%-ot értél el.";
+       }
+    }else{
+      if (ertek == atad[0].jovalasz){
         helyes++;
         document.getElementById('jo').innerHTML = "A jó válaszok száma: " + helyes;
-    };
-
-    if ((osszvalasz) == atad[0].idtest){
-        var szazalek = Math.floor((helyes / osszvalasz * 100) * 10) / 10;
-        document.getElementById('vege').innerHTML = "A teszt végetért és " + helyes + " pontot és " + szazalek + "%-ot értél el.";
+        pontom = pontom + ((atad[0].pont / atad[0].ido) * time);
+        console.log(pontom)
+      };
     }
 };
 
@@ -239,18 +250,18 @@ document.getElementById("BT7").onclick = function doSub () {
 };
 
 document.getElementById("BT8").onclick = function doSub () { 
-  var fuz=0;
+  var fuz = 0;
   if(document.getElementById("box1").checked){
-    fuz=fuz+1;
+    fuz = fuz + 1;
   };
   if(document.getElementById("box2").checked){
-    fuz=fuz*10+2;
+    fuz = fuz* 10 + 2;
   };
   if(document.getElementById("box3").checked){
-    fuz=fuz*10+3;
+    fuz = fuz * 10 + 3;
   };
   if(document.getElementById("box4").checked){
-    fuz=fuz*10+4;
+    fuz = fuz * 10 + 4;
   };
   subm(fuz);
   valaszolt();
