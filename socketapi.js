@@ -48,21 +48,12 @@ io.on('connection', socket => {
         // console.log(ertek);
         //console.log(nev);
         var d = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        var sql = "INSERT INTO " + nev + " (valasz, ts) VALUES ('" + ertek + "', '" + d + "')";
+        var sql = "INSERT INTO  valaszok  (test_id ,valasz, ts) VALUES ('" + nev +"', '"+ ertek + "', '" + d + "')";
         con.query(sql, function (err, result) {
             if (err) throw err;
         });
     });
 
-    socket.on('ujkitoltes', (nev) => {
-        var sql = "CREATE TABLE " + nev + " (idtest int AUTO_INCREMENT PRIMARY KEY, valasz int, ts DATETIME)";
-        con.query(sql, function (err, result) {
-            if (err) throw err;
-            console.log("Table created");
-            socket.join('first_room');
-        });
-
-    });
 
     //kerdesadatok
     socket.on('stablakerdes', (kod) => {

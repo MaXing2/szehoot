@@ -24,9 +24,7 @@ window.onload = (event) => {
         vezerlo();
         name = "username";
         getCookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || '';
-        console.log(getCookieValue);
-        socket.emit('ujkitoltes',getCookieValue);
-
+        getCookieValue = ad;
     }else{
         document.getElementById("BT1").disabled = true;
         document.getElementById("BT2").disabled = true;
