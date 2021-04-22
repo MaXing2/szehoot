@@ -113,8 +113,8 @@
 				} else {
 					//nem felel meg az elvártaknak
 					$(".username #invalid-text").text( "A felhasználónév csak alfanumerikus karaktereket tartalmazhat, és minimum 3 legfeljebb 20 karakter hosszúságú lehet." );
-						$('#password').removeClass('is-valid');
-						$('#password').addClass('is-invalid');
+						$('#username').removeClass('is-valid');
+						$('#username').addClass('is-invalid');
 						user_valid = false;
 				}
 			} else {
@@ -125,7 +125,6 @@
 						user_valid = false;
 				//nincs kitöltve a mező
 			}
-			return;
 		};
 
 		function pw_validator()
@@ -135,7 +134,9 @@
 				if ($("#password").val().match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/))
 				{
 					//a jelszó megfelel az elvártaknak
-
+					$(".password #valid-text").text( "Elfogadva!" );
+						$('#password').removeClass('is-invalid');
+						$('#password').addClass('is-valid');
 					if ($("#password").val() == $("#passwordc").val()) {
 						//a két jelszó egyezik
 						$(".password #valid-text").text( "Elfogadva!" );
@@ -147,13 +148,15 @@
 						pw_valid = true;
 					} else {
 						//a két jelszó nem egyezik
-						$(".password #invalid-text").text( "A két jelszó nem egyezik!" );
-						$('#password').removeClass('is-valid');
-						$('#password').addClass('is-invalid');
-						$(".passwordc #valid-text").text( "A két jelszó nem egyezik!" );
+						// $(".password #invalid-text").text( "A két jelszó nem egyezik!" );
+						// $('#password').removeClass('is-valid');
+						// $('#password').addClass('is-invalid');
+						if ($( "#passwordc" ).val() != "") {
+						$(".passwordc #invalid-text").text( "A két jelszó nem egyezik!" );
 						$('#passwordc').removeClass('is-valid');
 						$('#passwordc').addClass('is-invalid');
 						pw_valid = false;
+					}
 					}
 				} else {
 					//a jelszó nem megfelelő

@@ -44,6 +44,26 @@ app.use(session({secret:'Szehoot2021'
 //------------------------------------------------------GET kérések kezelése-----------------------------------------------------------
 get.adat(app);
 //-------------------------------------------------------POST kérések kezelése-----------------------------------------------------------
+
+app.post('/fastjoin',function (req, res) {
+    var pincode = req.body.pincode;
+    connection.query("SELECT * FROM test_process_list WHERE pincode=" + connection.escape(pincode) + "",
+      function(err, result, fields) {
+        if (err) throw err;
+        if (result.length > 0) {
+          if (result[0].mode == 0 || result[0].mode == 1) {//ha a pinhez tartozó tesztfolyamat módja 0 (gyakorlási) vagy 1 (tantermi)
+            res.render('fastjoin.ejs',{'access': true, 'pincode': pincode}); //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot       
+          } else {
+            res.redirect('/?error=1'); //hiba: létezik a pinkód, de a teszt módja nem engedélyezi a gyors belépést
+           return;
+          }
+        } else {
+          res.redirect('/?error=2'); //hiba: nem létezik a pinkód, így a belépés sem engedélyezett (nincs hova belépni)
+          return;
+        }
+      })
+})
+
 // Gyökérre való post esetén (bejelentkezés)
 app.post('/', function(req, res) {
   var username = req.body.username; // felhasználónév, jelszó lekérés a postból
@@ -119,9 +139,9 @@ app.post('/signup', function(req, res) {
   }
   )} else res.send("Súlyos hiba!");
 });
-
+//Ezt hívja meg az AJAX
 app.post('/signup_validator',function (req, res) {
-  if (req.body.target == 'username') {
+  if (req.body.target == 'username') {//felhasználónév létezik -e?
     var username = req.body.username;
     connection.query("SELECT * FROM users WHERE username=" + connection.escape(username) + "",
       function(err, result, fields) {
@@ -129,7 +149,7 @@ app.post('/signup_validator',function (req, res) {
         if (result.length > 0) {res.json({exists: true})} else {res.json({exists: false})}
       })
   }
-  if (req.body.target == 'email') {
+  if (req.body.target == 'email') {//email létezik-e?
     var email = req.body.email;
     connection.query("SELECT * FROM users WHERE email=" + connection.escape(email) + "",
       function(err, result, fields) {

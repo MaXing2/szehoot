@@ -9,29 +9,56 @@
 		<link rel="stylesheet" href="../stylesheets/main_styles.css">
 	</head>
 	<body>	
-	<form action="" method="post">
 		<div class="container fastjoin">
-			<div class="card mt-5">
-			<div class="card-header">
-			<div class="row justify-content-center">
-				<div class="col-12">
-					<h5 style="text-align: center" class="card-title">Bejelentkezés</h5>
-				</div>
+			<div class="row justify-content-md-center">
+			<div class="col-lg-3">
+				<form action="" method="post">
+					<div class="card mt-5">
+						<div class="card-header">
+							<div class="row justify-content-center">
+								<div class="col-12">
+									<h5 style="text-align: center" class="card-title">Bejelentkezés</h5>
+								</div>
+							</div>
+						</div>
+						<div class="form-group mb-3"> 
+							<label class="form-label" for="username"><b>Felhasználónév</b></label>
+							<input class="form-control" type="text" placeholder="Írd be a felhasználóneved" name="username" required>
+						</div>
+						<div class="form-group mb-3"> 
+							<label class="form-label" for="password"><b>Jelszó</b></label>
+							<input class="form-control" type="password" placeholder="Írd be a jelszavad" name="password" required>
+						</div>	
+						<button class="btn btn-primary mt-2" type="submit" id="gomb" onclick="">Bejelentkezés</button>
+					</div>
+				</form>
+			</div>
+			<div class="col-lg-3">
+				<form action="/fastjoin" method="post">
+					<div class="card mt-5">
+						<div class="card-header">
+							<div class="row justify-content-center">
+								<div class="col-12">
+									<h5 style="text-align: center" class="card-title">Gyors csatlakozás</h5>
+								</div>
+							</div>
+						</div>
+						<div class="form-group mb-3"> 
+							<label class="form-label" for="nickname"><b>Becenév</b></label>
+							<input class="form-control" type="text" placeholder="Írd be a beceneved" name="nickname" required>
+						</div>
+						<div class="form-group mb-3"> 
+							<label class="form-label" for="pincode"><b>PIN kód</b></label>
+							<input class="form-control" type="text" placeholder="Írd be a teszt pinkódját" name="pincode" required>
+						</div>	
+						<button class="btn btn-primary mt-2" type="submit" onclick="">Csatlakozás</button>
+					</div>
+				</form>
 			</div>
 
-			</div>
-				<div class="form-group mb-3"> 
-					<label class="form-label" for="username"><b>Felhasználónév</b></label>
-					<input class="form-control" type="text" placeholder="Írd be a felhasználóneved" name="username" required>
-				</div>
-				<div class="form-group mb-3 mt-2"> 
-					<label class="form-label" for="password"><b>Jelszó</b></label>
-					<input class="form-control" type="password" placeholder="Írd be a jelszavad" name="password" required>
-				</div>
-					
-				<button class="btn btn-primary mt-2" type="submit" id="gomb" onclick="">Bejelentkezés</button>
-			</div>
-	</form>
+		</div>
+		</div>
+	
 <!--
 	<% if (typeof locals.loggedIn !== 'undefined') { %>
 		<% if (!loggedIn) { %>
