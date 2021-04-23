@@ -7,12 +7,66 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<link rel="stylesheet" href="../stylesheets/bootstrap/bootstrap.min.css">
 		<link rel="stylesheet" href="../stylesheets/main_styles.css">
+		<link rel="stylesheet" href="../stylesheets/styles.css">
+
+		<script src="/socket.io/socket.io.js"></script>
 	</head>
 	<body>	
 <% if (access) { %>
-	<p>Sikeres belépés! Pinkód: <%= pincode%></p>
+	<p>Sikeres belépés! <% var test = pincode%></p>
 <% } else {%>
 	<p>Nem sikerült belépni a teszt kitöltéséhez, kérlek próbáld újra később.</p>
 		<%  } %>
+		<script>
+			var nam = <%= test  %>;  // send pin
+		 </script>
+
+		<div id="sorszam"></div> <div id="jo"></div>
+		
+		<div id="vezerlo">
+		<button class="button button0" id="BT5" onclick="back();" >back!</button>
+		<button class="button button0" id="BT6" onclick="next();" >next!</button>
+		</div>
+		
+		<p></p>
+		<div class="kep" id="kep"></div>
+		<div id="elem"></div>
+		
+		<div id="lehetosegek">
+		<p></p>
+		<button class="button button1" id="BT1" onclick="doSub();" >Click me!</button>
+		<button class="button button2" id="BT2" onclick="doSub();" >Click Here!</button>
+		<p></p>
+		<button class="button button3" id="BT3" onclick="doSub();" >Oh No Me!</button>
+		<button class="button button4" id="BT4" onclick="doSub();" >Cmon!</button>
+		</div>
+		
+		<div id="tipp">
+		<input id="tippem">
+		<button class="button button0" id="BT7" onclick="doSub();" >Beküld</button>
+		</div>
+		
+		<div id="check">
+			<input type="checkbox" id="box1">
+			<label id="labbox1" for="box1">mine</label>
+			<input type="checkbox" id="box2">
+			<label id="labbox2" for="box2">there</label>
+			<p></p>
+			<input type="checkbox" id="box3">
+			<label id="labbox3" for="box3">you</label>
+			<input type="checkbox" id="box4">
+			<label id="labbox4" for="box4">me</label>
+			<p></p>
+			<button class="button button0" id="BT8" onclick="doSub();" >Beküld</button>
+		</div>
+		
+		<div>Hátralévő idő a kérdésre: <span id="time"></span> !</div>
+		<div id="vege"></div>
+		
+		<script src="../javascripts/control.js"></script>
+		
+		
+		<a href="/logout">Kijelentkezés!</a>
+		
 	</body>
 </html>

@@ -31,14 +31,14 @@ io.on('connection', socket => {
 
 
     //getter
-    socket.on('sgetter', (kerdes) => {
-        var sql = "SELECT * FROM test WHERE idtest='" + kerdes + "'";
+    socket.on('sgetter', (kerdes,nam) => {
+        var sql = "SELECT * FROM test_questions WHERE test_id='" + nam + "' and question_number='"+kerdes+"'";
         con.query(sql, function (err, result) {
             if (err) throw err;
             res = JSON.parse(JSON.stringify(result));
-            socket.join('first_room');
+            socket.join(nam);
             console.log(socket.rooms);
-            io.to('first_room').emit('getter', res);
+            io.to(nam).emit('getter', res);
             // io.emit('getter', res);
         });
     });
@@ -48,7 +48,7 @@ io.on('connection', socket => {
         // console.log(ertek);
         //console.log(nev);
         var d = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        var sql = "INSERT INTO  valaszok  (test_id ,valasz, ts) VALUES ('" + nev +"', '"+ ertek + "', '" + d + "')";
+        var sql = "INSERT INTO  answers  (test_id ,answers, ts) VALUES ('" + nev +"', '"+ ertek + "', '" + d + "')";
         con.query(sql, function (err, result) {
             if (err) throw err;
         });
@@ -57,11 +57,12 @@ io.on('connection', socket => {
 
     //kerdesadatok
     socket.on('stablakerdes', (kod) => {
-        var sql = "SELECT * FROM user_test WHERE tabla_kod='" + kod + "'";
+        var sql = "SELECT * FROM test_list WHERE test_id='" + kod + "'";
         con.query(sql, function (err, result) {
             if (err) throw err;
             res = JSON.parse(JSON.stringify(result));
-            io.emit('tablakerdes', res);
+            socket.join(kod);
+            io.to(kod).emit('tablakerdes', res);
         });
     });
 })

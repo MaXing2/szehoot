@@ -159,6 +159,32 @@ app.post('/signup_validator',function (req, res) {
   }
 })
 
+
+//list post kezelese
+app.post('/list', function (req, res) {
+  var test = req.body.asd;
+  var json;
+
+  var sql = "SELECT COUNT (*) as 'db' FROM test_questions WHERE test_id='"+test+ "'";
+  connection.query(sql, function (err, result) {
+      if (err) throw err;
+      json = JSON.parse(JSON.stringify(result));
+      var darab = json[0].db;
+    if (darab == 0){
+      res.json("nincs adat");
+    }else{
+      sql = "SELECT * FROM test_questions WHERE test_id='"+test+ "'";
+      connection.query(sql, function (err, result) {
+        if (err) throw err;
+        json = JSON.parse(JSON.stringify(result));
+        json[0].idtest=darab;
+        res.json(json);
+    });
+}
+});
+});
+
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

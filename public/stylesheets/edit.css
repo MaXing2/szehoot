@@ -1,0 +1,73 @@
+  #myDIV {
+	border: 1px solid black;
+	margin: auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	width: 210px;
+	height:	150px;
+	text-align: center;
+	padding-top: 30%;
+	cursor: pointer;
+ 	}
+  #divsor {
+	border: 1px solid black;
+	margin-bottom: 10px;
+	width: 230px;
+	height:	500px;
+	overflow-y: scroll;
+	float:left;
+ 	}
+  #editor {	
+	border: 1px solid black;
+	overflow: hidden; 
+	margin-bottom: 10px;
+	width: 700px;
+	height:	500px;
+ 	}
+  #elem {	
+	overflow: hidden; 
+	margin-bottom: 10px;
+	width: 700px;
+	height:	100px;
+ 	}
+  textarea {
+	 resize: none;
+    }
+
+.button1 {
+    background-color: #7fdd82; 
+    color: black; 
+    border: 2px solid #009e05;
+    width: 340px;
+    height:	80px;
+    text-align: center;
+    margin-left: 5px;
+  }
+
+.button2 {
+    background-color: #f16363; 
+    color: black; 
+    border: 2px solid #ba0000;
+    width: 340px;
+    height:	80px;
+    text-align: center;
+  }
+
+.button3 {
+    background-color: #73c5e0; 
+    color: black; 
+    border: 2px solid #008CBA;
+    width: 340px;
+    height:	80px;
+    text-align: center;
+    margin-left: 5px;
+  }
+          
+.button4 {
+  background-color: #df6ff5 ; 
+  color: black; 
+  border: 2px solid #a7009e;
+  width: 340px;
+  height: 80px;
+  text-align: center;
+}

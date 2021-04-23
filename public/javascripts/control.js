@@ -8,22 +8,17 @@ var globalid;
 var teacher = 0;
 var pontom = 0;
 var time = 0 ;
+var nam;
 window.onload = (event) => {
-    var name = "kod";
-    getCookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || '';
-    console.log(getCookieValue);
-    kerdesadatok(65241);
+  kerdesadatok(nam);
     sqlm();
     color = '#'+Math.random().toString(16).substr(-6);
     document.body.style.background = color;
-
-    // var name = "pass";
-    // var ad = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || '';
-    ad="65241";
-    if (ad != "65241"){
+    ad=nam;
+    if (ad != nam){
         vezerlo();
-        name = "username";
-        getCookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || '';
+        // name = "username";
+        getCookieValue = document.cookie.match('(^|;)\\s*' + nam + '\\s*=\\s*([^;]+)')?.pop() || '';
         getCookieValue = ad;
     }else{
         document.getElementById("BT1").disabled = true;
@@ -39,7 +34,7 @@ window.onload = (event) => {
 //kerdesek
 function sqlm (){
     actual++;
-    socket.emit('sgetter',actual);
+    socket.emit('sgetter',actual,nam);
 }
 
 socket.on('getter',ered => {
@@ -50,20 +45,20 @@ socket.on('getter',ered => {
 function hiv (ered) {
     if (typeof ered !== 'undefined') {
         atad = ered;
-        var idom = ered[0].ido;
+        var idom = ered[0].time;
         display = document.querySelector('#time');
         clearInterval(globalid);
         startTimer(idom, display);
         starterbutton();
-        document.getElementById('sorszam').innerHTML = ered[0].idtest + "./" + osszvalasz +".kérdés"; 
-        document.getElementById('elem').innerHTML = ered[0].kerdes;
+        document.getElementById('sorszam').innerHTML = ered[0].question_number + "./" + osszvalasz +".kérdés"; 
+        document.getElementById('elem').innerHTML = ered[0].question;
         //picture 
-        if (ered[0].kep==null || ered[0].kep==""){
+        if (ered[0].image==null || ered[0].image==""){
           document.getElementById("kep").style.display = "none";
         }else{
-          document.getElementById('kep').innerHTML = "<img style='height: 100%; width: 100%; object-fit: contain' src='" + ered[0].kep + "'/>";
+          document.getElementById('kep').innerHTML = "<img style='height: 100%; width: 100%; object-fit: contain' src='" + ered[0].image + "'/>";
         }
-        switch (ered[0].tipus) {
+        switch (ered[0].type) {
             case 1:         //tipp
                 document.getElementById("tipp").style.display = "";
                 document.getElementById('tippem').value = "";
@@ -73,22 +68,22 @@ function hiv (ered) {
                 document.getElementById("BT4").style.display = "none";
               break;
             case 2:         //igazhamis
-                document.getElementById('BT1').innerHTML = ered[0].valasz1;
-                document.getElementById('BT2').innerHTML = ered[0].valasz2;
+                document.getElementById('BT1').innerHTML = ered[0].answer_1;
+                document.getElementById('BT2').innerHTML = ered[0].answer_2;
                 document.getElementById("BT3").style.display = "none";
                 document.getElementById("BT4").style.display = "none";
               break;
             case 3:         //harom
-                document.getElementById('BT1').innerHTML = ered[0].valasz1;
-                document.getElementById('BT2').innerHTML = ered[0].valasz2;
-                document.getElementById('BT3').innerHTML = ered[0].valasz3;
+                document.getElementById('BT1').innerHTML = ered[0].answer_1;
+                document.getElementById('BT2').innerHTML = ered[0].answer_2;
+                document.getElementById('BT3').innerHTML = ered[0].answer_3;
                 document.getElementById("BT4").style.display = "none";
               break;
             case 4:         //negy
-                document.getElementById('BT1').innerHTML = ered[0].valasz1;
-                document.getElementById('BT2').innerHTML = ered[0].valasz2;
-                document.getElementById('BT3').innerHTML = ered[0].valasz3;
-                document.getElementById('BT4').innerHTML = ered[0].valasz4;
+                document.getElementById('BT1').innerHTML = ered[0].answer_1;
+                document.getElementById('BT2').innerHTML = ered[0].answer_2;
+                document.getElementById('BT3').innerHTML = ered[0].answer_3;
+                document.getElementById('BT4').innerHTML = ered[0].answer_4;
               break;
             case 5:
                 document.getElementById("check").style.display = "";
@@ -96,10 +91,10 @@ function hiv (ered) {
                 document.getElementById('box2').checked = false;
                 document.getElementById('box3').checked = false;
                 document.getElementById('box4').checked = false;
-                document.getElementById('labbox1').innerHTML = ered[0].valasz1;
-                document.getElementById('labbox2').innerHTML = ered[0].valasz2;
-                document.getElementById('labbox3').innerHTML = ered[0].valasz3;
-                document.getElementById('labbox4').innerHTML = ered[0].valasz4;
+                document.getElementById('labbox1').innerHTML = ered[0].answer_1;
+                document.getElementById('labbox2').innerHTML = ered[0].answer_2;
+                document.getElementById('labbox3').innerHTML = ered[0].answer_3;
+                document.getElementById('labbox4').innerHTML = ered[0].answer_4;
                 document.getElementById("BT1").style.display = "none";
                 document.getElementById("BT2").style.display = "none";
                 document.getElementById("BT3").style.display = "none";
@@ -160,7 +155,7 @@ function subm (ertek){
 function kerdesadatok(kod){
     socket.emit('stablakerdes', kod);
     socket.on('tablakerdes',ered => {
-        osszvalasz= ered[0].tabla_kerdes;
+        osszvalasz= ered[0].question_num;
         console.log(osszvalasz);
     });
 };
