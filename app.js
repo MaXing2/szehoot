@@ -13,8 +13,9 @@ var get = require ('./inc/get_request.js');
 var connection = mysql.createConnection(config.databaseOptions);
 var bcrypt = require('bcrypt');
 var session = require('express-session');
-
 const app = express();
+//fileupload
+const fileUpload = require('express-fileupload');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -184,6 +185,62 @@ app.post('/list', function (req, res) {
 });
 });
 
+
+
+//file upload
+app.use(fileUpload());
+app.post('/upload', function(req, res) {
+  let sampleFile;
+  let uploadPath;
+
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send('No files were uploaded.');
+  }
+
+  // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+  sampleFile = req.files.sampleFile;
+  uploadPath = __dirname + '/public/picture/' + sampleFile.name;
+
+  // Use the mv() method to place the file somewhere on your server
+  sampleFile.mv(uploadPath, function(err) {
+    if (err)
+      return res.status(500).send(err);
+
+    res.send('File uploaded!');
+  });
+});
+
+
+//save post kezelese
+app.post('/save', function (req, res) {
+  var test = JSON.parse(req.body.ment);
+  console.log(test);
+
+  var sql = "SELECT COUNT (*) as 'db' FROM test_questions WHERE test_id='" +test[6]+ "' and question_number='"+test[5]+"'";
+  connection.query(sql, function (err, result) {
+      if (err) throw err;
+      json = JSON.parse(JSON.stringify(result));
+      var darab = json[0].db;
+    if (darab == 0){
+      // nincs adat
+      var sql = "INSERT INTO test_questions (test_id ,question,answer_1 ,answer_2 ,answer_3 ,answer_4 ,question_number, type) VALUES  ('"+test[6]+ "','"+ test[0]  + "','"+ test[1]  +  "','"+ test[2]  +  "','"+ test[3]  + "','"+ test[4]  +  "','" +test[5]+  "','" + 4 + "')";
+      connection.query(sql, function (err, result) {
+          if (err) throw err;
+          json = JSON.parse(JSON.stringify(result));
+          res.json(json);
+      });
+    }else{
+      //van adat
+      var sql = "UPDATE test_questions SET test_id ='"+test[6]+"',question ='"+test[0]+"',answer_1='"+test[1]+"',answer_2='"+test[2]+"',answer_3='"+test[3]+"',answer_4='"+test[4]+"',question_number='"+test[5]+"',type='"+4+"' WHERE test_id='" +test[6]+ "' and question_number='"+test[5]+"'";
+      connection.query(sql, function (err, result) {
+          if (err) throw err;
+          // json = JSON.parse(JSON.stringify(result));
+          // res.json(json);
+      });
+    res.json(darab);
+};
+});
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

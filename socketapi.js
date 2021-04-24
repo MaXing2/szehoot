@@ -48,7 +48,7 @@ io.on('connection', socket => {
         // console.log(ertek);
         //console.log(nev);
         var d = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        var sql = "INSERT INTO  answers  (test_id ,answers, ts) VALUES ('" + nev +"', '"+ ertek + "', '" + d + "')";
+        var sql = "INSERT INTO  test_results  (test_id ,answers, ts) VALUES ('" + nev +"', '"+ ertek + "', '" + d + "')";
         con.query(sql, function (err, result) {
             if (err) throw err;
         });

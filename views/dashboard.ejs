@@ -27,19 +27,39 @@
 		</div>
 
 		<div id="editor">
-			<div id="kep"></div>
+			
+
+			<!-- file -->
+			<!-- <div class="file-upload-wrapper">
+ 		 	 <input type="file" id="input-file-now-custom-2" class="file-upload"
+			  data-height="500" data-max-file-size="5M" />
+			</div> -->
+			<div  class="kep" id="kep"></div>
+
 			<textarea id=elem cols="5" rows="5"></textarea>
+			<form ref='uploadForm' 
+			id='uploadForm' 
+			action='http://localhost:3000/upload' 
+			method='post' 
+			encType="multipart/form-data" accept=".gif, .jpg, .png, .doc" >
+			  <input type="file" name="sampleFile" />
+			  <input type='submit' value='Upload!' />
+		  </form>     
+
 			<p></p>
 			<input class="button1" id="BT1">
 			<input class="button2" id="BT2">
 			<p></p>
 			<input class="button3" id="BT3">
 			<input class="button4" id="BT4">
+			<p></p>
+			<button class="button" id="BT7" onclick="dosave();" >Ment</button>
+
 			</div>
 		</div>
 
-		<button class="button button0" id="BT5" onclick="doadd();" >Hozza ad</button>
-		<button class="button button0" id="BT6" onclick="dodel();" >torol</button>
+		<button class="button" id="BT5" onclick="doadd();" >Hozzá ad</button>
+		<button class="button" id="BT6" onclick="dodel();" >Töröl</button>
 
 
 <script src="../javascripts/list.js"></script>
