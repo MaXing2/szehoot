@@ -20,6 +20,56 @@
         </div>
 		<div id='tabla_szam'>
         </div>
+		<!-- menu -->
+		<div id="menuline">
+				<!-- time -->
+			<label for="timeset"> Időkorlát:</label>
+			<select name="timeset" id="timeset">
+			</optgroup>
+			<optgroup label="Seconds">
+				<option value="10">10</option>
+				<option value="15">15</option>
+				<option value="20">20</option>
+				<option value="30">30</option>
+				<option value="45">45</option>
+				<option value="50">50</option>
+			</optgroup>
+			<optgroup label="Minutes">
+				<option value="60">1:00</option>
+				<option value="70">1:10</option>
+				<option value="75">1:15</option>
+				<option value="80">1:20</option>
+				<option value="90">1:30</option>
+			  </select>
+			  <!-- points -->
+			  <label for="points">Pontszám:</label>
+			<select name="points" id="points">
+				<option value="100">100</option>
+				<option value="200">200</option>
+				<option value="300">300</option>
+				<option value="400">400</option>
+				<option value="500">500</option>
+				<option value="600">600</option>
+				<option value="700">700</option>
+				<option value="800">800</option>
+				<option value="900">900</option>
+				<option value="1000">1000</option>
+			  </select>
+			  <!-- tipus -->
+			  <label for="type">Tipus:</label>
+			  <select name="type" id="type">
+				  <option value="1">Tipp mix</option>
+				  <option value="2">Igaz / hamis</option>
+				  <option value="3">Felelet választós 3 lehetőség</option>
+				  <option value="4">Felelet választós 4 lehetőség</option>
+				  <option value="5">Több jó válasz</option>
+				</select>
+  
+  
+
+		</div>
+
+
 		<!-- bar -->
 		<div id="divsor">
 			<input id="cim">
@@ -34,26 +84,41 @@
  		 	 <input type="file" id="input-file-now-custom-2" class="file-upload"
 			  data-height="500" data-max-file-size="5M" />
 			</div> -->
-			<div  class="kep" id="kep"></div>
-
-			<textarea id=elem cols="5" rows="5"></textarea>
+			
+			<!-- <div  class="kep" id="kep"></div> -->
+			<!-- picture uploader -->
 			<form ref='uploadForm' 
 			id='uploadForm' 
 			action='http://localhost:3000/upload' 
 			method='post' 
-			encType="multipart/form-data" accept=".gif, .jpg, .png, .doc" >
-			  <input type="file" name="sampleFile" />
-			  <input type='submit' value='Upload!' />
+			encType="multipart/form-data" accept=".gif, .jpg, .png, .doc"
+			 >
+			<div id="dnd" class="kep"  ondragover="preventszar(event)" ondragenter="preventszar(event)" ondrop="dropped(event)">
+				huzd ide
+				<input id="fileUploadField" type="file" name="sampleFile" hidden />
+			</div>
+			  <!--<input type="file" name="sampleFile" />-->
+			  <input type='submit' value='Upload!' hidden  />
 		  </form>     
+			<textarea id=elem cols="5" rows="5"></textarea>
 
 			<p></p>
+			<input class="jelol" type="checkbox" id="box1">
 			<input class="button1" id="BT1">
+			<input class="jelol" type="checkbox" id="box2">
 			<input class="button2" id="BT2">
 			<p></p>
+			<input class="jelol" type="checkbox" id="box3">
 			<input class="button3" id="BT3">
+			<input class="jelol" type="checkbox" id="box4">
 			<input class="button4" id="BT4">
 			<p></p>
 			<button class="button" id="BT7" onclick="dosave();" >Ment</button>
+
+			<button class="buttondel" id="BT8" onclick="dotrol();" >Töröl!!</button>
+
+
+
 
 			</div>
 		</div>
