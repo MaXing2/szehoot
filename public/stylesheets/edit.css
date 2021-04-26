@@ -92,7 +92,15 @@
 .buttondel {
   position: fixed;
   margin-top: 10px;
-  margin-left: 550px;
+  margin-left: 540px;
+  background-color:darkred;
+  color:white;
+  border: none;
+  cursor: pointer;
+  padding: 10px 22px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .kep {
@@ -124,7 +132,7 @@ input[type=radio] {
     height: 21px;
     outline: none;
     display: inline-block;
-    position: fixed;
+    position:fixed;
     /* left: 40px; */
     vertical-align: center;
     vertical-align: center;

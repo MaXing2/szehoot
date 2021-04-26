@@ -136,7 +136,30 @@ function preventszar(ev) {
 function dropped(ev) {
   var uploadField = document.getElementById("fileUploadField");
   uploadField.files = ev.dataTransfer.files;
-  $("#uploadForm").submit();
+  //$("#uploadForm").submit();
+  var formdata = new FormData($('#uploadForm')[0]);
+  formdata.append('tippem', $("#tippem").val());
+  formdata.append('elem', elem+1);
+
+  for (var pair of formdata.entries()) {
+    console.log(pair[0]+ ', ' + pair[1]); 
+  }
+
+  $.ajax({
+    url:'/upload',
+    type: 'POST',
+    contentType: false,
+    processData: false,
+    cache: false,
+    data: formdata,
+    success: function(res){
+        alert(res);
+    },
+    error: function(){
+        alert('Error: In sending the request!');
+    }
+})
+
   ev.preventDefault();
 }
 
@@ -224,10 +247,8 @@ function dofunc(szam){
     }
 
   if (data[szam].image==null || data[szam].image==""){
-      // document.getElementById("kep").style.display = "none";
-      document.getElementById('dnd').innerHTML = "";
+      document.getElementById('dnd').innerHTML = "Huzd ide";
     }else{
-      document.getElementById("dnd").style.display = "";
       document.getElementById('dnd').innerHTML = "<img style='height: 100%; width: 100%; object-fit: contain' src='" + data[szam].image + "'/>";
     }
   }

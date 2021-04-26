@@ -160,7 +160,7 @@ app.post('/signup_validator',function (req, res) {
   }
 })
 
-
+//-----------------------------------------------------------editor-----------------------------------------------------------//
 //list post kezelese
 app.post('/list', function (req, res) {
   var test = req.body.asd;
@@ -188,10 +188,12 @@ app.post('/list', function (req, res) {
 
 
 //file upload
-app.use(fileUpload());
+app.use(fileUpload({ fileSize: 5 * 1024 * 1024 , responseOnLimit: 'File size limit has been reached', abortOnLimit: true, safeFileNames: true, preserveExtension: true }));
 app.post('/upload', function(req, res) {
+  
   let sampleFile;
   let uploadPath;
+  let sqlimg;
 
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).send('No files were uploaded.');
@@ -199,14 +201,40 @@ app.post('/upload', function(req, res) {
 
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
   sampleFile = req.files.sampleFile;
-  uploadPath = __dirname + '/public/picture/' + sampleFile.name;
+  uploadPath = __dirname + '/public/picture/' + new Date().getTime()+"_"+ sampleFile.name;
+  //sql insert file path
+  sqlimg ="../picture/"+ new Date().getTime()+"_"+ sampleFile.name;
+
+  let elem = req.body.elem;
+  let tippem = req.body.tippem;
+  console.log(elem, tippem);
+
+  var sql = "SELECT COUNT (*) as 'db' FROM test_questions WHERE test_id='" +tippem+ "' and question_number='"+elem+"'";
+  connection.query(sql, function (err, result) {
+      if (err) throw err;
+      json = JSON.parse(JSON.stringify(result));
+      var darab = json[0].db;
+      console.log(darab);
+    if (darab == 0){
+      var sql = "INSERT INTO test_questions (test_id ,question_number,image) VALUES  ('"+tippem+ "','"+elem+ "'','"+sqlimg+ "')";
+      connection.query(sql, function (err, result) {
+          if (err) throw err;
+      });
+    }else{
+      //van adat
+      var sql = "UPDATE test_questions SET image='"+sqlimg+"' WHERE test_id='" +tippem+ "' and question_number='"+elem+"'";
+      connection.query(sql, function (err, result) {
+          if (err) throw err;
+      });
+  }
+});
 
   // Use the mv() method to place the file somewhere on your server
   sampleFile.mv(uploadPath, function(err) {
     if (err)
       return res.status(500).send(err);
 
-    res.redirect("dashboard");
+    res.send("sikeres feltoltes");
   });
 });
 
@@ -256,6 +284,8 @@ app.post('/save', function (req, res) {
 };
 });
 });
+//-----------------------------------------------------------editor_end-----------------------------------------------------------//
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
