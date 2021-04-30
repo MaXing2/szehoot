@@ -272,12 +272,22 @@ function dofunc(szam){
             document.getElementById("BT4").style.display = "none";
           break;
           case 2:
+            document.getElementById("BT3").style.display = "none";
           case 3:
+            document.getElementById("BT4").style.display = "none";
           case 4:
             document.getElementById("r1").style.display = "";
             document.getElementById("r2").style.display = "";
             document.getElementById("r3").style.display = "";
             document.getElementById("r4").style.display = "";
+
+            if(data[szam].type==2){
+              document.getElementById("r3").style.display = "none";
+              document.getElementById("r4").style.display = "none";
+            }
+            if(data[szam].type==3){
+              document.getElementById("r4").style.display = "none";
+            }          
             document.getElementById("box1").style.display = "none";
             document.getElementById("box2").style.display = "none";
             document.getElementById("box3").style.display = "none";
