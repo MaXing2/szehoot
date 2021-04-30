@@ -112,7 +112,10 @@
     float:left;
     text-align: center;
 }
-       
+ .kozepbox{
+   margin-left: 240px;
+   text-align: center;
+ }      
 
 /* checkbox_start */
 

@@ -96,20 +96,24 @@ function dosave (){
 
   //valaszment
   var fuz = 0;
-  if(document.getElementById("box1").checked){
-    fuz = fuz + 1;
-  };
-  if(document.getElementById("box2").checked){
-    fuz = fuz* 10 + 2;
-  };
-  if(document.getElementById("box3").checked){
-    fuz = fuz * 10 + 3;
-  };
-  if(document.getElementById("box4").checked){
-    fuz = fuz * 10 + 4;
-  };
+  if( tomb [9] != 1 ){
+    if(document.getElementById("box1").checked || document.getElementById("r1").checked ){
+      fuz = fuz + 1;
+    };
+    if(document.getElementById("box2").checked || document.getElementById("r2").checked){
+      fuz = fuz* 10 + 2;
+    };
+    if(document.getElementById("box3").checked || document.getElementById("r3").checked){
+      fuz = fuz * 10 + 3;
+    };
+    if(document.getElementById("box4").checked || document.getElementById("r4").checked){
+      fuz = fuz * 10 + 4;
+    };
+    tomb[10] = fuz;
+  }else{
+    tomb[10] = document.getElementById("megold").value;
+  }
   
-  tomb[10] = fuz;
 
   console.log(JSON.stringify(tomb));
   $.ajax({
@@ -131,6 +135,7 @@ function dosave (){
 //kepment
 function preventszar(ev) {
   ev.preventDefault();
+  doAjax();
 }
 
 function dropped(ev) {
@@ -154,6 +159,8 @@ function dropped(ev) {
     data: formdata,
     success: function(res){
         alert(res);
+        doAjax();
+        // dofunc(elem);                              //TODO!!!!
     },
     error: function(){
         alert('Error: In sending the request!');
@@ -181,21 +188,58 @@ function dotrol() {
 }
 
 
+//inputvalide
+function setInputFilter(textbox, inputFilter) {
+  ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function(event) {
+    textbox.addEventListener(event, function() {
+      if (inputFilter(this.value)) {
+        this.oldValue = this.value;
+        this.oldSelectionStart = this.selectionStart;
+        this.oldSelectionEnd = this.selectionEnd;
+      } else if (this.hasOwnProperty("oldValue")) {
+        this.value = this.oldValue;
+        this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+      } else {
+        this.value = "";
+      }
+    });
+  });
+}
+
+setInputFilter(document.getElementById("tippem"), function(value) {
+  return /^-?\d*$/.test(value); 
+});
+
+setInputFilter(document.getElementById("megold"), function(value) {
+  return /^-?\d*$/.test(value); 
+});
+
+
 function dofunc(szam){
     console.log(szam);
+    document.getElementById("BT1").style.display = "";
+    document.getElementById("BT2").style.display = "";
+    document.getElementById("BT3").style.display = "";
+    document.getElementById("BT4").style.display = "";
   if(szam>=data[0].idtest){
       document.getElementById('elem').value = "";
       document.getElementById('BT1').value = "";
       document.getElementById('BT2').value = "";
       document.getElementById('BT3').value = "";
       document.getElementById('BT4').value = "";
+      document.getElementById('megold').value = "";
       document.getElementById('box1').checked = false;
       document.getElementById('box2').checked = false;
       document.getElementById('box3').checked = false;
       document.getElementById('box4').checked = false;
+      document.getElementById("r1").checked = false;
+      document.getElementById("r2").checked = false;
+      document.getElementById("r3").checked = false;
+      document.getElementById("r4").checked = false;
   }else{
       document.getElementById('elem').value = data[szam].question;
       document.getElementById('BT1').value = data[szam].answer_1;
+      document.getElementById('megold').value = data[szam].correct_answer_no;
       document.getElementById('BT2').value = data[szam].answer_2;
       document.getElementById('BT3').value = data[szam].answer_3;
       document.getElementById('BT4').value = data[szam].answer_4;
@@ -211,26 +255,59 @@ function dofunc(szam){
       switch(data[szam].type) {
         case 1:
             console.log("Tipp mix");
+            document.getElementById("megold").style.display = "";
+            document.getElementById("r1").style.display = "none";
+            document.getElementById("r2").style.display = "none";
+            document.getElementById("r3").style.display = "none";
+            document.getElementById("r4").style.display = "none";
+
+            document.getElementById("box1").style.display = "none";
+            document.getElementById("box2").style.display = "none";
+            document.getElementById("box3").style.display = "none";
+            document.getElementById("box4").style.display = "none";
+
+            document.getElementById("BT1").style.display = "none";
+            document.getElementById("BT2").style.display = "none";
+            document.getElementById("BT3").style.display = "none";
+            document.getElementById("BT4").style.display = "none";
           break;
           case 2:
           case 3:
           case 4:
+            document.getElementById("r1").style.display = "";
+            document.getElementById("r2").style.display = "";
+            document.getElementById("r3").style.display = "";
+            document.getElementById("r4").style.display = "";
+            document.getElementById("box1").style.display = "none";
+            document.getElementById("box2").style.display = "none";
+            document.getElementById("box3").style.display = "none";
+            document.getElementById("box4").style.display = "none";
+            document.getElementById("megold").style.display = "none";
             switch (data[szam].correct_answer_no){
               case 1:
-                document.getElementById('box1').checked = true;
+                document.getElementById('r1').checked = true;
               break;
               case 2:
-                document.getElementById('box2').checked = true;
+                document.getElementById('r2').checked = true;
                 break;
               case 3:
-                document.getElementById('box3').checked = true;
+                document.getElementById('r3').checked = true;               
                 break;
               case 4:
-                document.getElementById('box4').checked = true;
+                document.getElementById('r4').checked = true;             
                 break;
            }
           break;
           case 5:
+            document.getElementById("megold").style.display = "none";
+            document.getElementById("r1").style.display = "none";
+            document.getElementById("r2").style.display = "none";
+            document.getElementById("r3").style.display = "none";
+            document.getElementById("r4").style.display = "none";
+            document.getElementById("box1").style.display = "";
+            document.getElementById("box2").style.display = "";
+            document.getElementById("box3").style.display = "";
+            document.getElementById("box4").style.display = "";
               if ((data[szam].correct_answer_no).toString().includes("1")){
                 document.getElementById('box1').checked = true;
               }
