@@ -31,8 +31,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+//app.use('/', indexRouter);
+//app.use('/users', usersRouter);
 
 app.use(session({secret:'Szehoot2021'
 ,name:'uniqueSessionID'
@@ -44,8 +44,10 @@ app.use(session({secret:'Szehoot2021'
 
 //------------------------------------------------------GET kérések kezelése-----------------------------------------------------------
 get.adat(app);
+
 //-------------------------------------------------------POST kérések kezelése-----------------------------------------------------------
 
+// Gyors csatlakozás
 app.post('/fastjoin',function (req, res) {
     var pincode = req.body.pincode;
     connection.query("SELECT * FROM test_process_list WHERE pincode=" + connection.escape(pincode) + "",
@@ -89,18 +91,18 @@ app.post('/', function(req, res) {
               req.session.loggedIn = true; // a sessionban a loggedIn bool mostantól igaz értékű lesz
               req.session.username = username; // betesszük a username -t is
               console.log(req.session);
-              res.redirect('/dashboard')
+              res.redirect('/home')
             } else {
                 console.log("Hibás jelszó: "+username);
                 console.log(result);
-                res.render('index.ejs',{});
+                res.redirect('/');
             } 
           });
         // res.render('dashboard.ejs',{username: result[0].username });
         } else { // ha nem lenne visszatérő érték az sql -ből, akkor a kezdőlapra irányítás
           console.log(result);
           console.log("Nem létező felhasználónév: "+username);
-          res.render('index.ejs',{});
+          res.redirect('/');
         }
       }
   });
@@ -140,7 +142,7 @@ app.post('/signup', function(req, res) {
   }
   )} else res.send("Súlyos hiba!");
 });
-//Ezt hívja meg az AJAX
+//Ezt hívja meg az AJAX a regisztráció során
 app.post('/signup_validator',function (req, res) {
   if (req.body.target == 'username') {//felhasználónév létezik -e?
     var username = req.body.username;
@@ -157,6 +159,27 @@ app.post('/signup_validator',function (req, res) {
         if (err) throw err;
         if (result.length > 0) {res.json({exists: true})} else {res.json({exists: false})}
       })
+  }
+})
+
+//A main -ra érkező postok alapján tölti be az oldal a megfelelő tartalmat (ejs fájlokat)
+//A lényege, hogy a header és a footer így nem kerül mindig betöltésre az oldalon történő navigáció során
+app.post('/main',function (req, res) {
+  if (req.body.page == 'home') {
+    if (req.session.loggedIn) {
+     var page = req.body.page;
+     res.render('home.ejs',{});
+    }
+   }
+   
+  if (req.body.page == 'login') {
+    var page = req.body.page;
+    res.render('login.ejs',{});
+  }
+
+  if (req.body.page == 'test_active') {
+    var page = req.body.page;
+    res.render('test_active.ejs',{});
   }
 })
 

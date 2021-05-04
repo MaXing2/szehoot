@@ -1,7 +1,8 @@
-.fastjoin {
-	
-}
 
 .signup {
 	max-width: 500px;
+}
+.dropdown-menu {
+    right: 0 !important;
+    left: auto !important;
 }

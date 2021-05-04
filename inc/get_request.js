@@ -3,10 +3,16 @@ exports.adat = function (app) {
         res.render('ajaxtest.ejs',{});
     })
     
-    app.post('/ajaxtest',function (req, res) {
-    res.send('Hello');
-    })
     
+    // Gyökér esetén
+    app.get('/',function (req, res) {
+        if (req.session.loggedIn) { // be van jelentkezve? 
+        res.render('main.ejs', {page: 'home', loggedIn: true, username: req.session.username}); // ebben az esetben a main.ejs sablonban a home.ejs nyílik meg
+        } 
+        else
+        res.render('main.ejs', {page: 'login', loggedIn: false}); // ha nincs bejelentkezve, akkor pedig a login.ejs
+    })
+
     // Dashboard esetén
     app.get('/dashboard',function (req, res) {
         if (req.session.loggedIn) { // be van jelentkezve?
@@ -19,7 +25,7 @@ exports.adat = function (app) {
     // Signup esetén
     app.get('/signup',function (req, res) {
     if (req.session.loggedIn) { // be van jelentkezve?
-        res.render('dashboard.ejs',{});
+        res.render('home.ejs',{});
     } 
     else {
         res.render('signup.ejs',{});
@@ -31,8 +37,28 @@ exports.adat = function (app) {
     req.session.destroy(function (err) { 
         if (err) throw err;
         else {
-        res.send('Sikeresen kijelentkeztél!');
+        res.redirect('/');
         }
     })
     })
+//-------------------MAIN navigáció-----------------
+   //Home esetén
+    app.get('/home',function (req, res) {
+    if (req.session.loggedIn) { // be van jelentkezve?
+        res.render('main.ejs',{page: 'home', loggedIn: true, username: req.session.username});
+    } else {
+        res.redirect('/');
+    }
+    })
+    //Home esetén
+    app.get('/test_active',function (req, res) {
+    if (req.session.loggedIn) { // be van jelentkezve?
+        res.render('main.ejs',{page: 'test_active', loggedIn: true, username: req.session.username});
+    } else {
+        res.redirect('/');
+    } 
+    })
+
+   
+    
 }

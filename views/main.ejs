@@ -1,0 +1,13 @@
+<%- include('header'); -%>
+<!-- A content -be töltődik be minden oldal -->
+<div id="content" name="content"> 
+   <!-- Amennyiben a gyökérre (/) érkezik egy get kérés, úgy a server postban elküldi az aktuális munkamenet állapotát.
+   Bejelentkezett állapotban a home.ejs töltődik be, ellenkező esetben a login.ejs a belépéshez. -->
+      <% if (!loggedIn) { %>
+      <%- include('login'); -%>
+      <%  } else {%>
+      <%- include(page); -%> 
+      <% } %>
+</div>
+
+<%- include('footer'); -%>
