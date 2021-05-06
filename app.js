@@ -294,7 +294,7 @@ app.post('/save', function (req, res) {
       var darab = json[0].db;
     if (darab == 0){
       // nincs adat
-      var sql = "INSERT INTO test_questions (test_id ,question,answer_1 ,answer_2 ,answer_3 ,answer_4 ,question_number, time, score, type, correct_answer_no) VALUES  ('"+test[6]+ "','"+ test[0]  + "','"+ test[1]  +  "','"+ test[2]  +  "','"+ test[3]  + "','"+ test[4]  +  "','" +test[5]+  "','"+test[7]+"','"+test[8]+"','"+test[9]+"','"+test[10]+"')";
+      var sql = "INSERT INTO test_questions (test_id ,question,answer_1 ,answer_2 ,answer_3 ,answer_4 ,question_number, time, score, type, correct_answer_no, image) VALUES  ('"+test[6]+ "','"+ test[0]  + "','"+ test[1]  +  "','"+ test[2]  +  "','"+ test[3]  + "','"+ test[4]  +  "','" +test[5]+  "','"+test[7]+"','"+test[8]+"','"+test[9]+"','"+test[10]+"','"+test[11]+"')";
       connection.query(sql, function (err, result) {
           if (err) throw err;
           json = JSON.parse(JSON.stringify(result));
@@ -302,7 +302,7 @@ app.post('/save', function (req, res) {
       });
     }else{
       //van adat
-      var sql = "UPDATE test_questions SET test_id ='"+test[6]+"',question ='"+test[0]+"',answer_1='"+test[1]+"',answer_2='"+test[2]+"',answer_3='"+test[3]+"',answer_4='"+test[4]+"',question_number='"+test[5]+"',time='"+test[7]+"',score='"+test[8]+"',type='"+test[9]+"',correct_answer_no='"+test[10]+"' WHERE test_id='" +test[6]+ "' and question_number='"+test[5]+"'";
+      var sql = "UPDATE test_questions SET test_id ='"+test[6]+"',question ='"+test[0]+"',answer_1='"+test[1]+"',answer_2='"+test[2]+"',answer_3='"+test[3]+"',answer_4='"+test[4]+"',question_number='"+test[5]+"',time='"+test[7]+"',score='"+test[8]+"',type='"+test[9]+"',correct_answer_no='"+test[10]+"', image='"+test[11]+"' WHERE test_id='" +test[6]+ "' and question_number='"+test[5]+"'";
       connection.query(sql, function (err, result) {
           if (err) throw err;
           // json = JSON.parse(JSON.stringify(result));

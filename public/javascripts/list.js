@@ -8,7 +8,7 @@ window.onload = (event) => {
 function doAjax(testSzoveg) {
   alldel();
     testSzoveg = document.getElementById("tippem").value;
-    $.ajax({
+    return $.ajax({
         type: "POST",
         url: 'list',
         data: {"asd": testSzoveg},
@@ -42,8 +42,27 @@ function doAjax(testSzoveg) {
       });
   }
 
+
+// felugro valasztas
+  $("#BT5").click(function(e) {
+    $("#popUpDiv").show();
+});
+
+$("#popupSelect").change(function(e) {
+  console.log(($("#popupSelect").val()));
+  document.getElementById("type").value = ($("#popupSelect").val());
+    $("#baseDiv").html($("#popupSelect").val() + ' clicked. Click again to change.');
+    $("#popUpDiv").hide();
+});
+
+//hozza ad
   function doadd() {
     add("Új kérdés");
+    rest();
+    elem = bar-1;
+    dosave();
+    --elem;
+    dofunc(elem);
   }
 
   function dodel(){
@@ -93,6 +112,11 @@ function dosave (){
   tomb [7] = document.getElementById("timeset").value;
   tomb [8] = document.getElementById("points").value;
   tomb [9] = document.getElementById("type").value;
+  if (document.getElementById("kepurl").value != "URL"){
+    tomb [11] = document.getElementById("kepurl").value;
+  }else{
+    tomb [11] = "";
+  }
 
   //valaszment
   var fuz = 0;
@@ -111,7 +135,11 @@ function dosave (){
     };
     tomb[10] = fuz;
   }else{
-    tomb[10] = document.getElementById("megold").value;
+    if (document.getElementById("megold").value =="") {
+      tomb[10] = 0;
+    } else {
+      tomb[10] = document.getElementById("megold").value;
+    }
   }
   
 
@@ -126,11 +154,49 @@ function dosave (){
           // $("#tablak").text(response[0].kerdes); 
           // data=response;
           // $("#tabla_szam").text(response);
-          doAjax();
+          doAjax().then(function() {
+            dofunc(elem);
+          });
       },
       dataType: "json"
     });
 }
+
+$("#dnd").click(function(e) {
+  $("#fileUploadField").trigger('click');
+});
+
+$("#fileUploadField").on('change', function () {
+  var formdata = new FormData($('#uploadForm')[0]);
+  formdata.append('tippem', $("#tippem").val());
+  formdata.append('elem', elem+1);
+
+  $.ajax({
+    url:'/upload',
+    type: 'POST',
+    contentType: false,
+    processData: false,
+    cache: false,
+    data: formdata,
+    success: function(res){
+        alert(res);
+        doAjax().then(function() {
+          dofunc(elem);
+        });
+    },
+    error: function(){
+        alert('Error: In sending the request!');
+    }
+  })
+  //dofunc(elem);
+  //$("#uploadForm").submit();
+})
+
+$("#kepurl").click(function() {
+  if ($("#kepurl").val()=="URL"){
+    document.getElementById("kepurl").value="";
+  }
+});
 
 //kepment
 function preventszar(ev) {
@@ -146,6 +212,7 @@ function dropped(ev) {
   formdata.append('tippem', $("#tippem").val());
   formdata.append('elem', elem+1);
 
+  //useless?!
   for (var pair of formdata.entries()) {
     console.log(pair[0]+ ', ' + pair[1]); 
   }
@@ -159,8 +226,9 @@ function dropped(ev) {
     data: formdata,
     success: function(res){
         alert(res);
-        doAjax();
-        // dofunc(elem);                              //TODO!!!!
+        doAjax().then(function() {
+          dofunc(elem);
+        });
     },
     error: function(){
         alert('Error: In sending the request!');
@@ -180,7 +248,9 @@ function dotrol() {
     url: 'delet',
     data:  {"del": JSON.stringify(tomb)},
     success: function (response, error) {
-        doAjax();
+      doAjax().then(function() {
+        dofunc(elem-1);
+      });
     },
     dataType: "json"
   });
@@ -215,27 +285,32 @@ setInputFilter(document.getElementById("megold"), function(value) {
 });
 
 
+function rest(){
+  document.getElementById('elem').value = "";
+  document.getElementById('BT1').value = "";
+  document.getElementById('BT2').value = "";
+  document.getElementById('BT3').value = "";
+  document.getElementById('BT4').value = "";
+  document.getElementById('megold').value = "";
+  document.getElementById('box1').checked = false;
+  document.getElementById('box2').checked = false;
+  document.getElementById('box3').checked = false;
+  document.getElementById('box4').checked = false;
+  document.getElementById("r1").checked = false;
+  document.getElementById("r2").checked = false;
+  document.getElementById("r3").checked = false;
+  document.getElementById("r4").checked = false;
+  document.getElementById('kepurl').value = "URL";
+}
+
+
 function dofunc(szam){
-    console.log(szam);
     document.getElementById("BT1").style.display = "";
     document.getElementById("BT2").style.display = "";
     document.getElementById("BT3").style.display = "";
     document.getElementById("BT4").style.display = "";
   if(szam>=data[0].idtest){
-      document.getElementById('elem').value = "";
-      document.getElementById('BT1').value = "";
-      document.getElementById('BT2').value = "";
-      document.getElementById('BT3').value = "";
-      document.getElementById('BT4').value = "";
-      document.getElementById('megold').value = "";
-      document.getElementById('box1').checked = false;
-      document.getElementById('box2').checked = false;
-      document.getElementById('box3').checked = false;
-      document.getElementById('box4').checked = false;
-      document.getElementById("r1").checked = false;
-      document.getElementById("r2").checked = false;
-      document.getElementById("r3").checked = false;
-      document.getElementById("r4").checked = false;
+      rest();
   }else{
       document.getElementById('elem').value = data[szam].question;
       document.getElementById('BT1').value = data[szam].answer_1;
@@ -253,8 +328,7 @@ function dofunc(szam){
 
       // if () for correct answer
       switch(data[szam].type) {
-        case 1:
-            console.log("Tipp mix");
+        case 1: //tippmix
             document.getElementById("megold").style.display = "";
             document.getElementById("r1").style.display = "none";
             document.getElementById("r2").style.display = "none";
@@ -308,7 +382,7 @@ function dofunc(szam){
                 break;
            }
           break;
-          case 5:
+          case 5: //tobb lehetoseg
             document.getElementById("megold").style.display = "none";
             document.getElementById("r1").style.display = "none";
             document.getElementById("r2").style.display = "none";
@@ -334,9 +408,11 @@ function dofunc(szam){
     }
 
   if (data[szam].image==null || data[szam].image==""){
-      document.getElementById('dnd').innerHTML = "Huzd ide";
+      document.getElementById('dnd').innerHTML = "Huzd ide vagy kattints a tallozásért";
+      document.getElementById('kepurl').value = "URL";
     }else{
-      document.getElementById('dnd').innerHTML = "<img style='height: 100%; width: 100%; object-fit: contain' src='" + data[szam].image + "'/>";
+      document.getElementById('dnd').innerHTML = "<img id='kepBox' style='height: 100%; width: 100%; object-fit: contain' src='" + data[szam].image + "'/>";
+      document.getElementById('kepurl').value = data[szam].image;
     }
   }
 }
