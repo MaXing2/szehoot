@@ -2,9 +2,13 @@
 <!-- A content -be töltődik be minden oldal -->
 <div id="content" name="content"> 
    <!-- Amennyiben a gyökérre (/) érkezik egy get kérés, úgy a server postban elküldi az aktuális munkamenet állapotát.
-   Bejelentkezett állapotban a home.ejs töltődik be, ellenkező esetben a login.ejs a belépéshez. -->
+   Bejelentkezett állapotban a home.ejs töltődik be, ellenkező esetben mindig a login.ejs kivéve a signup.ejs -re hivatkozás esetén -->
       <% if (!loggedIn) { %>
-      <%- include('login'); -%>
+         <% if (page == 'signup') { %>
+            <%- include('signup'); -%>
+         <%  } else {%>
+            <%- include('login'); -%>
+         <% } %>
       <%  } else {%>
       <%- include(page); -%> 
       <% } %>

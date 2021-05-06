@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+		<script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="../stylesheets/bootstrap/bootstrap.min.css">
+		<link rel="stylesheet" href="../stylesheets/main_styles.css">
+	</head>
+	<body>	
+        <input id="mezo" onblur="user_delete('asd')" type='text'/>
+        <script>
+		function user_delete(target)
+		{
+		   $.ajax({url:"ajaxtest", type:"POST", data: ({target: target}), async:true, cache:false, success:function(result)
+		{
+			 $("#mezo").val(result);
+		}});
+
+		};
+    </script>
+	</body>
+</html>

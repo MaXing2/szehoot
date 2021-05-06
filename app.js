@@ -171,7 +171,7 @@ app.post('/main',function (req, res) {
      res.render('home.ejs',{});
     }
    }
-   
+
   if (req.body.page == 'login') {
     var page = req.body.page;
     res.render('login.ejs',{});
@@ -180,6 +180,11 @@ app.post('/main',function (req, res) {
   if (req.body.page == 'test_active') {
     var page = req.body.page;
     res.render('test_active.ejs',{});
+  }
+
+  if (req.body.page == 'signup') {
+    var page = req.body.page;
+    res.render('signup.ejs',{});
   }
 })
 
