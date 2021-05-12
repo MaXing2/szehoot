@@ -161,30 +161,33 @@ app.post('/signup_validator',function (req, res) {
       })
   }
 })
-
-//A main -ra érkező postok alapján tölti be az oldal a megfelelő tartalmat (ejs fájlokat)
+//--------------------------------------MAIN NAVIGÁCIÓ--------------------------------------------
+//A main -ra érkező postok alapján tölti be az oldal a megfelelő tartalmat (ejs fájlokat) ajax segítségével
 //A lényege, hogy a header és a footer így nem kerül mindig betöltésre az oldalon történő navigáció során
 app.post('/main',function (req, res) {
   if (req.body.page == 'home') {
-    if (req.session.loggedIn) {
-     var page = req.body.page;
-     res.render('home.ejs',{});
+    if (req.session.loggedIn) { //Bejelentkezés itt is szükséges
+      var page = req.body.page;
+      res.render('home.ejs',{});//Itt azért nem kerül elküldésre újra a username, mert az már az első get kérés során elment!
     }
-   }
-
+  }
   if (req.body.page == 'login') {
-    var page = req.body.page;
-    res.render('login.ejs',{});
+    if (!req.session.loggedIn) {
+      var page = req.body.page;
+      res.render('login.ejs',{});
+    }
   }
-
   if (req.body.page == 'test_active') {
-    var page = req.body.page;
-    res.render('test_active.ejs',{});
+    if (req.session.loggedIn) {
+      var page = req.body.page;
+      res.render('test_active.ejs',{});
+    }
   }
-
   if (req.body.page == 'signup') {
-    var page = req.body.page;
-    res.render('signup.ejs',{});
+    if (!req.session.loggedIn) {
+      var page = req.body.page;
+      res.render('signup.ejs',{});
+    }
   }
 })
 

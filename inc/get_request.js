@@ -2,7 +2,7 @@ exports.adat = function (app) {
     app.get('/ajaxtest',function (req, res) {
         res.render('ajaxtest.ejs',{});
     })
-    
+     
     
     // Gyökér esetén
     app.get('/',function (req, res) {
@@ -31,7 +31,7 @@ exports.adat = function (app) {
         }
     })
     })
-//-------------------MAIN navigáció-----------------
+//-------------------MAIN navigáció-----------------(Ezek akkor történnek meg, ha linken keresztül hivatkozunk rájuk!)
    //Home esetén
     app.get('/home',function (req, res) {
     if (req.session.loggedIn) { // be van jelentkezve?

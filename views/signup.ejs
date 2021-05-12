@@ -12,6 +12,43 @@
 			</div>
 
 			</div>
+				<div class="form-group mb-3 lastname"> 
+					<label class="form-label" for="lastname"><b>Teljes név:</b></label>
+					<div class="row">
+						<div class="col-2">
+							<select class="form-control" id="inputGroupSelect02">
+								<option value="1" selected>-</option>
+								<option value="2">Dr.</option>
+							</select>
+						</div>
+						<div class="col-5"><input class="form-control" onchange="" type="text" id="lastname" name="lastname"></div>
+						<div class="col-5"><input class="form-control" onchange="" type="text" id="firstname" name="firstname"></div>
+					</div>
+					<div class="valid-feedback">
+					<span id="valid-text"></span>
+					</div>
+					<div class="invalid-feedback">
+					<span id="invalid-text"></span>
+					</div>
+				</div>
+
+				
+				<div class="form-group mb-3 firstname"> 
+					<label class="form-label" for="firstname"><b>Neme:</b></label>
+					<select class="form-control" id="inputGroupSelect02">
+						<option value="" disabled selected>Kérem válasszon!</option>
+						<option value="1">Nő</option>
+						<option value="2">Férfi</option>
+						<option value="3">Egyéni</option>
+					</select>
+					<div class="valid-feedback">
+					<span id="valid-text"></span>
+					</div>
+					<div class="invalid-feedback">
+					<span id="invalid-text"></span>
+					</div>
+				</div>
+
 				<div class="form-group mb-3 username"> 
 					<label class="form-label" for="username"><b>Felhasználónév:</b></label>
 					<input class="form-control" onchange="user_validator()" type="text" id="username" name="username">
