@@ -8,7 +8,10 @@
 	text-align: center;
 	padding-top: 30%;
 	cursor: pointer;
- 	}
+ 	} 
+  #myDIV:active {
+  border: 3px solid grey ;
+  }
   #divsor {
 	border: 1px solid black;
 	margin-bottom: 10px;
@@ -92,8 +95,37 @@
 .buttondel {
   position: fixed;
   margin-top: 10px;
-  margin-left: 540px;
+  margin-left: 600px;
   background-color:darkred;
+  color:white;
+  border: none;
+  cursor: pointer;
+  padding: 10px 22px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.buttonsav {
+  position:absolute;
+  margin-top: 10px;
+  margin-left: 10px;
+  background-color:rgb(0, 155, 100);
+  color:white;
+  border: none;
+  cursor: pointer;
+  padding: 10px 22px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.buttonadd {
+  position:relative;
+  margin-top: -5px;
+  margin-left: 50px;
+  margin-bottom: 10px;
+  background-color: #008CBA;
   color:white;
   border: none;
   cursor: pointer;
