@@ -42,7 +42,7 @@ function doAjax(testSzoveg) {
       });
   }
 
-
+//hozza ad
 // felugro valasztas
   $("#BT5").click(function(e) {
     $("#popUpDiv").show();
@@ -53,9 +53,9 @@ $("#popupSelect").change(function(e) {
   document.getElementById("type").value = ($("#popupSelect").val());
     $("#baseDiv").html($("#popupSelect").val() + ' clicked. Click again to change.');
     $("#popUpDiv").hide();
+    doadd();
 });
 
-//hozza ad
   function doadd() {
     add("Új kérdés");
     rest();
@@ -63,15 +63,9 @@ $("#popupSelect").change(function(e) {
     dosave();
     --elem;
     dofunc(elem);
+    document.getElementById("popupSelect").value = "none";
   }
 
-  function dodel(){
-        var list = document.getElementById("Bar");
-        if (list.hasChildNodes()) {
-          list.removeChild(list.childNodes[bar-1]);
-          --bar;
-        }
-      }
 
   function add(type) {
     //Create item dynamically.   
@@ -240,9 +234,18 @@ function dropped(ev) {
 
 //torol kerdes
 function dotrol() {
+  var txt;
+  //for confirm del
+  if (confirm("Biztosan Törlöd?")) {
+    txt = 1;
+  } else {
+    txt = 0;
+  }
+
+  if (txt == 1){
   var tomb=[];
   tomb[0] =  document.getElementById("tippem").value;
-  tomb[1] = elem+1;
+  tomb[1] = data[elem].question_number;
   $.ajax({
     type: "POST",
     url: 'delet',
@@ -254,7 +257,7 @@ function dotrol() {
     },
     dataType: "json"
   });
-
+  }
 }
 
 

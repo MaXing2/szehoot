@@ -75,6 +75,7 @@
 		<div id="divsor">
 			<input id="cim">
 			<p id="Bar"></p>
+			<button class="buttonadd" id="BT5" >Hozzá ad</button>
 		</div>
 
 		<div id="editor">
@@ -121,12 +122,14 @@
 			<input class="button4" id="BT4">
 			<input class="kozepbox" id="megold">
 			<p></p>
-			<button class="button" id="BT7" onclick="dosave();" >Ment</button>
+			<button class="buttonsav" id="BT7" onclick="dosave();" >Ment</button>
 
 			<button class="buttondel" id="BT8" onclick="dotrol();" >Töröl!!</button>
 
 			<div id="popUpDiv">
 				<select id="popupSelect">
+					<option value="none" selected disabled hidden>
+						Válasz egy lehetőséget
 					<option value="1">Tipp mix</option>
 					<option value="2">Igaz / hamis</option>
 					<option value="3">Felelet választós 3 lehetőség</option>
@@ -139,8 +142,7 @@
 			</div>
 		</div>
 
-		<button class="button" id="BT5" onclick="doadd();" >Hozzá ad</button>
-		<button class="button" id="BT6" onclick="dodel();" >Töröl</button>
+
 
 
 <script src="../javascripts/list.js"></script>
