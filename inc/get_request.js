@@ -40,6 +40,18 @@ exports.adat = function (app) {
         res.redirect('/');
     }
     })
+    //Kategóriák
+    app.get('/test_category',function (req, res) {
+        if (req.session.loggedIn) { // be van jelentkezve?
+            // kategóriák lekérdezése az adatbázisból
+            connection.query("call GetCategorys(?)", [req.session.username], function(err, result, fields) {
+            if (err) throw err;
+            res.render('main.ejs',{page: 'test_category', data: 'alma', loggedIn: true, username: req.session.username});
+            })
+        } else {
+            res.redirect('/');
+        } 
+        })
     //Aktív tesztek esetén
     app.get('/test_active',function (req, res) {
     if (req.session.loggedIn) { // be van jelentkezve?
@@ -48,6 +60,14 @@ exports.adat = function (app) {
         res.redirect('/');
     } 
     })
+    //Teszt bank
+    app.get('/test_bank',function (req, res) {
+        if (req.session.loggedIn) { // be van jelentkezve?
+            res.render('main.ejs',{page: 'test_bank', loggedIn: true, username: req.session.username});
+        } else {
+            res.redirect('/');
+        } 
+        })
     //Login esetén
     app.get('/login',function (req, res) {
         if (req.session.loggedIn) { // be van jelentkezve?
@@ -65,5 +85,7 @@ exports.adat = function (app) {
         res.render('main.ejs', {page: 'signup', loggedIn: false}); //Regisztrációs oldal betöltése
     } 
     })
+    
+
     
 }

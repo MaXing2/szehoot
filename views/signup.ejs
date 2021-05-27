@@ -12,17 +12,17 @@
 			</div>
 
 			</div>
-				<div class="form-group mb-3 lastname"> 
-					<label class="form-label" for="lastname"><b>Teljes név:</b></label>
-					<div class="row">
+				<div class="form-group mb-3 fullname"> 
+					<label class="form-label" for="fullname"><b>Teljes név:</b></label>
+					<div name="fullname" id="fullname" class="row">
 						<div class="col-2">
-							<select class="form-control" id="inputGroupSelect02">
-								<option value="1" selected>-</option>
-								<option value="2">Dr.</option>
+							<select class="form-control" id="title" name="title">
+								<option value="0" selected>-</option>
+								<option value="1">Dr.</option>
 							</select>
 						</div>
-						<div class="col-5"><input class="form-control" onchange="" type="text" id="lastname" name="lastname"></div>
-						<div class="col-5"><input class="form-control" onchange="" type="text" id="firstname" name="firstname"></div>
+						<div class="col-5"><input onblur="name_validator()" class="form-control" onchange="" type="text" id="lastname" name="lastname"></div>
+						<div class="col-5"><input onblur="name_validator()" class="form-control" onchange="" type="text" id="firstname" name="firstname"></div>
 					</div>
 					<div class="valid-feedback">
 					<span id="valid-text"></span>
@@ -33,10 +33,10 @@
 				</div>
 
 				
-				<div class="form-group mb-3 firstname"> 
-					<label class="form-label" for="firstname"><b>Neme:</b></label>
-					<select class="form-control" id="inputGroupSelect02">
-						<option value="" disabled selected>Kérem válasszon!</option>
+				<div class="form-group mb-3 gender"> 
+					<label class="form-label" for="gender"><b>Neme:</b></label>
+					<select onchange="gender_validator()" class="form-control" id="gender" name="gender">
+						<option hidden disabled selected value>Kérem válasszon!</option>
 						<option value="1">Nő</option>
 						<option value="2">Férfi</option>
 						<option value="3">Egyéni</option>
@@ -51,7 +51,7 @@
 
 				<div class="form-group mb-3 username"> 
 					<label class="form-label" for="username"><b>Felhasználónév:</b></label>
-					<input class="form-control" onchange="user_validator()" type="text" id="username" name="username">
+					<input class="form-control" onblur="user_validator()" type="text" id="username" name="username">
 					<div class="valid-feedback">
 					<span id="valid-text"></span>
 					</div>
@@ -60,7 +60,7 @@
 					</div>
 				</div>
 				
-				<div class="form-group mb-3 mt-2 password"> 
+				<div class="form-group mb-3 password"> 
 					<label class="form-label" for="password"><b>Jelszó</b></label>
 					<input class="form-control" onblur="pw_validator()"  type="password" id="password" name="password">
 					<div class="valid-feedback">
@@ -70,7 +70,7 @@
 					<span id="invalid-text"></span>
 					</div>
 				</div>
-				<div class="form-group mb-3 mt-2 passwordc"> 
+				<div class="form-group mb-3 passwordc"> 
 					<label class="form-label" for="passwordc"><b>Jelszó megerősítése</b></label>
 					<input class="form-control" onblur="pw_validator()"  type="password" id="passwordc" name="passwordc">
 					<div class="valid-feedback">
@@ -80,7 +80,7 @@
 					<span id="invalid-text"></span>
 					</div>
 				</div>
-				<div class="form-group mb-3 mt-2 email"> 
+				<div class="form-group mb-3 email"> 
 					<label class="form-label" for="email"><b>E-mail cím</b></label>
 					<input class="form-control" onblur="email_validator()"  type="email" id="email" name="email">
 					<div class="valid-feedback">
@@ -88,6 +88,33 @@
 					</div>
 					<div class="invalid-feedback">
 					<span id="invalid-text"></span>
+					</div>
+				</div>
+
+				  
+				<div class="form-group mb-3 eduid"> 
+					<label class="form-label" for="email"><b>Azonosító (opcionális)</b></label>
+					<img src="images/info_black_24dp.svg" 
+					tabindex="0" id="eduid-info" class="btninfo" role="button" data-bs-toggle="popover" data-bs-trigger="focus" 
+					title="Információ" data-bs-content="Az azonosító megadásával az egyes oktatási intézmények oktatói direkt módon azonosíthatják a hallgatókat. 
+					Ez lehet akár a neptun kód, vagy attól eltérő, az intézmények saját formátumú azonosítója is.">
+			   		</img>
+					<input class="form-control" onblur="email_validator()"  type="text" id="eduid" name="eduid">
+					<div class="valid-feedback">
+					<span id="valid-text"></span>
+					</div>
+					<div class="invalid-feedback">
+					<span id="invalid-text"></span>
+					</div>
+				</div>
+
+				<div class="form-group mb-3 terms">
+					<input class="form-check-input" onclick="terms_validator()" type="checkbox" id="terms" name="terms">
+					<label class="form-check-label" for="terms">
+					  Elfogadom a felhasználói feltételeket.
+					</label>
+						<div class="invalid-feedback">
+						<span id="invalid-text"></span>
 					</div>
 				</div>
 
@@ -105,9 +132,18 @@
 	<% } %>
 -->
 <script>
+
+
+
+
+
 	var user_valid = false
 	var pw_valid = false
+	var name_valid = false
+	var gender_valid = false
 	var email_valid = false
+	var terms_valid = false
+
 
 		function user_validator()
 		{
@@ -147,6 +183,64 @@
 						$('#username').removeClass('is-valid');
 						$('#username').addClass('is-invalid');
 						user_valid = false;
+				//nincs kitöltve a mező
+			}
+		};
+
+		function name_validator()
+		{
+			if  ($( "#lastname" ).val() != "" && $( "#firstname" ).val() != "")  {
+			//név mezők nem üresek
+					$('#fullname').removeClass('is-invalid');
+					$('#fullname').addClass('is-valid');
+					$('#title').addClass('is-valid');
+					$('#lastname').removeClass('is-invalid');
+					$('#lastname').addClass('is-valid');
+					$('#firstname').removeClass('is-invalid');
+					$('#firstname').addClass('is-valid');
+
+					$(".fullname #valid-text").text( "Elfogadva!" );
+					name_valid = true;
+				} else {
+					if ($( "#lastname" ).val() == "") {
+						$('#lastname').addClass('is-invalid'); 
+						$('#lastname').removeClass('is-valid');
+					} else {
+						$('#lastname').addClass('is-valid'); 
+						$('#lastname').removeClass('is-invalid');
+					}
+
+					if ($( "#firstname" ).val() == "") {
+						$('#firstname').addClass('is-invalid'); 
+						$('#firstname').removeClass('is-valid');
+					} else {
+						$('#firstname').addClass('is-valid'); 
+						$('#firstname').removeClass('is-invalid');
+					}
+					//nincs kitöltve a mező
+					$(".fullname #invalid-text").text( "Mindkét mező kitöltése kötelező!" );
+					$('#fullname').removeClass('is-valid');
+					$('#fullname').addClass('is-invalid');
+					name_valid = false;
+				}	
+		};
+
+		function gender_validator()
+		{
+			if ( $( "#gender" ).val() != "" && $( "#gender" ).val() != null) {
+			//gender választó nem üres
+						//nincs kitöltve a mező
+						$(".gender #valid-text").text( "Elfogadva!" );
+						$('#gender').removeClass('is-invalid');
+						$('#gender').addClass('is-valid');
+						gender_valid = true;
+				//nincs kitöltve a mező
+			} else {
+						//nincs kitöltve a mező
+						$(".gender #invalid-text").text( "A mező kitöltése kötelező!" );
+						$('#gender').removeClass('is-valid');
+						$('#gender').addClass('is-invalid');
+						gender_valid = false;
 				//nincs kitöltve a mező
 			}
 		};
@@ -241,14 +335,36 @@
 			}
 		};
 
+		
+		function terms_validator()
+		{
+			if ( $( "#terms" ).is( ":checked" ) ) {
+			//felhasználói feltételek elfogadva
+						$('#terms').removeClass('is-invalid');
+						$('#terms').addClass('is-valid');
+						terms_valid = true;
+				//nincs kitöltve a mező
+			} else {
+						//nincs kitöltve a mező
+						$(".terms #invalid-text").text( "A felhasználói feltételek elfogadása kötelező a továbblépéshez!" );
+						$('#terms').removeClass('is-valid');
+						$('#terms').addClass('is-invalid');
+						terms_valid = false;
+			}
+		};
+
      function logSubmit(event) {
 		 user_validator();
+		 name_validator();
+		 gender_validator();
 		 pw_validator();
 		 email_validator();
+		 terms_validator()
+
 		 console.log(user_valid);
 		 console.log(pw_valid);
 		 console.log(email_valid);
-		 if (user_valid && pw_valid  && email_valid) {
+		 if (user_valid && name_valid && gender_valid && pw_valid  && email_valid && terms_valid) {
 			console.log('Minden ok!');
 			return;
 		 }
@@ -257,5 +373,20 @@
 
 		const form = document.getElementById('regform');
         form.addEventListener('submit', logSubmit);
+
+		
+
+		//popup információs ablak az azonosítónál
+		$(document).ready(function(){
+				var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+				var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+				return new bootstrap.Popover(popoverTriggerEl)
+			})
+				var popover = new bootstrap.Popover(document.querySelector('#eduid-info'), {
+				trigger: 'hover'
+			}) 
+		});
+
+
 
 	</script>

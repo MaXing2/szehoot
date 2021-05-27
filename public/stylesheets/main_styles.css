@@ -6,3 +6,11 @@
     right: 0 !important;
     left: auto !important;
 }
+
+.table {
+    --bs-table-hover-bg: #e7f1ff;
+}
+
+.operations-button > .btn {
+    /* margin: 1px !important; */
+}

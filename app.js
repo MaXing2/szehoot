@@ -12,6 +12,9 @@ var get = require ('./inc/get_request.js');
 //var post = require ('./inc/post_request.js');
 var connection = mysql.createConnection(config.databaseOptions);
 var bcrypt = require('bcrypt');
+//dátum formázás
+var moment = require('moment');
+
 var session = require('express-session');
 const app = express();
 //fileupload
@@ -30,6 +33,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+//dátum formázás
+app.locals.moment = require('moment');
 
 //app.use('/', indexRouter);
 //app.use('/users', usersRouter);
@@ -43,7 +48,110 @@ app.use(session({secret:'Szehoot2021'
 
 
 //------------------------------------------------------GET kérések kezelése-----------------------------------------------------------
-get.adat(app);
+// get.adat(app);
+app.get('/ajaxtest',function (req, res) {
+  res.render('ajaxtest.ejs',{});
+})
+
+
+// Gyökér esetén
+app.get('/',function (req, res) {
+  if (req.session.loggedIn) { // be van jelentkezve? 
+  res.render('main.ejs', {page: 'home', loggedIn: true, username: req.session.username}); // ebben az esetben a main.ejs sablonban a home.ejs nyílik meg
+  } 
+  else
+  res.render('main.ejs', {page: 'login', loggedIn: false}); // ha nincs bejelentkezve, akkor pedig a login.ejs
+})
+
+// Dashboard esetén
+app.get('/dashboard',function (req, res) {
+  if (req.session.loggedIn) { // be van jelentkezve?
+  res.render('dashboard.ejs',{});
+  } 
+  else
+  res.redirect('/');
+})
+
+// Logout esetén
+app.get('/logout', function (req, res) { // logout get kérés esetén a session bontása
+req.session.destroy(function (err) { 
+  if (err) throw err;
+  else {
+  res.redirect('/');
+  }
+})
+})
+//-------------------MAIN navigáció-----------------(Ezek akkor történnek meg, ha linken keresztül hivatkozunk rájuk!)
+//Home esetén
+app.get('/home',function (req, res) {
+if (req.session.loggedIn) { // be van jelentkezve?
+  res.render('main.ejs',{page: 'home', loggedIn: true, username: req.session.username});
+} else {
+  res.redirect('/');
+}
+})
+//Kategóriák
+app.get('/test_category',function (req, res) {
+  if (req.session.loggedIn) { // be van jelentkezve?
+      // kategóriák lekérdezése az adatbázisból
+      connection.query("CALL GetCategorys(?)", [req.session.username], function(err, result, fields) {
+      // connection.query("SELECT * FROM users", function(err, result, fields) {
+
+      if (err) throw err;
+      if (!result[0].length <= 0) {
+        //const resultok = Object.values(JSON.parse(JSON.stringify(result)));
+        console.log(result);
+     console.log("Hossz:" + result[0].length);
+      res.render('main.ejs',{page: 'test_category',data: result, loggedIn: true, username: req.session.username});}
+      })
+  } else {
+      res.redirect('/');
+  } 
+  })
+
+//Aktív tesztek esetén
+app.get('/test_active',function (req, res) {
+if (req.session.loggedIn) { // be van jelentkezve?
+  res.render('main.ejs',{page: 'test_active', loggedIn: true, username: req.session.username});
+} else {
+  res.redirect('/');
+} 
+})
+//Teszt bank
+app.get('/test_bank',function (req, res) {
+  if (req.session.loggedIn) { // be van jelentkezve?
+      // kategóriák lekérdezése az adatbázisból
+      connection.query("CALL GetAllTest(?)", [req.session.username], function(err, result, fields) {
+      // connection.query("SELECT * FROM users", function(err, result, fields) {
+
+      if (err) throw err;
+      if (!result[0].length <= 0) {
+        //const resultok = Object.values(JSON.parse(JSON.stringify(result)));
+        console.log(result);
+     console.log("Hossz:" + result[0].length);
+      res.render('main.ejs',{page: 'test_bank',data: result, loggedIn: true, username: req.session.username});}
+      })
+  } else {
+      res.redirect('/');
+  } 
+  })
+//Login esetén
+app.get('/login',function (req, res) {
+  if (req.session.loggedIn) { // be van jelentkezve?
+      res.render('main.ejs',{page: 'home', loggedIn: true, username: req.session.username});
+  } else {
+      res.render('main.ejs', {page: 'login', loggedIn: false}); //Login betöltése
+  } 
+  })
+//Signup esetén
+app.get('/signup',function (req, res) {
+if (req.session.loggedIn) { // be van jelentkezve?
+  res.render('main.ejs',{page: 'home', loggedIn: true, username: req.session.username});
+} 
+else {
+  res.render('main.ejs', {page: 'signup', loggedIn: false}); //Regisztrációs oldal betöltése
+} 
+})
 
 //-------------------------------------------------------POST kérések kezelése-----------------------------------------------------------
 
@@ -107,13 +215,21 @@ app.post('/', function(req, res) {
       }
   });
 });
+
 // Signup post esetén
 app.post('/signup', function(req, res) {
-  var username = req.body.username; // felhasználónév, jelszó lekérés a postból
+  var username = req.body.username;
   var password = req.body.password;
   var passwordc = req.body.passwordc;
+  var gender = req.body.gender;
+  var firstname = req.body.firstname;
+  var lastname = req.body.lastname;
+  var title = req.body.title;
   var email = req.body.email;
-  if ((password == passwordc) && (password != "") && (passwordc != "") && (email != ""))  { //backend ellenőrzések
+  var eduid = req.body.eduid;
+
+
+  if ((password == passwordc) && (password != "") && (passwordc != "") && (email != ""))  { //backend ellenőrzések (EZT MÉG KI KELL EGÉSZÍTENI!!!)
     connection.query("SELECT * FROM users WHERE username=" + connection.escape(username) + "",
     function(err, result, fields) {
       if (err) throw err;
@@ -128,7 +244,7 @@ app.post('/signup', function(req, res) {
                 bcrypt.hash(password, saltRounds, function(err, hash) {// hashelés
                   password = hash;
                   console.log(password);
-                  connection.query("INSERT INTO users (username, password, email) VALUES (" + connection.escape(username) + ", " + connection.escape(password) + ", " + connection.escape(email) + ")",
+                  connection.query("INSERT INTO users (username, password, email, title, firstname, lastname, gender, eduid) VALUES (" + connection.escape(username) + ", " + connection.escape(password) + ", " + connection.escape(email) + ", " + connection.escape(title) + ", " + connection.escape(firstname) + ", " + connection.escape(lastname) + ", " + connection.escape(gender) + ", " + connection.escape(eduid) + ")",
                   function(err, result, fields) {
                     if (err) throw err;  
                   else res.send("Minden ok!"); //sikeres reg
@@ -164,32 +280,52 @@ app.post('/signup_validator',function (req, res) {
 //--------------------------------------MAIN NAVIGÁCIÓ--------------------------------------------
 //A main -ra érkező postok alapján tölti be az oldal a megfelelő tartalmat (ejs fájlokat) ajax segítségével
 //A lényege, hogy a header és a footer így nem kerül mindig betöltésre az oldalon történő navigáció során
-app.post('/main',function (req, res) {
-  if (req.body.page == 'home') {
-    if (req.session.loggedIn) { //Bejelentkezés itt is szükséges
-      var page = req.body.page;
-      res.render('home.ejs',{});//Itt azért nem kerül elküldésre újra a username, mert az már az első get kérés során elment!
-    }
-  }
-  if (req.body.page == 'login') {
-    if (!req.session.loggedIn) {
-      var page = req.body.page;
-      res.render('login.ejs',{});
-    }
-  }
-  if (req.body.page == 'test_active') {
-    if (req.session.loggedIn) {
-      var page = req.body.page;
-      res.render('test_active.ejs',{});
-    }
-  }
-  if (req.body.page == 'signup') {
-    if (!req.session.loggedIn) {
-      var page = req.body.page;
-      res.render('signup.ejs',{});
-    }
-  }
-})
+//----------------------------EZ AZ EGÉSZ IDEIGLENESEN KIKAPCSOLVA--------------------------------
+// app.post('/main',function (req, res) {
+//   if (req.body.page == 'home') {
+//     if (req.session.loggedIn) { //Bejelentkezés itt is szükséges
+//       var page = req.body.page;
+//       res.render('home.ejs',{});//Itt azért nem kerül elküldésre újra a username, mert az már az első get kérés során elment!
+//     }
+//   }
+//   if (req.body.page == 'login') {
+//     if (!req.session.loggedIn) {
+//       var page = req.body.page;
+//       res.render('login.ejs',{});
+//     }
+//   }
+//   if (req.body.page == 'test_bank') {
+//     if (req.session.loggedIn) {
+//       var page = req.body.page;
+//       res.render('test_bank.ejs',{});
+//     }
+//   }
+//   if (req.body.page == 'test_category') {
+//     if (req.session.loggedIn) {
+//       res.render('test_category.ejs',{});
+
+//       //kategóriák lekérdezése az adatbázisból
+//       connection.query("call GetCategorys(?)", [req.session.username], function(err, result, fields) {
+//         if (err) throw err;
+//         res.render('test_category.ejs',{data: 'alma'});
+//       })
+
+//       //res.render('test_category.ejs',{});
+//     }
+//   }
+//   if (req.body.page == 'test_active') {
+//     if (req.session.loggedIn) {
+//       var page = req.body.page;
+//       res.render('test_active.ejs',{});
+//     }
+//   }
+//   if (req.body.page == 'signup') {
+//     if (!req.session.loggedIn) {
+//       var page = req.body.page;
+//       res.render('signup.ejs',{});
+//     }
+//   }
+// })
 
 //-----------------------------------------------------------editor-----------------------------------------------------------//
 //list post kezelese
