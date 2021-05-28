@@ -333,7 +333,7 @@ app.post('/list', function (req, res) {
   var test = req.body.asd;
   var json;
 
-  var sql = "SELECT COUNT (*) as 'db' FROM test_questions WHERE test_id='"+test+ "'";
+  var sql = "SELECT COUNT (*) as 'db' FROM test_questions WHERE test_id="+connection.escape(test)+ "";
   connection.query(sql, function (err, result) {
       if (err) throw err;
       json = JSON.parse(JSON.stringify(result));
@@ -341,7 +341,7 @@ app.post('/list', function (req, res) {
     if (darab == 0){
       res.json("nincs adat");
     }else{
-      sql = "SELECT * FROM test_questions WHERE test_id='"+test+ "'";
+      sql = "SELECT * FROM test_questions WHERE test_id="+connection.escape(test)+ "";
       connection.query(sql, function (err, result) {
         if (err) throw err;
         json = JSON.parse(JSON.stringify(result));
@@ -376,20 +376,20 @@ app.post('/upload', function(req, res) {
   let tippem = req.body.tippem;
   console.log(elem, tippem);
 
-  var sql = "SELECT COUNT (*) as 'db' FROM test_questions WHERE test_id='" +tippem+ "' and question_number='"+elem+"'";
+  var sql = "SELECT COUNT (*) as 'db' FROM test_questions WHERE test_id=" +connection.escape(tippem)+ " and question_number="+connection.escape(elem)+"";
   connection.query(sql, function (err, result) {
       if (err) throw err;
       json = JSON.parse(JSON.stringify(result));
       var darab = json[0].db;
       console.log(darab);
     if (darab == 0){
-      var sql = "INSERT INTO test_questions (test_id ,question_number,image) VALUES  ('"+tippem+ "','"+elem+ "'','"+sqlimg+ "')";
+      var sql = "INSERT INTO test_questions (test_id ,question_number,image) VALUES  ("+connection.escape(tippem)+ ","+connection.escape(elem)+ ","+connection.escape(sqlimg)+ ")";
       connection.query(sql, function (err, result) {
           if (err) throw err;
       });
     }else{
       //van adat
-      var sql = "UPDATE test_questions SET image='"+sqlimg+"' WHERE test_id='" +tippem+ "' and question_number='"+elem+"'";
+      var sql = "UPDATE test_questions SET image="+connection.escape(sqlimg)+" WHERE test_id=" +connection.escape(tippem)+ " and question_number="+connection.escape(elem)+"";
       connection.query(sql, function (err, result) {
           if (err) throw err;
       });
@@ -411,7 +411,7 @@ app.post('/delet', function (req, res) {
   var test = JSON.parse(req.body.del);
   console.log(test);
 
-  var sql = "DELETE FROM test_questions WHERE test_id='" +test[0]+ "' and question_number='"+test[1]+"'";
+  var sql = "DELETE FROM test_questions WHERE test_id=" +connection.escape(test[0])+ " and question_number="+connection.escape(test[1])+"";
   connection.query(sql, function (err, result) {
       if (err) throw err;
       json = JSON.parse(JSON.stringify(result));
@@ -426,14 +426,14 @@ app.post('/save', function (req, res) {
   var test = JSON.parse(req.body.ment);
   console.log(test);
 
-  var sql = "SELECT COUNT (*) as 'db' FROM test_questions WHERE test_id='" +test[6]+ "' and question_number='"+test[5]+"'";
+  var sql = "SELECT COUNT (*) as 'db' FROM test_questions WHERE test_id=" +connection.escape(test[6])+ " and question_number="+connection.escape(test[5])+"";
   connection.query(sql, function (err, result) {
       if (err) throw err;
       json = JSON.parse(JSON.stringify(result));
       var darab = json[0].db;
     if (darab == 0){
       // nincs adat
-      var sql = "INSERT INTO test_questions (test_id ,question,answer_1 ,answer_2 ,answer_3 ,answer_4 ,question_number, time, score, type, correct_answer_no, image) VALUES  ('"+test[6]+ "','"+ test[0]  + "','"+ test[1]  +  "','"+ test[2]  +  "','"+ test[3]  + "','"+ test[4]  +  "','" +test[5]+  "','"+test[7]+"','"+test[8]+"','"+test[9]+"','"+test[10]+"','"+test[11]+"')";
+      var sql = "INSERT INTO test_questions (test_id ,question,answer_1 ,answer_2 ,answer_3 ,answer_4 ,question_number, time, score, type, correct_answer_no, image) VALUES  ("+connection.escape(test[6])+ ","+ connection.escape(test[0])  + ","+ connection.escape(test[1])  +  ","+ connection.escape(test[2])  +  ","+ connection.escape(test[3])  + ","+ connection.escape(test[4])  +  "," + connection.escape(test[5])+  ","+connection.escape(test[7])+","+connection.escape(test[8])+","+connection.escape(test[9])+","+connection.escape(test[10])+","+connection.escape(test[11])+")";
       connection.query(sql, function (err, result) {
           if (err) throw err;
           json = JSON.parse(JSON.stringify(result));
@@ -441,8 +441,8 @@ app.post('/save', function (req, res) {
       });
     }else{
       //van adat
-      var sql = "UPDATE test_questions SET test_id ='"+test[6]+"',question ='"+test[0]+"',answer_1='"+test[1]+"',answer_2='"+test[2]+"',answer_3='"+test[3]+"',answer_4='"+test[4]+"',question_number='"+test[5]+"',time='"+test[7]+"',score='"+test[8]+"',type='"+test[9]+"',correct_answer_no='"+test[10]+"', image='"+test[11]+"' WHERE test_id='" +test[6]+ "' and question_number='"+test[5]+"'";
-      connection.query(sql, function (err, result) {
+      var sql = "UPDATE test_questions SET test_id ="+connection.escape(test[6])+",question = ?,answer_1="+connection.escape(test[1])+",answer_2="+connection.escape(test[2])+",answer_3="+connection.escape(test[3])+",answer_4="+connection.escape(test[4])+",question_number="+connection.escape(test[5])+",time="+connection.escape(test[7])+",score="+connection.escape(test[8])+",type="+connection.escape(test[9])+",correct_answer_no="+connection.escape(test[10])+", image="+connection.escape(test[11])+" WHERE test_id=" +connection.escape(test[6])+ " and question_number="+connection.escape(test[5])+"";
+      connection.query(sql,[test[0]], function (err, result) {
           if (err) throw err;
           // json = JSON.parse(JSON.stringify(result));
           // res.json(json);

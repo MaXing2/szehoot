@@ -17,7 +17,9 @@ function doAjax(testSzoveg) {
             // $("#tablak").text(response[0].kerdes); 
             data=response;
             $("#tabla_szam").text(data[0].idtest);
+            var counttime = 0;
             for (i = 0; i <data[0].idtest ; i++) {
+              counttime = counttime + data[i].time;
                 switch(data[i].type) {
                     case 1:
                         add("Tipp mix");
@@ -37,10 +39,40 @@ function doAjax(testSzoveg) {
 
                 }
             }
+            alltime(counttime);
         },
         dataType: "json"
       });
   }
+
+
+function alltime(counttime) {
+   //teszt ossszes ideje
+   var minutes = Math.floor(counttime / 60);
+   var seconds = counttime % 60;
+  if(seconds == 0){
+    document.getElementById("CountTime").innerHTML = data[0].idtest + " db kérdés -" + " Kitöltési idő: " + minutes + ":" + seconds + "0" ;
+  }else{
+    if(seconds<10){
+    document.getElementById("CountTime").innerHTML = data[0].idtest + " db kérdés -" + " Kitöltési idő: " + minutes + ":0" + seconds ;
+    }else{
+      document.getElementById("CountTime").innerHTML = data[0].idtest + " db kérdés -" + " Kitöltési idő: " + minutes + ":" + seconds ;
+    }
+  }
+}
+
+//bbcode
+var textarea = document.getElementById("elem");
+sceditor.create(textarea, {
+  format: 'bbcode',
+  plugins: 'undo',
+   toolbar: 'bold,italic,underline|font,size,subscript,superscript|color,emoticon|left,center,right,justify',
+  style: 'minified/themes/content/default.min.css',
+  resizeEnabled: null,
+});
+
+var instance = sceditor.instance(textarea);
+// instance.readOnly(true);
 
 //hozza ad
 // felugro valasztas
@@ -96,7 +128,7 @@ function alldel(){
 function dosave (){
   //console.log(elem+"mentem");
   var tomb =[];
-  tomb [0] = document.getElementById("elem").value;
+  tomb [0] = instance.val();
   tomb [1] = document.getElementById("BT1").value;
   tomb [2] = document.getElementById("BT2").value;
   tomb [3] = document.getElementById("BT3").value;
@@ -289,7 +321,8 @@ setInputFilter(document.getElementById("megold"), function(value) {
 
 
 function rest(){
-  document.getElementById('elem').value = "";
+  //document.getElementById('elem').innerText = "";
+  instance.val("")
   document.getElementById('BT1').value = "";
   document.getElementById('BT2').value = "";
   document.getElementById('BT3').value = "";
@@ -308,6 +341,7 @@ function rest(){
 
 
 function dofunc(szam){
+    rest();
     document.getElementById("BT1").style.display = "";
     document.getElementById("BT2").style.display = "";
     document.getElementById("BT3").style.display = "";
@@ -315,7 +349,9 @@ function dofunc(szam){
   if(szam>=data[0].idtest){
       rest();
   }else{
-      document.getElementById('elem').value = data[szam].question;
+      //document.getElementById('elem').innerText = data[szam].question;
+      instance.val(data[szam].question);
+      // document.getElementById('cim').innerHTML = instance.fromBBCode(data[szam].question, true);
       document.getElementById('BT1').value = data[szam].answer_1;
       document.getElementById('megold').value = data[szam].correct_answer_no;
       document.getElementById('BT2').value = data[szam].answer_2;

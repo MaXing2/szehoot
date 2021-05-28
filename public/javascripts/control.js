@@ -31,6 +31,20 @@ window.onload = (event) => {
     };
   };
 
+
+//bbcode
+var textarea = document.getElementById("elem");
+sceditor.create(textarea, {
+  format: 'bbcode',
+  toolbar: '',
+  style: 'minified/themes/content/default.min.css',
+  resizeEnabled: null,
+});
+
+var instance = sceditor.instance(textarea);
+instance.readOnly(true);
+
+
 //kerdesek
 function sqlm (){
     actual++;
@@ -51,7 +65,7 @@ function hiv (ered) {
         startTimer(idom, display);
         starterbutton();
         document.getElementById('sorszam').innerHTML = ered[0].question_number + "./" + osszvalasz +".kérdés"; 
-        document.getElementById('elem').innerHTML = ered[0].question;
+        instance.val(ered[0].question);
         //picture 
         if (ered[0].image==null || ered[0].image==""){
           document.getElementById("kep").style.display = "none";
@@ -197,7 +211,7 @@ function vezerlo() {
    
   function show(){
      document.getElementById("lehetosegek").style.display = "block";
-     document.getElementById("elem").style.display = "block";
+    //document.getElementById("elem").style.display = "block";
      document.getElementById("kep").style.display = "block";
   }
 

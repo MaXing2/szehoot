@@ -12,6 +12,12 @@
 		<link rel="stylesheet" href="../stylesheets/edit.css">
 		<script src="/socket.io/socket.io.js"></script>
 
+		<!-- bbcode -->
+		<link rel="stylesheet" href="../minified/themes/default.min.css" />
+		<script src="../minified/sceditor.min.js"></script>
+		<script src="../minified/formats/bbcode.js"></script>
+		<script src="../minified/formats/xhtml.js"></script>
+
 	</head>
 	<body>
 
@@ -66,7 +72,7 @@
 				  <option value="5">Több jó válasz</option>
 				</select>
   
-  
+				<div id="CountTime" class="CountTime"></div>
 
 		</div>
 
@@ -102,7 +108,8 @@
 			  <!--<input type="file" name="sampleFile" />-->
 			  <input type='submit' value='Upload!' hidden  />
 		  </form>
-		  <input class="kepurl" id="kepurl" value="URL">     
+		  <input class="kepurl" id="kepurl" value="URL"> 
+		  <!-- bbcode -->    
 			<textarea id=elem cols="5" rows="5"></textarea>
 
 			<p></p>

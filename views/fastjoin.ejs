@@ -10,6 +10,12 @@
 		<link rel="stylesheet" href="../stylesheets/styles.css">
 
 		<script src="/socket.io/socket.io.js"></script>
+
+		<!-- bbcode -->
+		<script src="../minified/sceditor.min.js"></script>
+		<script src="../minified/formats/bbcode.js"></script>
+		<script src="../minified/formats/xhtml.js"></script>
+
 	</head>
 	<body>	
 <% if (access) { %>
@@ -30,7 +36,8 @@
 		
 		<p></p>
 		<div class="kep" id="kep"></div>
-		<div id="elem"></div>
+		<!-- kerdes -->
+		<textarea id=elem></textarea>
 		
 		<div id="lehetosegek">
 		<p></p>
