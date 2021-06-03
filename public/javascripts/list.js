@@ -1,6 +1,7 @@
 var bar=0;
 var data;
 var elem;
+var work = false;
 window.onload = (event) => {
 
 }
@@ -20,24 +21,7 @@ function doAjax(testSzoveg) {
             var counttime = 0;
             for (i = 0; i <data[0].idtest ; i++) {
               counttime = counttime + data[i].time;
-                switch(data[i].type) {
-                    case 1:
-                        add("Tipp mix");
-                      break;
-                      case 2:
-                        add("Igaz / hamis");
-                      break;
-                      case 3:
-                        add("Felelet választós 3 lehetőség");
-                      break;
-                      case 4:
-                        add("Felelet választós 4 lehetőség");
-                      break;
-                      case 5:
-                        add("Több jó válasz");
-                      break;
-
-                }
+              typeselect(i);
             }
             alltime(counttime);
         },
@@ -45,6 +29,26 @@ function doAjax(testSzoveg) {
       });
   }
 
+function typeselect(i){
+  switch(data[i].type) {
+    case 1:
+        add("Tipp mix");
+      break;
+      case 2:
+        add("Igaz / hamis");
+      break;
+      case 3:
+        add("Felelet választós 3 lehetőség");
+      break;
+      case 4:
+        add("Felelet választós 4 lehetőség");
+      break;
+      case 5:
+        add("Több jó válasz");
+      break;
+
+  }
+}
 
 function alltime(counttime) {
    //teszt ossszes ideje
@@ -82,19 +86,23 @@ var instance = sceditor.instance(textarea);
 
 $("#popupSelect").change(function(e) {
   console.log(($("#popupSelect").val()));
-  document.getElementById("type").value = ($("#popupSelect").val());
+  // document.getElementById("type").value = ($("#popupSelect").val());
     $("#baseDiv").html($("#popupSelect").val() + ' clicked. Click again to change.');
     $("#popUpDiv").hide();
-    doadd();
+    doadd(($("#popupSelect").val()));
 });
 
-  function doadd() {
-    add("Új kérdés");
-    rest();
-    elem = bar-1;
+  function doadd(type) {
+    data.push({answer_1:"", answer_2:"", answer_3:"", answer_4:"", correct_answer_no:parseInt(""), image:"", question:"",
+    question_number: (data[data.length - 1].question_number) + 1, score:"100", test_id:(data[data.length - 1].test_id),  time:"10", type:parseInt(type) });
+    console.log("hozza adva");
+    console.log(data);
+    add("uj elem");                
+    // rest();                  //ki kell szervezni ezt kell szerkezteni az uj letrehozashoz
+    // elem = bar-1;
     dosave();
-    --elem;
-    dofunc(elem);
+    // --elem;
+    // dofunc(elem);
     document.getElementById("popupSelect").value = "none";
   }
 
@@ -108,7 +116,13 @@ $("#popupSelect").change(function(e) {
     element.id = "myDIV";
     element.onclick = function() { 
         console.log(element.name);
+        var modified = elem;
         elem=element.name;
+        if (work){
+          qsave (modified);
+        }else{
+          work=true;
+        }
         dofunc(element.name);
     };
 
@@ -125,28 +139,26 @@ function alldel(){
   };
 }
 
-function dosave (){
-  //console.log(elem+"mentem");
-  var tomb =[];
-  tomb [0] = instance.val();
-  tomb [1] = document.getElementById("BT1").value;
-  tomb [2] = document.getElementById("BT2").value;
-  tomb [3] = document.getElementById("BT3").value;
-  tomb [4] = document.getElementById("BT4").value;
-  tomb [5] = elem+1;
-  tomb [6] = document.getElementById("tippem").value;
-  tomb [7] = document.getElementById("timeset").value;
-  tomb [8] = document.getElementById("points").value;
-  tomb [9] = document.getElementById("type").value;
+//save after onclick
+function qsave (modified){
+  data[modified].question = instance.val();
+  data[modified].answer_1 = document.getElementById("BT1").value;
+  data[modified].answer_2 = document.getElementById("BT2").value;
+  data[modified].answer_3 = document.getElementById("BT3").value;
+  data[modified].answer_4 = document.getElementById("BT4").value;
+  // data[modified]. = modified+1;
+  // data[modified]. = document.getElementById("tippem").value;
+  data[modified].time = document.getElementById("timeset").value;
+  data[modified].score = document.getElementById("points").value;
+  data[modified].type = parseInt(document.getElementById("type").value);
   if (document.getElementById("kepurl").value != "URL"){
-    tomb [11] = document.getElementById("kepurl").value;
+    data[modified].image = document.getElementById("kepurl").value;
   }else{
-    tomb [11] = "";
+    data[modified].image = "";
   }
-
   //valaszment
   var fuz = 0;
-  if( tomb [9] != 1 ){
+  if( data[modified].type != 1 ){
     if(document.getElementById("box1").checked || document.getElementById("r1").checked ){
       fuz = fuz + 1;
     };
@@ -159,21 +171,24 @@ function dosave (){
     if(document.getElementById("box4").checked || document.getElementById("r4").checked){
       fuz = fuz * 10 + 4;
     };
-    tomb[10] = fuz;
+    data[modified].correct_answer_no = fuz;
   }else{
     if (document.getElementById("megold").value =="") {
-      tomb[10] = 0;
+      data[modified].correct_answer_no = 0;
     } else {
-      tomb[10] = document.getElementById("megold").value;
+      data[modified].correct_answer_no = document.getElementById("megold").value;
     }
   }
-  
+}
 
-  console.log(JSON.stringify(tomb));
+
+function dosave (){
+  qsave(elem);
+  // console.log(JSON.stringify(data));
   $.ajax({
       type: "POST",
       url: 'save',
-      data:  {"ment": JSON.stringify(tomb)},
+      data:  {"ment": JSON.stringify(data)},
       dataType: "json",
       success: function (response, error) {
           // console.log(response);
@@ -184,7 +199,6 @@ function dosave (){
             dofunc(elem);
           });
       },
-      dataType: "json"
     });
 }
 
@@ -346,9 +360,6 @@ function dofunc(szam){
     document.getElementById("BT2").style.display = "";
     document.getElementById("BT3").style.display = "";
     document.getElementById("BT4").style.display = "";
-  if(szam>=data[0].idtest){
-      rest();
-  }else{
       //document.getElementById('elem').innerText = data[szam].question;
       instance.val(data[szam].question);
       // document.getElementById('cim').innerHTML = instance.fromBBCode(data[szam].question, true);
@@ -453,5 +464,4 @@ function dofunc(szam){
       document.getElementById('dnd').innerHTML = "<img id='kepBox' style='height: 100%; width: 100%; object-fit: contain' src='" + data[szam].image + "'/>";
       document.getElementById('kepurl').value = data[szam].image;
     }
-  }
 }

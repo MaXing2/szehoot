@@ -56,7 +56,8 @@
 .CountTime{
   float:right;
   margin-left: -15px;
-  text-align: center;
+  margin-right: 5px;
+  text-align: right;
   width: 350px;
   height:	20px;
 }
@@ -100,7 +101,7 @@
 }
 
 .buttondel {
-  position: fixed;
+  position: absolute;
   margin-top: 10px;
   margin-left: 600px;
   background-color:darkred;
@@ -115,13 +116,13 @@
 
 .buttonsav {
   position:absolute;
-  margin-top: 10px;
+  /* margin-top: 10px; */
   margin-left: 10px;
   background-color:rgb(0, 155, 100);
   color:white;
   border: none;
   cursor: pointer;
-  padding: 10px 22px;
+  padding: 2px 20px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -203,7 +204,7 @@ input[type=radio] {
     height: 21px;
     outline: none;
     display: inline-block;
-    position:fixed;
+    position:absolute;
     /* left: 40px; */
     vertical-align: center;
     vertical-align: center;
