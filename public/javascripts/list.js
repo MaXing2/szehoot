@@ -78,6 +78,12 @@ sceditor.create(textarea, {
 var instance = sceditor.instance(textarea);
 // instance.readOnly(true);
 
+//auto change type layout
+$("#type").change(function(e) {
+  qsave(elem);
+  dofunc(elem);
+});
+
 //hozza ad
 // felugro valasztas
   $("#BT5").click(function(e) {
