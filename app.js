@@ -461,33 +461,38 @@ app.post('/delet', function (req, res) {
 
 //save post kezelese
 app.post('/save', function (req, res) {
-  var test = JSON.parse(req.body.ment);
-  console.log(test);
+  var data = JSON.parse(req.body.ment);
+  // console.log(data);
 
-  var sql = "SELECT COUNT (*) as 'db' FROM test_questions WHERE test_id=" +connection.escape(test[6])+ " and question_number="+connection.escape(test[5])+"";
+data.forEach(element => {
+// console.log(element.test_id + "  --  " + element.question_number );
+  var sql = "SELECT COUNT (*) as 'db' FROM test_questions WHERE test_id=" +connection.escape(element.test_id)+ " and question_number="+connection.escape(element.question_number)+"";
   connection.query(sql, function (err, result) {
       if (err) throw err;
       json = JSON.parse(JSON.stringify(result));
       var darab = json[0].db;
+      // console.log(darab);
     if (darab == 0){
       // nincs adat
-      var sql = "INSERT INTO test_questions (test_id ,question,answer_1 ,answer_2 ,answer_3 ,answer_4 ,question_number, time, score, type, correct_answer_no, image) VALUES  ("+connection.escape(test[6])+ ","+ connection.escape(test[0])  + ","+ connection.escape(test[1])  +  ","+ connection.escape(test[2])  +  ","+ connection.escape(test[3])  + ","+ connection.escape(test[4])  +  "," + connection.escape(test[5])+  ","+connection.escape(test[7])+","+connection.escape(test[8])+","+connection.escape(test[9])+","+connection.escape(test[10])+","+connection.escape(test[11])+")";
+      var sql = "INSERT INTO test_questions (test_id ,question,answer_1 ,answer_2 ,answer_3 ,answer_4 ,question_number, time, score, type, correct_answer_no, image) VALUES  ("+connection.escape(element.test_id)+ ","+ connection.escape(element.question)  + ","+ connection.escape(element.answer_1)  +  ","+ connection.escape(element.answer_2)  +  ","+ connection.escape(element.answer_3)  + ","+ connection.escape(element.answer_4)  +  "," + connection.escape(element.question_number)+  ","+connection.escape(element.time)+","+connection.escape(element.score)+","+connection.escape(element.type)+","+connection.escape(element.correct_answer_no)+","+connection.escape(element.image)+")";
       connection.query(sql, function (err, result) {
           if (err) throw err;
           json = JSON.parse(JSON.stringify(result));
-          res.json(json);
+          // res.json(json);
       });
     }else{
       //van adat
-      var sql = "UPDATE test_questions SET test_id ="+connection.escape(test[6])+",question = ?,answer_1="+connection.escape(test[1])+",answer_2="+connection.escape(test[2])+",answer_3="+connection.escape(test[3])+",answer_4="+connection.escape(test[4])+",question_number="+connection.escape(test[5])+",time="+connection.escape(test[7])+",score="+connection.escape(test[8])+",type="+connection.escape(test[9])+",correct_answer_no="+connection.escape(test[10])+", image="+connection.escape(test[11])+" WHERE test_id=" +connection.escape(test[6])+ " and question_number="+connection.escape(test[5])+"";
-      connection.query(sql,[test[0]], function (err, result) {
+      var sql = "UPDATE test_questions SET test_id ="+connection.escape(element.test_id)+",question = ?,answer_1="+connection.escape(element.answer_1)+",answer_2="+connection.escape(element.answer_2)+",answer_3="+connection.escape(element.answer_3)+",answer_4="+connection.escape(element.answer_4)+",question_number="+connection.escape(element.question_number)+",time="+connection.escape(element.time)+",score="+connection.escape(element.score)+",type="+connection.escape(element.type)+",correct_answer_no="+connection.escape(element.correct_answer_no)+", image="+connection.escape(element.image)+" WHERE test_id=" +connection.escape(element.test_id)+ " and question_number="+connection.escape(element.question_number)+"";
+      connection.query(sql,[element.question], function (err, result) {
           if (err) throw err;
           // json = JSON.parse(JSON.stringify(result));
           // res.json(json);
       });
-    res.json(darab);
-};
+    // res.json(darab);
+  };
+  });
 });
+res.send("OK");
 });
 //-----------------------------------------------------------editor_end-----------------------------------------------------------//
 
