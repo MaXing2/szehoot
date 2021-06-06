@@ -1,6 +1,6 @@
 
 
-    <link id="bsdp-css" href="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+<link id="bsdp-css" href="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css" rel="stylesheet">
 <link id="bsdp-css" href="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css" rel="stylesheet">
 <script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
 <!-- <script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.hu.min.js" charset="UTF-8"></script> -->
@@ -34,7 +34,7 @@ data-page-number="2">
   <tbody>
   <% for(var i=0; i<data[0].length; i++) {%>
           <tr data-bs-toggle="collapse" data-bs-target="#hiddenRow<%= i %>" aria-expanded="false" aria-controls="#hiddenRow<%= i %>" id="Row<%= i %>" class="">
-              <td><%= data[0][i].testid %></td>
+              <td><%= data[0][i].test_id %></td>
               <td><%= data[0][i].test_name %></td>
               <td><%= data[0][i].question_num %></td>
               <td><%= data[0][i].cat_name %></td>
@@ -43,15 +43,14 @@ data-page-number="2">
           </tr>
 
           <tr id="hiddenRow<%= i %>">
-                <td style="display: none"><%= data[0][i].testid %></td>
+                <td style="display: none"><%= data[0][i].test_id %></td>
                 <td style="display: none"><%= data[0][i].test_name %></td>
                 <td style="display: none"><%= data[0][i].question_num %></td>
                 <td style="display: none"><%= data[0][i].cat_name %></td>
                 <td style="display: none"><%= moment(data[0][i].created_date).format("YYYY.MM.DD HH:mm");  %></td>
                 <td class="hiddenRow p-0 w-100" colspan="6">
                 <div class="collapse" id="hiddenRow<%= i %>">
-                  <div class="card card-body">
-                    
+                  <div class="card card-body">                
                     <div class="row">
                       <div class="col-sm-4">
                         <div class="card h-100">
@@ -65,13 +64,11 @@ data-page-number="2">
                         <div class="card h-100">
                           <div class="card-body">
                             <h5 class="card-title">Statisztika</h5>
-
                             <dl class="row">
                               <dt class="col-sm-8">Kitöltések száma</dt>
                               <dd class="col-sm-4">0</dd>
                               <dt class="col-sm-8">Futtatások száma</dt>
                               <dd class="col-sm-4">0</dd>
-
                             </dl>
                           </div>
                         </div>
@@ -83,7 +80,7 @@ data-page-number="2">
                               tabindex="0" class="btninfo" role="button" data-bs-toggle="popover" data-bs-trigger="hover focus" 
                               title="Információ" data-bs-content="A műveletek segítségével elindíthatod a tesztet egy tetszőleges módban, szerkesztheted vagy törölheted azt.">
                               </img></h5>
-                              <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-primary btn-sm">Indítás</a>
+                              <a href="#" data-bs-toggle="modal" OnClick="LoadDataToModal(<%= data[0][i].test_id %>)" data-bs-target="#runTestModal" class="btn btn-primary btn-sm">Indítás</a>
                               <a href="#" class="btn btn-secondary btn-sm">Módosítás</a>
                               <a href="#" class="btn btn-danger btn-sm">Törlés</a><br>
                               <a href="#" class="btn btn-outline-warning btn-sm mt-2">Exportálás</a>
@@ -101,27 +98,27 @@ data-page-number="2">
 </table>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="runTestModal" tabindex="-1" aria-labelledby="runTestModal" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Indítási beállítások</h5>
+        <h5 class="modal-title" id="runTestModal">Indítási beállítások</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+      <section class='form'>
+      <form action="runTest" class="needs-validation" method="post" id="runTest" novalidate>
       <div class="modal-body">
        
         
-        <section class='form'>
-          <form action="signup" class="needs-validation" method="post" id="regform" novalidate>
-            <fieldset>
-            <div class="container signup">
-    
 
+            <fieldset>
+            <div class="container">
+                <input class="form-control" type="text" id="test_id" name="test_id" value="">
                 <div class="form-group mb-3 mode_select"> 
-                  <label class="form-label" for="fullname"><b>Futtatási mód:</b></label>
+                  <label class="form-label" for="process_mode"><b>Futtatási mód:</b></label>
                   <div class="row">
                     <div class="col-6">
-                      <select class="form-control" id="process_mode" name="process_mode">
+                      <select class="form-control" id="mode" name="mode">
                         <option value="0" selected>Gyakorló mód</option>
                         <option value="1">Tantermi mód</option>
                         <option value="2">Vizsga mód</option>
@@ -136,12 +133,21 @@ data-page-number="2">
                   <span id="invalid-text"></span>
                   </div>
                 </div>
-        
-
 
                 <div class="form-group mb-3 "> 
-                  <label class="form-label" for="username"><b>Lejárati dátum:</b></label>
-                  <input class="form-control"  type="datetime-local" id="username" name="username">
+                  <label class="form-label" for="start_date"><b>Indítási dátum:</b></label>
+                  <input class="form-control"  type="datetime-local" id="start_date" name="start_date" min="<%= moment().format("YYYY-MM-DD[T]HH:mm");  %>" value="<%= moment().format("YYYY-MM-DD[T]HH:mm");  %>">
+                  <div class="valid-feedback">
+                  <span id="valid-text"></span>
+                  </div>
+                  <div class="invalid-feedback">
+                  <span id="invalid-text"></span>
+                  </div>
+                </div>
+    
+                <div class="form-group mb-3 "> 
+                  <label class="form-label" for="end_date"><b>Lejárati dátum:</b></label>
+                  <input class="form-control"  type="datetime-local" id="end_date" name="end_date" min="<%= moment().format("YYYY-MM-DD[T]HH:mm");  %>">
                   <div class="valid-feedback">
                   <span id="valid-text"></span>
                   </div>
@@ -152,17 +158,13 @@ data-page-number="2">
 
             </div>
             </fieldset>
-          </form>
-        </section>
-
-
-
-
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Kilépés</button>
-        <button type="button" class="btn btn-primary">Indítás</button>
+        <button type="submit" class="btn btn-primary">Indítás</button>
       </div>
+    </form>
+  </section>
     </div>
   </div>
 </div>
@@ -230,6 +232,11 @@ $(document).ready(function() {
 
 
 });
+
+function LoadDataToModal(target) {
+$("#test_id").val(target);
+alert(target);
+}
 
 
   // function HideRow(target) {

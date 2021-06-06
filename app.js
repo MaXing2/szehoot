@@ -60,7 +60,7 @@ app.get('/',function (req, res) {
   res.render('main.ejs', {page: 'home', loggedIn: true, username: req.session.username}); // ebben az esetben a main.ejs sablonban a home.ejs nyílik meg
   } 
   else
-  res.render('main.ejs', {page: 'login', loggedIn: false}); // ha nincs bejelentkezve, akkor pedig a login.ejs
+  res.render('main.ejs', {page: 'login', loggedIn: false, error: req.query.error}); // ha nincs bejelentkezve, akkor pedig a login.ejs
 })
 
 // Dashboard esetén
@@ -85,7 +85,7 @@ req.session.destroy(function (err) {
 //Home esetén
 app.get('/home',function (req, res) {
 if (req.session.loggedIn) { // be van jelentkezve?
-  res.render('main.ejs',{page: 'home', loggedIn: true, username: req.session.username});
+  res.render('main.ejs',{page: 'home', loggedIn: true, username: req.session.username, title: 'Kezdőlap'});
 } else {
   res.redirect('/');
 }
@@ -102,7 +102,7 @@ app.get('/test_category',function (req, res) {
         //const resultok = Object.values(JSON.parse(JSON.stringify(result)));
         console.log(result);
      console.log("Hossz:" + result[0].length);
-      res.render('main.ejs',{page: 'test_category',data: result, loggedIn: true, username: req.session.username});}
+      res.render('main.ejs',{page: 'test_category',data: result, loggedIn: true, username: req.session.username, title: 'Kategóriák'});}
       })
   } else {
       res.redirect('/');
@@ -112,7 +112,7 @@ app.get('/test_category',function (req, res) {
 //Aktív tesztek esetén
 app.get('/test_active',function (req, res) {
 if (req.session.loggedIn) { // be van jelentkezve?
-  res.render('main.ejs',{page: 'test_active', loggedIn: true, username: req.session.username});
+  res.render('main.ejs',{page: 'test_active', loggedIn: true, username: req.session.username, title: 'Aktív tesztek'});
 } else {
   res.redirect('/');
 } 
@@ -129,7 +129,7 @@ app.get('/test_bank',function (req, res) {
         //const resultok = Object.values(JSON.parse(JSON.stringify(result)));
         console.log(result);
      console.log("Hossz:" + result[0].length);
-      res.render('main.ejs',{page: 'test_bank',data: result, loggedIn: true, username: req.session.username});}
+      res.render('main.ejs',{page: 'test_bank',data: result, loggedIn: true, username: req.session.username, title: 'Tesztbank'});}
       })
   } else {
       res.redirect('/');
@@ -140,7 +140,7 @@ app.get('/login',function (req, res) {
   if (req.session.loggedIn) { // be van jelentkezve?
       res.render('main.ejs',{page: 'home', loggedIn: true, username: req.session.username});
   } else {
-      res.render('main.ejs', {page: 'login', loggedIn: false}); //Login betöltése
+      res.render('main.ejs', {page: 'login', loggedIn: false, title: 'Bejelentkezés'}); //Login betöltése
   } 
   })
 //Signup esetén
@@ -149,7 +149,7 @@ if (req.session.loggedIn) { // be van jelentkezve?
   res.render('main.ejs',{page: 'home', loggedIn: true, username: req.session.username});
 } 
 else {
-  res.render('main.ejs', {page: 'signup', loggedIn: false}); //Regisztrációs oldal betöltése
+  res.render('main.ejs', {page: 'signup', loggedIn: false, title: 'Regisztráció'}); //Regisztrációs oldal betöltése
 } 
 })
 
@@ -161,7 +161,7 @@ app.post('/fastjoin',function (req, res) {
     connection.query("SELECT * FROM test_process_list WHERE pincode=" + connection.escape(pincode) + "",
       function(err, result, fields) {
         if (err) throw err;
-        if (result.length > 0) {
+        if (!result.length <= 0) {
           if (result[0].mode == 0 || result[0].mode == 1) {//ha a pinhez tartozó tesztfolyamat módja 0 (gyakorlási) vagy 1 (tantermi)
             res.render('fastjoin.ejs',{'access': true, 'pincode': pincode}); //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot       
           } else {
@@ -173,6 +173,44 @@ app.post('/fastjoin',function (req, res) {
           return;
         }
       })
+})
+
+
+//A kiválasztott teszt indítása
+app.post('/runTest',function (req, res) {
+  var username = req.session.username;
+  var test_id = req.body.test_id;
+  var mode = req.body.mode;
+  var start_date = req.body.start_date;
+  var end_date = req.body.end_date;
+  console.log("Username: "+username+" Test_ID: "+test_id);
+  if (req.session.loggedIn) { // be van jelentkezve?
+    // megvizsgáljuk, hogy egyáltalán tartozik -e ilyen azonosítószámú teszt a felhasználóhoz a GetTestByUsernTest eljárással
+    connection.query("CALL GetTestByIDnUser(?,?)", [username, test_id], function(err, result, fields) {
+      if (err) throw err;
+      if (!result[0].length <= 0) {
+        //létezik a teszt és a felhasználóhoz tartozik
+        //kérünk egy pinkódot, ami még nem létezik
+        connection.query("CALL GetRandomNonExistentPincode", function(err, result, fields) {
+            if (err) throw err;
+            var pincode = result[0][0].Pincode;
+              //létrehozzuk a folyamatot
+            connection.query("CALL CreateProcess(?,?,?,?,?)",[test_id, mode, pincode, start_date, end_date], function(err, result, fields) {
+              if (err) throw err;
+
+
+            })
+            //elküldjük a pinkódot
+            console.log(result);
+            res.redirect('/?pincode='+result[0][0].Pincode); //
+        })
+      } else {
+        //a teszt vagy nem létezik vagy nem az adott felhasználóhoz tartozik
+      }
+  })
+  } else {
+    //nincs bejelentkezve az illető
+  }
 })
 
 // Gyökérre való post esetén (bejelentkezés)
@@ -423,38 +461,33 @@ app.post('/delet', function (req, res) {
 
 //save post kezelese
 app.post('/save', function (req, res) {
-  var data = JSON.parse(req.body.ment);
-  // console.log(data);
+  var test = JSON.parse(req.body.ment);
+  console.log(test);
 
-data.forEach(element => {
-// console.log(element.test_id + "  --  " + element.question_number );
-  var sql = "SELECT COUNT (*) as 'db' FROM test_questions WHERE test_id=" +connection.escape(element.test_id)+ " and question_number="+connection.escape(element.question_number)+"";
+  var sql = "SELECT COUNT (*) as 'db' FROM test_questions WHERE test_id=" +connection.escape(test[6])+ " and question_number="+connection.escape(test[5])+"";
   connection.query(sql, function (err, result) {
       if (err) throw err;
       json = JSON.parse(JSON.stringify(result));
       var darab = json[0].db;
-      // console.log(darab);
     if (darab == 0){
       // nincs adat
-      var sql = "INSERT INTO test_questions (test_id ,question,answer_1 ,answer_2 ,answer_3 ,answer_4 ,question_number, time, score, type, correct_answer_no, image) VALUES  ("+connection.escape(element.test_id)+ ","+ connection.escape(element.question)  + ","+ connection.escape(element.answer_1)  +  ","+ connection.escape(element.answer_2)  +  ","+ connection.escape(element.answer_3)  + ","+ connection.escape(element.answer_4)  +  "," + connection.escape(element.question_number)+  ","+connection.escape(element.time)+","+connection.escape(element.score)+","+connection.escape(element.type)+","+connection.escape(element.correct_answer_no)+","+connection.escape(element.image)+")";
+      var sql = "INSERT INTO test_questions (test_id ,question,answer_1 ,answer_2 ,answer_3 ,answer_4 ,question_number, time, score, type, correct_answer_no, image) VALUES  ("+connection.escape(test[6])+ ","+ connection.escape(test[0])  + ","+ connection.escape(test[1])  +  ","+ connection.escape(test[2])  +  ","+ connection.escape(test[3])  + ","+ connection.escape(test[4])  +  "," + connection.escape(test[5])+  ","+connection.escape(test[7])+","+connection.escape(test[8])+","+connection.escape(test[9])+","+connection.escape(test[10])+","+connection.escape(test[11])+")";
       connection.query(sql, function (err, result) {
           if (err) throw err;
           json = JSON.parse(JSON.stringify(result));
-          // res.json(json);
+          res.json(json);
       });
     }else{
       //van adat
-      var sql = "UPDATE test_questions SET test_id ="+connection.escape(element.test_id)+",question = ?,answer_1="+connection.escape(element.answer_1)+",answer_2="+connection.escape(element.answer_2)+",answer_3="+connection.escape(element.answer_3)+",answer_4="+connection.escape(element.answer_4)+",question_number="+connection.escape(element.question_number)+",time="+connection.escape(element.time)+",score="+connection.escape(element.score)+",type="+connection.escape(element.type)+",correct_answer_no="+connection.escape(element.correct_answer_no)+", image="+connection.escape(element.image)+" WHERE test_id=" +connection.escape(element.test_id)+ " and question_number="+connection.escape(element.question_number)+"";
-      connection.query(sql,[element.question], function (err, result) {
+      var sql = "UPDATE test_questions SET test_id ="+connection.escape(test[6])+",question = ?,answer_1="+connection.escape(test[1])+",answer_2="+connection.escape(test[2])+",answer_3="+connection.escape(test[3])+",answer_4="+connection.escape(test[4])+",question_number="+connection.escape(test[5])+",time="+connection.escape(test[7])+",score="+connection.escape(test[8])+",type="+connection.escape(test[9])+",correct_answer_no="+connection.escape(test[10])+", image="+connection.escape(test[11])+" WHERE test_id=" +connection.escape(test[6])+ " and question_number="+connection.escape(test[5])+"";
+      connection.query(sql,[test[0]], function (err, result) {
           if (err) throw err;
           // json = JSON.parse(JSON.stringify(result));
           // res.json(json);
       });
-    // res.json(darab);
-  };
-  });
+    res.json(darab);
+};
 });
-res.send("OK");
 });
 //-----------------------------------------------------------editor_end-----------------------------------------------------------//
 
