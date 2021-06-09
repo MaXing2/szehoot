@@ -8,18 +8,44 @@
 <style>
   .card-body > .btn {
 margin-top: 2px;
+  }
+
+.process-table tbody tr:hover td, .table-hover tbody tr:hover th {
+background-color: beige !important;
 }
 
+.table-hover:hover {
+  background-color:rgb(231, 241, 255) !important;
+}
+  
+
+
 </style>
+<% if (typeof pincode !== 'undefined') { %>
+	<div class="alert alert-success d-flex alert-dismissible" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+		<div class="float-end">
+      A folyamat sikeresen létrehozva, a csatlakozáshoz szükséges pinkód: <strong id="pincode_cb"><%= pincode %></strong> 
+      <a class="clipboard" href="#" OnClick="CopyToTheClipboard()">
+        <span class="iconify" data-icon="clarity:copy-to-clipboard-line" data-inline="false" title="Pinkód másolása vágólapra"></span>
+      </a>
+		</div>
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	  </div>
+<% } %>
 
 
 <h1>Tesztbank</h1>
+
+
+
+
 <table     
 id="table"
 data-toggle="table"
 data-mobile-responsive="true"
 data-search="true"
-data-pagination="true"
+data-pagination="true" 
 data-page-number="2">
   <thead>
     <tr>
@@ -32,22 +58,22 @@ data-page-number="2">
     </tr>
   </thead>
   <tbody>
-  <% for(var i=0; i<data[0].length; i++) {%>
+  <% for(var i=0; i<test_data[0].length; i++) {%>
           <tr data-bs-toggle="collapse" data-bs-target="#hiddenRow<%= i %>" aria-expanded="false" aria-controls="#hiddenRow<%= i %>" id="Row<%= i %>" class="">
-              <td><%= data[0][i].test_id %></td>
-              <td><%= data[0][i].test_name %></td>
-              <td><%= data[0][i].question_num %></td>
-              <td><%= data[0][i].cat_name %></td>
-              <td><%= moment(data[0][i].created_date).format("YYYY.MM.DD HH:mm");  %></td>
-              <td><%= moment(data[0][i].modified_date).format("YYYY.MM.DD HH:mm");  %></td>
+              <td><%= test_data[0][i].test_id %></td>
+              <td><%= test_data[0][i].test_name %></td>
+              <td><%= test_data[0][i].question_num %></td>
+              <td><%= test_data[0][i].cat_name %></td>
+              <td><%= moment(test_data[0][i].created_date).format("YYYY.MM.DD HH:mm");  %></td>
+              <td><%= moment(test_data[0][i].modified_date).format("YYYY.MM.DD HH:mm");  %></td>
           </tr>
 
           <tr id="hiddenRow<%= i %>">
-                <td style="display: none"><%= data[0][i].test_id %></td>
-                <td style="display: none"><%= data[0][i].test_name %></td>
-                <td style="display: none"><%= data[0][i].question_num %></td>
-                <td style="display: none"><%= data[0][i].cat_name %></td>
-                <td style="display: none"><%= moment(data[0][i].created_date).format("YYYY.MM.DD HH:mm");  %></td>
+                <td style="display: none"><%= test_data[0][i].test_id %></td>
+                <td style="display: none"><%= test_data[0][i].test_name %></td>
+                <td style="display: none"><%= test_data[0][i].question_num %></td>
+                <td style="display: none"><%= test_data[0][i].cat_name %></td>
+                <td style="display: none"><%= moment(test_data[0][i].created_date).format("YYYY.MM.DD HH:mm");  %></td>
                 <td class="hiddenRow p-0 w-100" colspan="6">
                 <div class="collapse" id="hiddenRow<%= i %>">
                   <div class="card card-body">                
@@ -56,7 +82,36 @@ data-page-number="2">
                         <div class="card h-100">
                           <div class="card-body">
                             <h5 class="card-title">Aktív példányok</h5>
+                            <div class="row">
                             <p class="card-text">Ebből a tesztből jelenleg nem fut egy példány sem.</p>
+
+
+                              <div class="item">
+                              <div class="table-responsive">  
+                                <table class="table process-table">
+                                  <thead>
+                                    <tr>
+                                      <th>ID</th>
+                                      <th>Indítás dátuma</th>
+                                      <th>Pinkód</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+
+                                      <% for(var j=0; j<process_data[0].length; j++)  {%>
+                                        <% if (process_data[0][j].test_id == test_data[0][i].test_id) { %>
+                                          <tr>
+                                        <td><%= process_data[0][j].process_id %></td>
+                                        <td><%= moment(process_data[0][j].start_date).format("YYYY.MM.DD HH:mm"); %></td>
+                                        <td><%= process_data[0][j].pincode %></td>
+                                         </tr>                    
+                                        <% } } %> 
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div> 
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -80,7 +135,7 @@ data-page-number="2">
                               tabindex="0" class="btninfo" role="button" data-bs-toggle="popover" data-bs-trigger="hover focus" 
                               title="Információ" data-bs-content="A műveletek segítségével elindíthatod a tesztet egy tetszőleges módban, szerkesztheted vagy törölheted azt.">
                               </img></h5>
-                              <a href="#" data-bs-toggle="modal" OnClick="LoadDataToModal(<%= data[0][i].test_id %>)" data-bs-target="#runTestModal" class="btn btn-primary btn-sm">Indítás</a>
+                              <a href="#" data-bs-toggle="modal" OnClick="LoadDataToModal('<%= test_data[0][i].test_id %>')" data-bs-target="#runTestModal" class="btn btn-primary btn-sm">Indítás</a>
                               <a href="#" class="btn btn-secondary btn-sm">Módosítás</a>
                               <a href="#" class="btn btn-danger btn-sm">Törlés</a><br>
                               <a href="#" class="btn btn-outline-warning btn-sm mt-2">Exportálás</a>
@@ -89,7 +144,6 @@ data-page-number="2">
                         </div>
                       </div>
                     </div>
-
                   </div>
               </div>
           </td></tr>
@@ -171,7 +225,6 @@ data-page-number="2">
 
 <script>
 
-
 $("#table").bootstrapTable({
 onClickRow:function(row, $element){
   if ($element.attr('aria-expanded') === "true" ) {
@@ -184,6 +237,7 @@ onClickRow:function(row, $element){
 
 //Mobilnézetben(card-view) generál két span elemet a bootstrap-table, ezzel szabadulunk meg tőle
 onToggle:function(cardView){
+ $('#table').removeClass('table-hover'); //az alap table-hovert törlöm
 if (cardView) {
   $(".additional .card-view-title").remove();
   $("[colspan=6]").addClass('p-0');
@@ -195,7 +249,7 @@ onLoadSuccess: function (data) {
 
 },
 
-onResetView : function (data) {
+onResetView : function (data, index) {
   InitPopup();
 },
 //   rowAttributes: function(row, index) {
@@ -210,11 +264,11 @@ rowStyle: function (row, index) {
 
   if (index % 2 === 1) {
     return {
-      classes: 'additional'
+      classes: 'additional',
     }
   }
   return {
-            classes: 'p-0',
+            classes: 'p-0 table-hover', //minden 2 -vel nem osztható sor megkapja a table-hover classt
             css: {
               cursor: 'pointer'
             }
@@ -223,20 +277,39 @@ rowStyle: function (row, index) {
 }
 })
 
+function CopyToTheClipboard() {
+  // Trükkös megoldás a pinkód vágólapra történő másolásához
+  var cText = $("#pincode_cb").text();
+    var textArea = document.createElement("textarea");
+    textArea.value = cText;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand("Copy");
+    textArea.remove();
+}
+
 $(document).ready(function() {
-  var popover1 = new bootstrap.Popover(document.querySelector('.operations-info'), {
-                trigger: 'hover'
-                }); 
-                
-                // $('#exampleModal').modal('show');
-
-
+ShowRowByID('<%= test_id %>'); //meghívjuk a függvényt
 });
+
+function ShowRowByID(target) {
+  var td = $('td').filter( ":nth-child(1)" ).filter(function(){ //megkeressük azt a td elemet, ahol az id egyezik az url queryben szereplővel 
+    return $(this).text() === '<%= test_id %>'
+  })
+  var Row = td.parent('tr'); //megkeressünk a szülő tr -t
+  Row.click(); //szimulálunk egy klikket
+  if (Row.attr('aria-expanded') === "true" ) { //beszínezzük a sort
+    Row.css("background-color", "#e7f1ff");
+    } else {
+      Row.css("background-color", "")
+    }
+}
 
 function LoadDataToModal(target) {
 $("#test_id").val(target);
 alert(target);
 }
+
 
 
   // function HideRow(target) {

@@ -18,11 +18,12 @@
 
 	</head>
 	<body>	
-<% if (access) { %>
-	<p>Sikeres belépés! <% var test = pincode%></p>
-<% } else {%>
-	<p>Nem sikerült belépni a teszt kitöltéséhez, kérlek próbáld újra később.</p>
-		<%  } %>
+<% if (access && fastjoin) { %>
+	<p>Sikeres gyorsbelépés! <% var test = pincode%></p>
+	<p><%= pincode%></p>
+	<p><%= nickname%></p>
+	<p><%= mode%></p>
+
 		<script>
 			var nam = <%= test  %>;  // send pin
 		 </script>
@@ -74,6 +75,13 @@
 		
 		
 		<a href="/logout">Kijelentkezés!</a>
+
+
+
+<% } else {%>
+	<p>Nem sikerült belépni a teszt kitöltéséhez, kérlek próbáld újra később.</p>
+		<%  } %>
+
 		
 	</body>
 </html>
