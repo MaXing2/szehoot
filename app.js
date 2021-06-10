@@ -127,9 +127,14 @@ app.get('/test_bank',function (req, res) {
       //const resultok = Object.values(JSON.parse(JSON.stringify(result)));
       console.log(result);
       console.log("Hossz:" + result[0].length);
-      connection.query("CALL GetAllProcess(?)", [req.session.username,], function(err, result2, fields) {
+      connection.query("CALL GetAllProcess(?)", [req.session.username], function(err, result2, fields) {
       if (err) throw err;
-       res.render('main.ejs',{page: 'test_bank', test_data: result, process_data: result2, loggedIn: true, username: req.session.username, test_id: req.query.test_id, pincode: req.query.pincode, title: 'Tesztbank'});
+      var noprocess = true;
+      if (!result2[0].length <= 0) {
+      noprocess = false;
+      }
+      console.log('Noprocess értéke: '+noprocess)
+      res.render('main.ejs',{page: 'test_bank', test_data: result, noprocess: noprocess, process_data: result2, loggedIn: true, username: req.session.username, test_id: req.query.test_id, pincode: req.query.pincode, title: 'Tesztbank'});
       })
     } //nincs az adatbázisban a kérésnek megfelelő érték..
 
@@ -165,7 +170,7 @@ app.post('/joinTest',function (req, res) {
 
   } else { // nem bejelentkezett, gyors belépés
     var pincode = req.body.pincode;
-    var nickname = req.body.pincode;
+    var nickname = req.body.nickname;
     connection.query("SELECT * FROM test_process_list WHERE pincode=" + connection.escape(pincode) + "",
       function(err, result, fields) {
         if (err) throw err;
