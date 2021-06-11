@@ -9,13 +9,16 @@ var teacher = 0;
 var pontom = 0;
 var time = 0 ;
 var nam;
+var james;
 window.onload = (event) => {
+  console.log(james + " - ez a neve");
+  console.log(nam + " - ez a szama");
   kerdesadatok(nam);
     sqlm();
     color = '#'+Math.random().toString(16).substr(-6);
     document.body.style.background = color;
-    ad=nam;
-    if (ad != nam){
+    ad=james;
+    if (ad != "admin"){
         vezerlo();
         // name = "username";
         getCookieValue = document.cookie.match('(^|;)\\s*' + nam + '\\s*=\\s*([^;]+)')?.pop() || '';
@@ -145,7 +148,7 @@ function startTimer(duration, display) {
 
 //adatok_rogzitese
 function subm (ertek){
-    socket.emit('rogzit',ertek,getCookieValue);
+    socket.emit('rogzit',ertek,nam);
     if (atad[0].pont == null){
        if (ertek == atad[0].jovalasz){
            helyes++;

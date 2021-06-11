@@ -24,6 +24,10 @@
         <div id="tipp">
             <input id="tippem">
             <button class="button button0" id="BT" onclick="doAjax();" >Beküld</button>
+            <button class="button button0" id="BT" onclick="PDF();" >PDF</button>
+			<form id='testPost' action="pdf" method="POST">
+				<input type="hidden" id = "postTippem" name="postTippem" />
+			</form>
         </div>
 		<div id='tabla_szam'>
         </div>

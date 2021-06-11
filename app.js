@@ -15,6 +15,10 @@ var bcrypt = require('bcrypt');
 //dátum formázás
 var moment = require('moment');
 
+//PDF
+const { jsPDF } = require("jspdf"); // will automatically load the node version
+var pdfmaker = require("./inc/pdfmake.js");
+
 var session = require('express-session');
 const app = express();
 //fileupload
@@ -380,6 +384,9 @@ app.post('/signup_validator',function (req, res) {
 // })
 
 //-----------------------------------------------------------editor-----------------------------------------------------------//
+// pdf
+pdfmaker.adat(jsPDF,app,connection);
+
 //list post kezelese
 app.post('/list', function (req, res) {
   var test = req.body.asd;

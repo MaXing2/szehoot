@@ -6,6 +6,17 @@ window.onload = (event) => {
 
 }
 
+//pdf
+function PDF(testSzoveg) {
+    testSzoveg = document.getElementById("tippem").value;
+    console.log(testSzoveg);
+    var form = $('#testPost');
+    var hiddencucc = $('#postTippem');
+    hiddencucc.val(testSzoveg);
+    console.log(hiddencucc.val());
+    form.trigger('submit', function(){});
+  }
+
 function doAjax(testSzoveg) {
   alldel();
     testSzoveg = document.getElementById("tippem").value;

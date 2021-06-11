@@ -48,7 +48,7 @@ io.on('connection', socket => {
         // console.log(ertek);
         //console.log(nev);
         var d = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        var sql = "INSERT INTO  test_results  (test_id ,answers, ts) VALUES (" + con.escape(nev) +", "+ con.escape(ertek) + ", " +con.escape(d)+ ")";
+        var sql = "INSERT INTO  test_results  (process_id ,answers, ts) VALUES (" + con.escape(nev) +", "+ con.escape(ertek) + ", " +con.escape(d)+ ")";
         con.query(sql, function (err, result) {
             if (err) throw err;
         });
@@ -57,11 +57,12 @@ io.on('connection', socket => {
 
     //kerdesadatok
     socket.on('stablakerdes', (kod) => {
-        var sql = "SELECT * FROM test_list WHERE test_id=" + con.escape(kod) + "";
+        var sql = "SELECT COUNT(*) AS question_num FROM test_questions WHERE test_id=" + con.escape(kod) + "";
         con.query(sql, function (err, result) {
             if (err) throw err;
             res = JSON.parse(JSON.stringify(result));
             socket.join(kod);
+            console.log(res);
             io.to(kod).emit('tablakerdes', res);
         });
     });
