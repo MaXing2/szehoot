@@ -1,5 +1,5 @@
 var bar=0;
-var data;
+var data = [];
 var elem;
 var work = false;
 window.onload = (event) => {
@@ -134,8 +134,17 @@ $("#popupSelect").change(function(e) {
 });
 
   function doadd(type) {
+    console.log(data.length + " ez a hossza");
+    console.log(data);
+    console.log("-------");
+    if (data == "nincs adat"){
+      data = [];
+      data.push({answer_1:"", answer_2:"", answer_3:"", answer_4:"", correct_answer_no:parseInt(""), image:"", question:"",
+    question_number: 0, score:"100", test_id: document.getElementById("tippem").value,  time:"10", type:parseInt(type) });
+    }else{
     data.push({answer_1:"", answer_2:"", answer_3:"", answer_4:"", correct_answer_no:parseInt(""), image:"", question:"",
     question_number: (data[data.length - 1].question_number) + 1, score:"100", test_id:(data[data.length - 1].test_id),  time:"10", type:parseInt(type) });
+    }
     console.log("hozza adva");
     console.log(data);
     add("uj elem");                
