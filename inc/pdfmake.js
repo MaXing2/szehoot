@@ -1,4 +1,4 @@
-exports.adat = function (jsPDF,app,connection) {
+exports.adat = function (jsPDF,app,connection,fs) {
 // pdf
 app.post('/pdf', function (req, res) {
     var test = req.body.postTippem;
@@ -22,14 +22,16 @@ app.post('/pdf', function (req, res) {
           //PDF
           var alltimes = 0;
           var curPos = 0; 
+          var test_name = "Matematika 1 vizsga 2021.06.12!";
           var i = 20;   // starter height
           var last = 0;
+          var maxpoint = 0;
           const doc = new jsPDF();
           const font = require("../public/javascripts/arial-normal")
           doc.addFileToVFS("arial-normal.ttf", font);
           doc.addFont("arial-normal.ttf", "arial", "normal");
           doc.setFont("arial", "normal");
-          doc.text("Matematika 1 vizsga 2021!", 105, 10 ,"center");     //name
+          doc.text(test_name, 105, 10 ,"center");     //name
           doc.setFontSize(10);
           doc.text("Név:", 20, 10);
           doc.line(180, 12, 30, 12); 
@@ -37,6 +39,7 @@ app.post('/pdf', function (req, res) {
           //test all time
           json.forEach(element => {
             alltimes = alltimes + element.time;
+            maxpoint = maxpoint + (element.score)/100;
           });
             var minutes = Math.floor(alltimes / 60);
             var seconds = alltimes % 60;
@@ -61,7 +64,7 @@ app.post('/pdf', function (req, res) {
             var typ="";
             switch(element.type) {
               case 1:
-                typ="Tippeld meg a választ!";
+                typ="Írd meg a megoldást!";
               break; 
               case 2:
               case 3:
@@ -87,7 +90,7 @@ app.post('/pdf', function (req, res) {
             curPos += last;
             doc.setFontSize(8);
             doc.text("(" + typ + ")", 195, ((curPos)*2 + i)-1,"right");
-            doc.text("(" + element.score + " Pont)", 195, ((curPos)*2 + i)+5,"right");
+            doc.text("(" + (element.score)/100 + " Pont)", 195, ((curPos)*2 + i)+5,"right");
             doc.setFontSize(10);
             //answers
             if(element.answer_1 != null){
@@ -133,13 +136,65 @@ app.post('/pdf', function (req, res) {
               doc.setFontSize(8);
               doc.text("(Kitöltési idő: " + alltimes + ")",195,10, "right")
               doc.setFontSize(16);
-              doc.text("Matematika 1 vizsga 2021!", 105, 10, "center");
+              doc.text(test_name, 105, 10, "center");
               doc.line(180, 12, 30, 12); 
             }
           });
+
+          //marks table
+          doc.setFontSize(10);
+          doc.text("Pontozás:", 58, (curPos)*2 + i-2, "center");
+          doc.text("Elérhető pont: "+maxpoint, 158, (curPos)*2 + i-2, "right");
+          
+          function createHeaders(keys) {
+            var result = [];
+            for (var i = 0; i < keys.length; i += 1) {
+              result.push({
+                id: keys[i],
+                name: keys[i],
+                prompt: keys[i],
+                width: 65,
+                align: "center",
+                padding: 0
+              });
+            }
+            return result;
+          }
+          var generateData = function() {
+            var outs = [];
+            var marks = {
+              Elégtelen: "0-50%",
+              Elégséges: "50-65%",
+              Közepes: "65-80%",
+              Jó: "80-90%",
+              Jeles: "90-100%",
+            };
+            outs.push(Object.assign({}, marks));
+            return outs;
+          };
+          var headers = createHeaders([
+            "Elégtelen",
+            "Elégséges",
+            "Közepes",
+            "Jó",
+            "Jeles"
+          ]);
+          doc.table(50, (curPos)*2 + i, generateData(), headers,{ autoSize: true });
+
+          var filename = new Date().getTime();
+
+          
           //send pdf
-          doc.save("a4.pdf"); 
-          res.download('./a4.pdf');
+          doc.save('./public/usersdata/' + filename + '.pdf'); 
+          res.download('./public/usersdata/' + filename + '.pdf');
+           //wait and delet
+           setTimeout(function() {
+            fs.unlink('./public/usersdata/' + filename + '.pdf', (err) => {
+              if (err) throw err;
+              console.log('file was deleted');
+            });
+          }, 5000);          
+          
         });
       }
     });

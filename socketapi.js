@@ -44,11 +44,11 @@ io.on('connection', socket => {
     });
 
     // record button push
-    socket.on('rogzit', (ertek, nev) => {
+    socket.on('rogzit', (ertek, gameid, cname,qnumber) => {
         // console.log(ertek);
         //console.log(nev);
         var d = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        var sql = "INSERT INTO  test_results  (process_id ,answers, ts) VALUES (" + con.escape(nev) +", "+ con.escape(ertek) + ", " +con.escape(d)+ ")";
+        var sql = "INSERT INTO  test_results  (process_id ,answers, nick_name,ts, answer_number) VALUES (" + con.escape(gameid) +", "+ con.escape(ertek) +", "+ con.escape(cname) + ", " +con.escape(d)+ ", " +con.escape(qnumber)+ ")";
         con.query(sql, function (err, result) {
             if (err) throw err;
         });

@@ -18,6 +18,9 @@ var moment = require('moment');
 //PDF
 const { jsPDF } = require("jspdf"); // will automatically load the node version
 var pdfmaker = require("./inc/pdfmake.js");
+var data_export = require("./inc/data_export.js");
+var result_export = require("./inc/result_export.js");
+const fs = require('fs');
 
 var session = require('express-session');
 const app = express();
@@ -71,6 +74,15 @@ app.get('/',function (req, res) {
 app.get('/dashboard',function (req, res) {
   if (req.session.loggedIn) { // be van jelentkezve?
   res.render('dashboard.ejs',{});
+  } 
+  else
+  res.redirect('/');
+})
+
+// Result esetén
+app.get('/result',function (req, res) {
+  if (req.session.loggedIn) { // be van jelentkezve?
+  res.render('result.ejs',{});
   } 
   else
   res.redirect('/');
@@ -383,9 +395,68 @@ app.post('/signup_validator',function (req, res) {
 //   }
 // })
 
+//-----------------------------------------------------------chart-----------------------------------------------------------//
+
+// chart data reqest
+app.post('/chart', function (req, res) {
+  var test = req.body.chart;
+  var json;
+
+  var sql = "SELECT COUNT (*) as 'db' FROM test_results WHERE process_id="+connection.escape(test)+ "";
+  connection.query(sql, function (err, result) {
+      if (err) throw err;
+      json = JSON.parse(JSON.stringify(result));
+      var darab = json[0].db;
+    if (darab == 0){
+      res.json("nincs adat");
+    }else{
+      sql = "SELECT * FROM test_results WHERE process_id="+connection.escape(test)+ "";
+      connection.query(sql, function (err, result) {
+        if (err) throw err;
+        json = JSON.parse(JSON.stringify(result));
+        res.json(json);
+    });
+}
+});
+});
+
+
+// scores data reqest
+app.post('/scores', function (req, res) {
+  var test = JSON.parse(req.body.scores);
+  var json;
+  var val = [];
+  test.forEach(element => {
+    var sql = "SELECT COUNT (*) as 'db' FROM test_results WHERE process_id="+connection.escape(element[0])+ "";
+      connection.query(sql, function (err, result) {
+          if (err) throw err;
+          json = JSON.parse(JSON.stringify(result));
+          var darab = json[0].db;
+        if (darab == 0){
+          // res.json("nincs adat");
+        }else{
+      var sql = "SELECT sum(score) as 'points' FROM test_questions Left JOIN test_results on test_questions.question_number = test_results.answer_number where test_id = "+connection.escape(element[0])+" and nick_name = "+connection.escape(element[1])+" and correct_answer_no = answers ";
+      connection.query(sql, function (err, result) {
+        if (err) throw err;
+        json = JSON.parse(JSON.stringify(result));
+        val.push(json); 
+    });
+    }
+  });
+});
+//elobb lefut mint a sql!!
+setTimeout(function(){
+  console.log(val)
+  res.json(val)
+},1000);
+});
+
+
 //-----------------------------------------------------------editor-----------------------------------------------------------//
 // pdf
-pdfmaker.adat(jsPDF,app,connection);
+pdfmaker.adat(jsPDF,app,connection,fs);
+data_export.exp(fs,app,connection);
+result_export.resexp(fs,app,connection);
 
 //list post kezelese
 app.post('/list', function (req, res) {

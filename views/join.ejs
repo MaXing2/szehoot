@@ -22,14 +22,12 @@
 	<p>Sikeres gyorsbelépés! 
 	<p><%= nickname%></p>
 	<p><%= pincode%></p>
-
-	<% var test = pincode%></p>
-
 	<p><%= mode%></p>
 
 		<script>
-			var nam = <%= test  %>;  // send pin
-			var james = JSON.parse('<%- JSON.stringify(nickname) %>');	//nev string
+			var mod = JSON.parse('<%- JSON.stringify(mode) %>');	//mode code
+			var pincode = JSON.parse('<%- JSON.stringify(pincode) %>');  // send pin
+			var cname = JSON.parse('<%- JSON.stringify(nickname) %>');	//nev string
 		 </script>
 
 		<div id="sorszam"></div> <div id="jo"></div>

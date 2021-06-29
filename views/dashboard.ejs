@@ -25,8 +25,16 @@
             <input id="tippem">
             <button class="button button0" id="BT" onclick="doAjax();" >Beküld</button>
             <button class="button button0" id="BT" onclick="PDF();" >PDF</button>
+            <button class="button button0" id="BT" onclick="EXP();" >EXP</button>
+            <button class="button button0" id="BT" onclick="RESEXP();" >RESULT_EXPORT</button>
 			<form id='testPost' action="pdf" method="POST">
 				<input type="hidden" id = "postTippem" name="postTippem" />
+			</form>
+			<form id='testexp' action="exp" method="POST">
+				<input type="hidden" id = "postexp" name="postexp" />
+			</form>
+			<form id='testresexp' action="resexp" method="POST">
+				<input type="hidden" id = "postresexp" name="postresexp" />
 			</form>
         </div>
 		<div id='tabla_szam'>

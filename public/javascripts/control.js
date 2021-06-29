@@ -1,6 +1,6 @@
 const socket = io();
 var actual = 0;
-var getCookieValue;
+// var getCookieValue;
 var atad;
 var helyes = 0;
 var osszvalasz;
@@ -8,21 +8,23 @@ var globalid;
 var teacher = 0;
 var pontom = 0;
 var time = 0 ;
-var nam;
-var james;
+var pincode;
+var cname;
+var mod;
 window.onload = (event) => {
-  console.log(james + " - ez a neve");
-  console.log(nam + " - ez a szama");
-  kerdesadatok(nam);
+  console.log(cname + " - ez a neve");
+  console.log(pincode + " - ez a szama");
+  console.log(mod + " - ez a jatek modja");
+  kerdesadatok(pincode);
     sqlm();
     color = '#'+Math.random().toString(16).substr(-6);
     document.body.style.background = color;
-    ad=james;
+    ad=cname;
     if (ad != "admin"){
         vezerlo();
         // name = "username";
-        getCookieValue = document.cookie.match('(^|;)\\s*' + nam + '\\s*=\\s*([^;]+)')?.pop() || '';
-        getCookieValue = ad;
+        // getCookieValue = document.cookie.match('(^|;)\\s*' + pincode + '\\s*=\\s*([^;]+)')?.pop() || '';
+        // getCookieValue = ad;
     }else{
         document.getElementById("BT1").disabled = true;
         document.getElementById("BT2").disabled = true;
@@ -51,7 +53,7 @@ instance.readOnly(true);
 //kerdesek
 function sqlm (){
     actual++;
-    socket.emit('sgetter',actual,nam);
+    socket.emit('sgetter',actual,pincode);
 }
 
 socket.on('getter',ered => {
@@ -148,21 +150,21 @@ function startTimer(duration, display) {
 
 //adatok_rogzitese
 function subm (ertek){
-    socket.emit('rogzit',ertek,nam);
-    if (atad[0].pont == null){
-       if (ertek == atad[0].jovalasz){
+    socket.emit('rogzit',ertek,pincode,cname,actual);
+    if (atad[0].score == null){
+       if (ertek == atad[0].correct_answer_no){
            helyes++;
            document.getElementById('jo').innerHTML = "A jó válaszok száma: " + helyes;
        };
-       if ((osszvalasz) == atad[0].idtest){
+       if ((osszvalasz) == atad[0].test_id){
            var szazalek = Math.floor((helyes / osszvalasz * 100) * 10) / 10;
            document.getElementById('vege').innerHTML = "A teszt végetért és " + helyes + " pontot és " + szazalek + "%-ot értél el.";
        }
     }else{
-      if (ertek == atad[0].jovalasz){
+      if (ertek == atad[0].correct_answer_no){
         helyes++;
         document.getElementById('jo').innerHTML = "A jó válaszok száma: " + helyes;
-        pontom = pontom + ((atad[0].pont / atad[0].ido) * time);
+        pontom = pontom + ((atad[0].score / atad[0].time) * time);
         console.log(pontom)
       };
     }
@@ -210,6 +212,10 @@ function vezerlo() {
     document.getElementById("tipp").style.display = "none";
     document.getElementById("check").style.display = "none";
     document.getElementById("kep").style.display = "none";
+    if (mod == 0){            //mod for auto next
+      if (actual < osszvalasz)
+      sqlm();
+    }
   }
    
   function show(){

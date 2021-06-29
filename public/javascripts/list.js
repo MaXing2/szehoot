@@ -17,6 +17,30 @@ function PDF(testSzoveg) {
     form.trigger('submit', function(){});
   }
 
+
+//EXP
+function EXP(testSzoveg) {
+  testSzoveg = document.getElementById("tippem").value;
+  console.log(testSzoveg);
+  var form = $('#testexp');
+  var hiddencucc = $('#postexp');
+  hiddencucc.val(testSzoveg);
+  console.log(hiddencucc.val());
+  form.trigger('submit', function(){});
+}
+
+//RESEXP
+function RESEXP(testSzoveg) {
+  testSzoveg = document.getElementById("tippem").value;
+  console.log(testSzoveg);
+  var form = $('#testresexp');
+  var hiddencucc = $('#postresexp');
+  hiddencucc.val(testSzoveg);
+  console.log(hiddencucc.val());
+  form.trigger('submit', function(){});
+}
+
+
 function doAjax(testSzoveg) {
   alldel();
     testSzoveg = document.getElementById("tippem").value;
