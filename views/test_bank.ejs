@@ -142,21 +142,21 @@ data-page-number="2">
                               </img></h5>
                               <a href="#" data-bs-toggle="modal" OnClick="LoadDataToModal('<%= test_data[0][i].test_id %>')" data-bs-target="#runTestModal" class="btn btn-primary btn-sm">Indítás</a>
                               <a href="#" class="btn btn-secondary btn-sm">Módosítás</a>
-                              <a href="#" class="btn btn-danger btn-sm">Törlés</a><br>
+                              <a href="#" data-bs-toggle="modal" data-bs-target="#deleteTestModal" class="btn btn-danger btn-sm">Törlés</a><br>
                               <a href="#" class="btn btn-outline-warning btn-sm mt-2">Exportálás</a>
                               <a href="#" class="btn btn-outline-warning btn-sm mt-2">Nyomtatás</a>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> 
               </div>
           </td></tr>
   <% } %>
   </tbody>
 </table>
 
-<!-- Modal -->
+<!--Teszt futtatás Modal  -->
 <div class="modal fade" id="runTestModal" tabindex="-1" aria-labelledby="runTestModal" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -224,6 +224,34 @@ data-page-number="2">
       </div>
     </form>
   </section>
+    </div>
+  </div>
+</div>
+
+<!-- Teszt törlés Modal -->
+<div class="modal fade" id="deleteTestModal" tabindex="-1" aria-labelledby="deleteTestModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="runTestModal">Figyelem!</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <section class='form'>
+        <form action="deleteTest" class="needs-validation" method="post" id="deleteTest" novalidate>
+        <div class="modal-body">
+          A teszt törlése maga után vonja a teszt példányainak, és az azokhoz tartozó eredmények végleges törlését is.   
+          <fieldset>
+              <div class="container">
+                  <input class="form-control" hidden type="text" id="test_id" name="test_id" value="">
+              </div>
+              </fieldset>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vissza</button>
+          <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">Törlés</button>
+        </div>
+      </form>
+    </section>
     </div>
   </div>
 </div>
