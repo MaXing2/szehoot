@@ -77,13 +77,17 @@ app.post('/pdf', function (req, res) {
             };
   
             //bbcode parser 
-            var data = element.question;
-            var parsed = data.replace(/\[(\w+)[^w]*?](.*?)\[\/\1]/g, '$2');
-            parsed = parsed.replace(/\:(.*?)\:/g, "");    //emoji
-            // console.log(parsed)
-  
+            var parser = element.question;
+            par();
+            async function par (){
+              for (var i = 0; i <((element.question.match(/]/g)||[]).length)/2; i++){
+               parser = parser.replace(/\[(\w+)[^w]*?](.*?)\[\/\1]/g, '$2');
+               parser = parser.replace(/\:(.*?)\:/g, "");    //emoji
+              }
+            }
+            
             //questions
-            var egesz = element.question_number + ". "  + parsed;
+            var egesz = element.question_number + ". "  + parser;
             var tort = doc.splitTextToSize(egesz, 150);
             last = tort.length - 1;
             doc.text(tort,  10, (curPos)*2 + i);

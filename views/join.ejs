@@ -30,7 +30,7 @@
 			var cname = JSON.parse('<%- JSON.stringify(nickname) %>');	//nev string
 		 </script>
 
-		<div id="sorszam"></div> <div id="jo"></div>
+		<div id="sorszam"></div> <div id="correct"></div>
 		
 		<div id="vezerlo">
 		<button class="button button0" id="BT5" onclick="back();" >back!</button>
@@ -71,13 +71,18 @@
 		</div>
 		
 		<div>Hátralévő idő a kérdésre: <span id="time"></span> !</div>
-		<div id="vege"></div>
+		<div id="end"></div>
 		
 		<script src="../javascripts/control.js"></script>
 		
 		
 		<a href="/logout">Kijelentkezés!</a>
 
+
+		<div id="popUpDiv">
+			<button class="button button0" id="BT9" onclick="start();" >start!</button>
+			<div id="onlin"></div>
+		</div>
 
 
 <% } else {%>

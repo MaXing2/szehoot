@@ -584,7 +584,25 @@ data.forEach(element => {
   };
   });
 });
-res.send("OK");
+setTimeout(function(){
+  var sql = "UPDATE test_questions SET answer_1 = NULL, answer_2 = NULL, answer_3 = NULL, answer_4 = NULL WHERE answer_1 = ''";
+  connection.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log(result);
+  });
+  var sql = "UPDATE test_questions SET answer_3 = NULL, answer_4 = NULL WHERE answer_3 = ''";
+  connection.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log(result);
+  });
+  var sql = "UPDATE test_questions SET answer_4 = NULL WHERE answer_4 = ''";
+  connection.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log(result);
+  });
+  console.log("Set to null [ok]");
+},1000);
+res.status(201).end("OK");
 });
 //-----------------------------------------------------------editor_end-----------------------------------------------------------//
 
