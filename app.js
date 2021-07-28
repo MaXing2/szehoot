@@ -97,7 +97,7 @@ req.session.destroy(function (err) {
   }
 })
 })
-//-------------------MAIN navigáció-----------------(Ezek akkor történnek meg, ha linken keresztül hivatkozunk rájuk!)
+//-------------------MAIN navigáció-----------------
 //Home esetén
 app.get('/home',function (req, res) {
 if (req.session.loggedIn) { // be van jelentkezve?
@@ -106,6 +106,17 @@ if (req.session.loggedIn) { // be van jelentkezve?
   res.redirect('/');
 }
 })
+
+
+//Test_create esetén
+app.get('/test_create',function (req, res) {
+  if (req.session.loggedIn) { // be van jelentkezve?
+    res.render('main.ejs',{page: 'test_create', loggedIn: true, username: req.session.username, title: 'Teszt létrehozása'});
+  } else {
+    res.redirect('/');
+  }
+  })
+
 //Kategóriák
 app.get('/test_category',function (req, res) {
   if (req.session.loggedIn) { // be van jelentkezve?
