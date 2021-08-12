@@ -55,11 +55,6 @@ app.use(session({secret:'Szehoot2021'
 
 
 //------------------------------------------------------GET kérések kezelése-----------------------------------------------------------
-// get.adat(app);
-app.get('/ajaxtest',function (req, res) {
-  res.render('ajaxtest.ejs',{});
-})
-
 
 // Gyökér esetén
 app.get('/',function (req, res) {
@@ -109,7 +104,7 @@ if (req.session.loggedIn) { // be van jelentkezve?
 
 
 //Test_create esetén
-app.get('/test_create',function (req, res) {
+app.get('/test/create',function (req, res) {
   if (req.session.loggedIn) { // be van jelentkezve?
     res.render('main.ejs',{page: 'test_create', loggedIn: true, username: req.session.username, title: 'Teszt létrehozása'});
   } else {
@@ -118,10 +113,10 @@ app.get('/test_create',function (req, res) {
   })
 
 //Kategóriák
-app.get('/test_category',function (req, res) {
+app.get('/test/category',function (req, res) {
   if (req.session.loggedIn) { // be van jelentkezve?
       // kategóriák lekérdezése az adatbázisból
-      connection.query("CALL GetCategorys(?)", [req.session.username], function(err, result, fields) {
+      connection.query("CALL GetAllCategorys(?)", [req.session.username], function(err, result, fields) {
       // connection.query("SELECT * FROM users", function(err, result, fields) {
 
       if (err) throw err;
@@ -129,7 +124,7 @@ app.get('/test_category',function (req, res) {
         //const resultok = Object.values(JSON.parse(JSON.stringify(result)));
         console.log(result);
      console.log("Hossz:" + result[0].length);
-      res.render('main.ejs',{page: 'test_category',data: result, loggedIn: true, username: req.session.username, title: 'Kategóriák'});}
+      res.render('main.ejs',{page: 'test_category',data: result, loggedIn: true, username: req.session.username, status: req.query.status, maincatid: req.query.maincatid, title: 'Kategóriák'});}
       })
   } else {
       res.redirect('/');
@@ -137,7 +132,7 @@ app.get('/test_category',function (req, res) {
   })
 
 //Aktív tesztek esetén
-app.get('/test_active',function (req, res) {
+app.get('/test/active',function (req, res) {
 if (req.session.loggedIn) { // be van jelentkezve?
   res.render('main.ejs',{page: 'test_active', loggedIn: true, username: req.session.username, title: 'Aktív tesztek'});
 } else {
@@ -145,9 +140,9 @@ if (req.session.loggedIn) { // be van jelentkezve?
 } 
 })
 //Teszt bank
-app.get('/test_bank',function (req, res) {
+app.get('/test/bank',function (req, res) {
   if (req.session.loggedIn) { // be van jelentkezve?
-    // kategóriák lekérdezése az adatbázisból
+    // tesztek lekérdezése az adatbázisból username alapján
     connection.query("CALL GetAllTest(?)", [req.session.username], function(err, result, fields) {
     if (err) throw err;
     if (!result[0].length <= 0) {
@@ -217,8 +212,8 @@ app.post('/joinTest',function (req, res) {
 })
 
 
-//A kiválasztott teszt indítása
-app.post('/runTest',function (req, res) {
+//A kiválasztott tesztből egy folyamat létrehozása
+app.post('/createTestProcess',function (req, res) {
   var username = req.session.username;
   var test_id = req.body.test_id;
   var mode = req.body.mode;
@@ -241,9 +236,9 @@ app.post('/runTest',function (req, res) {
 
 
             })
-                        //elküldjük a pinkódot
+            //elküldjük a pinkódot
             console.log(result);
-            res.redirect('/test_bank?pincode='+result[0][0].Pincode+'&test_id='+test_id);
+            res.redirect('/test/bank?pincode='+result[0][0].Pincode+'&test_id='+test_id);
         })
       } else {
         //a teszt vagy nem létezik vagy nem az adott felhasználóhoz tartozik
@@ -251,6 +246,97 @@ app.post('/runTest',function (req, res) {
   })
   } else {
     //nincs bejelentkezve az illető
+  }
+})
+
+//Főkategória létrehozása
+app.post('/newMainCategory',function (req, res) {
+  var username = req.session.username;
+  var userid = req.session.userid;
+  var maincatname = req.body.maincatname;
+  var status = 0; //eredmény státuszának kódja
+
+  console.log("Kategória neve: " + maincatname + " Felhasználó id: " + userid)
+  if (req.session.loggedIn) { // be van jelentkezve?
+    connection.query("CALL GetMainCategorys(?)", [username], function(err, result, fields) {
+      if (err) throw err;
+      if (result[0].length == 0) { //Még egyetlen főkategória sincs, úgy hogy azonnal létre lehet hozni
+        status = 0;
+        connection.query("INSERT INTO test_category_names (u_id, name, parent) VALUES (" + connection.escape(userid) + ", " + connection.escape(maincatname) + ", 0" +")",
+        function(err, result, fields) {
+          if (err) throw err;
+          else status = 0; //sikeres volt
+        })
+      } else { //Már tartozik főkategória a felhasználóhoz, így ellenőrizni kell, hogy a létrehozandó már létezik -e
+          //Egy do-while fügvény végig megy a főkategóriákon, és megnézi, hogy van -e már a beírttal azonos
+          var cat_exists = false;
+          var i = 0;
+          do {
+            if (result[0][i].name == maincatname) {cat_exists = true;}
+            i = i + 1;
+          } while ((cat_exists == false) && (i < result[0].length));
+          
+          if (!cat_exists) { //Ha nem létezik, akkor létre lehet hozni
+            connection.query("INSERT INTO test_category_names (u_id, name, parent) VALUES (" + connection.escape(userid) + ", " + connection.escape(maincatname) + ", 0" +")",
+            function(err, result, fields) {
+              if (err) throw err;
+              else status = 0; //sikeres volt
+            })
+          } else { //Ha létezik, akkor hibaüzenettel jelezzük a felhasználónak
+          status = 1; //létezik már a kategória
+            }
+        } 
+        res.redirect('/test/category?status=' + (status));
+  })
+
+  } else { //nincs bejelentkezve az illető
+    res.redirect('/');
+  }
+})
+
+
+//Alkategória létrehozása
+app.post('/newSubCategory',function (req, res) {
+  var username = req.session.username;
+  var userid = req.session.userid;
+  var subcatname = req.body.subcatname;
+  var maincatid = req.body.maincatid;
+  var status = 2; //eredmény státuszának kódja (alapértelmezetten sikeres)
+
+
+  if (req.session.loggedIn) { // be van jelentkezve?
+    connection.query("CALL GetSubCategorys(?)", [username], function(err, result, fields) {
+      if (err) throw err;
+      if (result[0].length == 0) { //Még egyetlen alkategória sincs, úgy hogy azonnal létre lehet hozni
+        connection.query("INSERT INTO test_category_names (u_id, name, parent) VALUES (" + connection.escape(userid) + ", " + connection.escape(subcatname) + ", " + connection.escape(maincatid) + ")",
+        function(err, result, fields) {
+          if (err) throw err;
+          else status = 2; //sikeres volt
+        })
+      } else { //Már tartozik alkategória a felhasználóhoz, így ellenőrizni kell, hogy a létrehozandó már létezik -e
+          //Egy do-while fügvény végig megy az alkategóriákon, és megnézi, hogy van -e már a beírttal azonos
+          var cat_exists = false; //alapértelmezetten false
+          var i = 0;
+          do {
+            if (result[0][i].name == subcatname) {cat_exists = true;}
+            i = i + 1;
+          } while ((cat_exists == false) && (i < result[0].length));
+          
+          if (!cat_exists) { //Ha nem létezik, akkor létre lehet hozni
+            connection.query("INSERT INTO test_category_names (u_id, name, parent) VALUES (" + connection.escape(userid) + ", " + connection.escape(subcatname) + ", " + connection.escape(maincatid) + ")",
+            function(err, result, fields) {
+              if (err) throw err;
+              else status = 2; //sikeres volt
+            })
+          } else { //Ha létezik, akkor hibaüzenettel jelezzük a felhasználónak
+          status = 3; //létezik már a kategória
+            }
+        }
+        res.redirect('/test/category?status=' + (status) + '&maincatid='+(maincatid)); 
+  })
+
+  } else { //nincs bejelentkezve az illető
+    res.redirect('/');
   }
 })
 
@@ -271,12 +357,16 @@ app.post('/', function(req, res) {
       if (err) throw err;
       else {
         console.log(result.length);
+        var userid = result[0].uid;
         if (result.length > 0) { // ha van eredménye a lekérdezésnek, akkor létezik és jöhet a jelszóellenőrzés
           bcrypt.compare(password, result[0].password).then(function(result) {
             if (result) {
+              
+
               console.log("Sikeres bejelentkezés: "+username);
               req.session.loggedIn = true; // a sessionban a loggedIn bool mostantól igaz értékű lesz
-              req.session.username = username; // betesszük a username -t is
+              req.session.username = username; // username bekerül a sessionba
+              req.session.userid = userid; // userid szintén bekerül
               console.log(req.session);
               res.redirect('/home')
             } else {

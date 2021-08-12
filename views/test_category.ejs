@@ -1,36 +1,51 @@
-<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
-<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+  <!-- link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css"> -->
+<!-- <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script> -->
+<!-- <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/mobile/bootstrap-table-mobile.min.js"></script> -->
 
+<% if (typeof status !== 'undefined') { %>
+	<% if (status == '1') { %>
+	<div class="alert alert-danger d-flex alert-dismissible" role="alert">
+		<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+		<div class="float-end">
+		  A megadott főkategória már létezik!
+		</div>
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	  </div>
+<% } } %>
 
-<h1>Kategóriák<img src="images/info_black_24dp.svg" 
+<h1>Kategóriák<img src="/images/info_black_24dp.svg" 
 tabindex="0" id="category-info" class="btninfo" role="button" data-bs-toggle="popover" data-bs-trigger="hover focus" 
 title="Információ" data-bs-content="Minden teszt egy előre meghatározott kategóriába kell tartozzon.
  Ez a felület teszi lehetővé a kategóriák létrehozását, szerkesztését, törlését. A főkategóriákon belül lehetőség van alkategóriák létrehozására is.">
 </img>
 </h1>
-
-<div class="accordion" id="accordionExample">
+<a href="#" data-bs-toggle="modal" OnClick="" data-bs-target="#newMainCatModal" class="btn btn-primary btn-sm float-end mb-2">Új főkategória létrehozása</a>
+<div class="accordion" id="categorys">
     <% for(var i=0; i<data[0].length; i++) {%>
-        <% if (data[0][i].chain == 0) { %>
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading<%= i %>>">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%= i %>" aria-expanded="false" aria-controls="collapse<%= i %>">
+        <% if (data[0][i].parent == 0) { %>
+            <div class="accordion-item" >
+                <h2 class="accordion-header" id="heading<%= i %>">
+                    <button class="accordion-button collapsed" id="maincatbtn-<%= data[0][i].id %>" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%= i %>" aria-expanded="false" aria-controls="collapse<%= i %>">
                         <%= data[0][i].name %>
+                        <span id="hiddenID-<%= data[0][i].id %>" hidden><%= data[0][i].id %></span>
                     </button>
                 </h2>
-                <div id="collapse<%= i %>" class="accordion-collapse collapse" aria-labelledby="heading<%= i %>" data-bs-parent="#accordionExample">
+                <div id="collapse<%= i %>" class="accordion-collapse collapse" aria-labelledby="heading<%= i %>" data-bs-parent="#categorys">
                     <div class="accordion-body">
-                        <table data-toggle="table">
+                      <table class="subcat-tables"     
+                      id="table"
+                      data-toggle="table"
+                      data-mobile-responsive="true">
                             <thead>
                               <tr>
-                                <th>Alkategória neve</th>
-                                <th>Tesztek száma</th>
-                                <th>Műveletek</th>
+                                <th data-field="subcat_name">Alkategória neve</th>
+                                <th data-field="test_count">Tesztek száma</th>
+                                <th class="control-buttons" data-field="control_buttons">Műveletek</th>
                               </tr>
                             </thead>
                             <tbody>
                             <% for(var j=0; j<data[0].length; j++) {%>
-                                <% if (data[0][i].id == data[0][j].chain) { %>
+                                <% if (data[0][i].id == data[0][j].parent) { %>
                                     <tr>
                                         <td><%= data[0][j].name %></td>
                                         <td>5</td>
@@ -41,6 +56,9 @@ title="Információ" data-bs-content="Minden teszt egy előre meghatározott kat
                                     </tr>
                                 <% } %>
                             <% } %>
+                            <tr class="newcat-button">
+                              <td colspan="3"><a href="#" data-bs-toggle="modal" OnClick="LoadDataToModal('<%= data[0][i].id %>')" data-bs-target="#newSubCatModal" class="btn btn-primary btn-sm float-start">Új létrehozása</a></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -50,65 +68,108 @@ title="Információ" data-bs-content="Minden teszt egy előre meghatározott kat
     <% } %>
 </div>
 
-
-
-
-
-<!-- 
-  <div class="accordion" id="accordionExample">
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingOne">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-          Accordion Item #1
-        </button>
-      </h2>
-      <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-        <div class="accordion-body">
-          <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-        </div>
+<!--Új főkategória létrehozása Modal  -->
+<div class="modal fade" id="newMainCatModal" tabindex="-1" aria-labelledby="newMainCatModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newMainCatModal">Új főkategória létrehozása</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-    </div>
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingTwo">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-          Accordion Item #2
-        </button>
-      </h2>
-      <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-        <div class="accordion-body">
-          <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-        </div>
+      <section class='form'>
+      <form action="/newMainCategory" class="needs-validation" method="post" id="newMainCategory" name="newMainCategory" novalidate>
+      <div class="modal-body">
+            <fieldset>
+              <div class="container">
+                  <div class="form-group mb-3 "> 
+                    <label class="form-label" for="start_date"><b>Kategória megnevezése:</b></label>
+                    <input class="form-control"  type="text" id="maincatname" name="maincatname">
+                    <div class="valid-feedback">
+                    <span id="valid-text"></span>
+                    </div>
+                    <div class="invalid-feedback">
+                    <span id="invalid-text"></span>
+                    </div>
+                  </div>
+              </div>
+            </fieldset>
       </div>
-    </div>
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingThree">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-          Accordion Item #3
-        </button>
-      </h2>
-      <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-        <div class="accordion-body">
-          <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Kilépés</button>
+        <button type="submit" class="btn btn-primary">Létrehozás</button>
       </div>
+    </form>
+  </section>
     </div>
-  </div> -->
+  </div>
+</div>
+
+<!--Új alkategória létrehozása Modal  -->
+<div class="modal fade" id="newSubCatModal" tabindex="-1" aria-labelledby="newSubCatModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newSubCatModal">Új alkategória létrehozása</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <section class='form'>
+      <form action="/newSubCategory" class="needs-validation" method="post" id="newSubCategory" name="newSubCategory" novalidate>
+      <div class="modal-body">
+            <fieldset>
+              <div class="container">
+                  <input class="form-control" hidden type="text" id="maincatid" name="maincatid" value=""> 
+                  <div class="form-group mb-3 "> 
+                    <label class="form-label" for="start_date"><b>Kategória megnevezése:</b></label>
+                    <input class="form-control"  type="text" id="subcatname" name="subcatname">
+                    <div class="valid-feedback">
+                    <span id="valid-text"></span>
+                    </div>
+                    <div class="invalid-feedback">
+                    <span id="invalid-text"></span>
+                    </div>
+                  </div>
+              </div>
+            </fieldset>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Kilépés</button>
+        <button type="submit" class="btn btn-primary">Létrehozás</button>
+      </div>
+    </form>
+  </section>
+    </div>
+  </div>
+</div>
+
+  <script>
+  $(".subcat-tables").bootstrapTable({
+
+    onToggle:function(cardView){
+    },
+    
+    onLoadSuccess: function (data) {
+    },
+    
+    //Mobilnézetben(card-view) generál két span elemet a bootstrap-table, ezzel szabadulunk meg a card-view-title résztől
+    onResetView : function (data, index) {
+      $(".newcat-button .card-view-title").remove();
+      $("span:contains('Műveletek')").remove();//Itt a helytakarékosság érdekében a "műveletek" szövegtől
+    }
+    })
+
+    $(document).ready(function() {
+      ShowRowByID('<%= maincatid %>'); //meghívjuk a függvényt, ezzel lenyitjuk azt a tesztet, amiről új folyamatot hoztunk létre
+    });
 
 
+    function LoadDataToModal(target) {
+      $("#maincatid").val(target);
+    }
+
+    function ShowRowByID(target) {
+      Row = $("#maincatbtn-"+target);  //adott főkategória megkeresése a kategória ID alapján
+      Row.click(); //klikk szimulálás
+}
 
 
-
-
-<script>
-    		//popup információs ablak az azonosítónál
-		// $(document).ready(function(){
-
-		// 		var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-		// 		var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-		// 		return new bootstrap.Popover(popoverTriggerEl)
-		// 	})
-		// 		var popover = new bootstrap.Popover(document.querySelector('#category-info'), {
-		// 		trigger: 'hover'
-		// 	}) 
-		// });
 </script>

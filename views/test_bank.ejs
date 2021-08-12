@@ -17,7 +17,7 @@ background-color: beige !important;
 .table-hover:hover {
   background-color:rgb(231, 241, 255) !important;
 }
-  
+
 
 
 </style>
@@ -136,11 +136,11 @@ data-page-number="2">
                       <div class="col-sm-4">
                         <div class="card h-100">
                           <div class="card-body">
-                            <h5 class="card-title">Műveletek <img color="green" src="images/info-circle.svg" 
+                            <h5 class="card-title">Műveletek <img color="green" src="/images/info-circle.svg" 
                               tabindex="0" class="btninfo" role="button" data-bs-toggle="popover" data-bs-trigger="hover focus" 
                               title="Információ" data-bs-content="A műveletek segítségével elindíthatod a tesztet egy tetszőleges módban, szerkesztheted vagy törölheted azt.">
                               </img></h5>
-                              <a href="#" data-bs-toggle="modal" OnClick="LoadDataToModal('<%= test_data[0][i].test_id %>')" data-bs-target="#runTestModal" class="btn btn-primary btn-sm">Indítás</a>
+                              <a href="#" data-bs-toggle="modal" OnClick="LoadDataToModal('<%= test_data[0][i].test_id %>')" data-bs-target="#createTestProcessModal" class="btn btn-primary btn-sm">Indítás</a>
                               <a href="#" class="btn btn-secondary btn-sm">Módosítás</a>
                               <a href="#" data-bs-toggle="modal" data-bs-target="#deleteTestModal" class="btn btn-danger btn-sm">Törlés</a><br>
                               <a href="#" class="btn btn-outline-warning btn-sm mt-2">Exportálás</a>
@@ -156,16 +156,16 @@ data-page-number="2">
   </tbody>
 </table>
 
-<!--Teszt futtatás Modal  -->
-<div class="modal fade" id="runTestModal" tabindex="-1" aria-labelledby="runTestModal" aria-hidden="true">
+<!--Teszt folyamat létrehozása Modal  -->
+<div class="modal fade" id="createTestProcessModal" tabindex="-1" aria-labelledby="createTestProcessModal" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="runTestModal">Indítási beállítások</h5>
+        <h5 class="modal-title">Indítási beállítások</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <section class='form'>
-      <form action="runTest" class="needs-validation" method="post" id="runTest" novalidate>
+      <form action="/createTestProcess" class="needs-validation" method="post" id="createTestProcess" novalidate>
       <div class="modal-body">
        
         
@@ -228,16 +228,16 @@ data-page-number="2">
   </div>
 </div>
 
-<!-- Teszt törlés Modal -->
-<div class="modal fade" id="deleteTestModal" tabindex="-1" aria-labelledby="deleteTestModal" aria-hidden="true">
+<!-- Teszt folyamat törlése Modal -->
+<div class="modal fade" id="deleteTestProcessModal" tabindex="-1" aria-labelledby="deleteTestProcessModal" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="runTestModal">Figyelem!</h5>
+        <h5 class="modal-title">Figyelem!</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <section class='form'>
-        <form action="deleteTest" class="needs-validation" method="post" id="deleteTest" novalidate>
+        <form action="deleteTestProcess" class="needs-validation" method="post" id="deleteTestProcess" novalidate>
         <div class="modal-body">
           A teszt törlése maga után vonja a teszt példányainak, és az azokhoz tartozó eredmények végleges törlését is.   
           <fieldset>
@@ -325,7 +325,7 @@ function CopyToTheClipboard() {
 }
 
 $(document).ready(function() {
-ShowRowByID('<%= test_id %>'); //meghívjuk a függvényt
+ShowRowByID('<%= test_id %>'); //meghívjuk a függvényt, ezzel lenyitjuk azt a tesztet, amiről új folyamatot hoztunk létre
 });
 
 function ShowRowByID(target) {
@@ -343,7 +343,6 @@ function ShowRowByID(target) {
 
 function LoadDataToModal(target) {
 $("#test_id").val(target);
-alert(target);
 }
 
 
