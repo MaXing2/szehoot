@@ -36,7 +36,7 @@ window.onload = (event) => {
         document.getElementById("BT9").style.display = ""; 
         teacher = 1;
       };
-      if (mod == 0){
+      if (mod == 1){
         start();
       }
   };
@@ -60,12 +60,12 @@ instance.readOnly(true);
 
 //kerdesek
 function sqlm (){
-  $("#popUpDiv").hide();
     actual++;
     socket.emit('sgetter',actual,pincode);
 }
 
 socket.on('getter',ered => {
+  $("#popUpDiv").hide();
     show();
     hiv(ered);
 });
@@ -163,6 +163,7 @@ function subm (ertek){
 
   };
 
+//score from sever side
 socket.on('points',ans => {
   helyes++;
   point += ans; 
@@ -199,6 +200,13 @@ function kerdesadatok(kod){
         document.getElementById('onlin').innerHTML = onliNum + " Várakozó a teszt kitőltésére.";
     });
 };
+
+//online user counter
+socket.on('online', (onliNum)  => {
+  console.log("data is coming");
+  console.log(onliNum);
+  document.getElementById('onlin').innerHTML = onliNum + " Várakozó a teszt kitőltésére.";
+});
 
 //inputvalide
 function setInputFilter(textbox, inputFilter) {

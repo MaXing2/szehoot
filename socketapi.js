@@ -10,6 +10,8 @@ var con = mysql.createConnection(config.databaseOptions);
 var numUser = 0;
 var res;
 
+var userRooms = {}
+
 //in usage
 io.on('connection', socket => {
     numUser++;
@@ -71,6 +73,8 @@ io.on('connection', socket => {
             if (err) throw err;
             res = JSON.parse(JSON.stringify(result));
             socket.join(kod);
+            //joining room counter
+            userRooms[socket.id] = kod;
             var onliNum = io.sockets.adapter.rooms.get(kod).size;
             io.to(kod).emit('tablakerdes', res, onliNum);
 
@@ -86,10 +90,24 @@ io.on('connection', socket => {
         });
     });
     
+    socket.on('sonline', (kod) => {
+        socket.join(kod); 
+        var onliNum = io.sockets.adapter.rooms.get(kod).size;
+        io.to(kod).emit('online', onliNum);
+    });
+
     
 socket.on('disconnect', () => {
     numUser--;
     console.log('one user disconnected ', numUser, ' online user');
+    //for all room counter send to client side
+    if (typeof io.sockets.adapter.rooms.get(userRooms[socket.id]) !== 'undefined') {
+        var onliNum = io.sockets.adapter.rooms.get(userRooms[socket.id]).size;
+        io.to(userRooms[socket.id]).emit('online', onliNum);
+        delete userRooms[socket.id];
+    } else {
+        delete userRooms[socket.id];
+    }
 
 });
 
