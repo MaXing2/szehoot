@@ -36,7 +36,8 @@ window.onload = (event) => {
         document.getElementById("BT9").style.display = ""; 
         teacher = 1;
       };
-      if (mod == 1){
+      //wating on start
+      if (mod != 1){
         start();
       }
   };
@@ -61,7 +62,7 @@ instance.readOnly(true);
 //kerdesek
 function sqlm (){
     actual++;
-    socket.emit('sgetter',actual,pincode);
+    socket.emit('sgetter',actual,pincode,mod);
 }
 
 socket.on('getter',ered => {
@@ -241,7 +242,7 @@ function vezerlo() {
     document.getElementById("tipp").style.display = "none";
     document.getElementById("check").style.display = "none";
     document.getElementById("kep").style.display = "none";
-    if (mod == 0){            //mod for auto next
+    if (mod != 1){          //mod for auto next
       if (actual < osszvalasz)
       sqlm();
     }
