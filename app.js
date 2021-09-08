@@ -20,6 +20,8 @@ const { jsPDF } = require("jspdf"); // will automatically load the node version
 var pdfmaker = require("./inc/pdfmake.js");
 var data_export = require("./inc/data_export.js");
 var result_export = require("./inc/result_export.js");
+var data_import = require("./inc/data_import.js");
+
 const fs = require('fs');
 
 var session = require('express-session');
@@ -40,6 +42,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(fileUpload());
 //dátum formázás
 app.locals.moment = require('moment');
 
@@ -558,6 +561,7 @@ setTimeout(function(){
 pdfmaker.adat(jsPDF,app,connection,fs);
 data_export.exp(fs,app,connection);
 result_export.resexp(fs,app,connection);
+data_import.imp(fs,app,connection);
 
 //list post kezelese
 app.post('/list', function (req, res) {

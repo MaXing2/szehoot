@@ -19,4 +19,8 @@ Terminálban futtassuk a következő parancsokat az összetevők telepítéséhe
 
 Szerver futtatásához a következő parancsot használjuk.
 
+- `npm run start`
+
+Szerver esetleges fejlesztői módját a következő paranccsal érjük el.
+
 - `npm run test`

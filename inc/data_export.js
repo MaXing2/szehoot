@@ -19,31 +19,37 @@ exports.exp = function (fs,app,connection) {
               json = JSON.parse(JSON.stringify(result));
               json[0].idtest=darab;
 
-              var filename = new Date().getTime();
+              var filename = test + new Date().getTime();
               
               //clear last
-              fs.writeFile('./public/usersdata/' + filename + '.txt', '', { flag: 'w+' }, err => {})
-
-              json.forEach(element => {
-                //write
-                fs.appendFileSync('./public/usersdata/' + filename + '.txt','\ufeff' +  
-                 element.question + '\t' + element.answer_1 + '\t' +
-                 element.answer_2 + '\t' + element.answer_3 + '\t' + 
-                 element.answer_4 + '\t' + element.correct_answer_no + '\t' +
-                 element.score + '\t' + element.type + '\t' + 
-                 element.time  + 
-                 '\r\n','utf8' ,function (err) {
-                  if (err) return console.log(err);
-                  console.log('exported!');
-                });
+              fs.writeFile('./public/usersdata/' + filename + '.json', '', { flag: 'w+' }, err => {})
               
-              });
+
+              /* TXT */
+              // json.forEach(element => {
+              //   //write
+              //   fs.appendFileSync('./public/usersdata/' + filename + '.json','\ufeff' +  
+              //    element.question + '\t' + element.answer_1 + '\t' +
+              //    element.answer_2 + '\t' + element.answer_3 + '\t' + 
+              //    element.answer_4 + '\t' + element.correct_answer_no + '\t' +
+              //    element.score + '\t' + element.type + '\t' + 
+              //    element.time  + 
+              //    '\r\n','utf8' ,function (err) {
+              //     if (err) return console.log(err);
+              //     console.log('exported!');
+              //   });
+
+              /* json */
+              fs.appendFileSync('./public/usersdata/' + filename + '.json', JSON.stringify(result))
+              // console.log(JSON.stringify(result));
+
+              // });
               
               //send txt
-              res.download('./public/usersdata/' + filename + '.txt');
+              res.download('./public/usersdata/' + filename + '.json');
               //wait and delet
               setTimeout(function() {
-                fs.unlink('./public/usersdata/' + filename + '.txt', (err) => {
+                fs.unlink('./public/usersdata/' + filename + '.json', (err) => {
                   if (err) throw err;
                   console.log('file was deleted');
                 });

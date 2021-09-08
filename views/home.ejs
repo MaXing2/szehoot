@@ -6,6 +6,12 @@
 		<button class="button button0" id="BT" onclick="PDF();" >PDF</button>
 		<button class="button button0" id="BT" onclick="EXP();" >EXP</button>
 		<button class="button button0" id="BT" onclick="RESEXP();" >RESULT_EXPORT</button>
+		
+		<form id='importForm' action="IMPORT" method="POST" encType="multipart/form-data">
+			<input type="file" id = "importFile" name="importFile" />
+			<input type="submit" class="button button0" id="BT" value="IMPORT" title="IMPORT" />
+		</form>
+		
 		<form id='testPost' action="pdf" method="POST">
 			<input type="hidden" id = "postTippem" name="postTippem" />
 		</form>
