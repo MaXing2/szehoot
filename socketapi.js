@@ -52,6 +52,7 @@ io.on('connection', socket => {
 
     // record button push
     socket.on('rogzit', (ertek, gameid, cname,qnumber) => {
+        --qnumber;
         var d = new Date().toISOString().slice(0, 19).replace('T', ' ');
         var sql = "INSERT INTO  test_results  (process_id ,answers, nick_name,ts, answer_number) VALUES (" + con.escape(gameid) +", "+ con.escape(ertek) +", "+ con.escape(cname) + ", " +con.escape(d)+ ", " +con.escape(qnumber)+ ")";
         con.query(sql, function (err, result) {
@@ -100,6 +101,67 @@ io.on('connection', socket => {
         var onliNum = io.sockets.adapter.rooms.get(kod).size;
         io.to(kod).emit('online', onliNum);
     });
+
+
+
+    socket.on('sresChart', (actual,pin) => {
+        --actual;
+        console.log(pin+ "-------" + actual);
+        var sqla = "SELECT * FROM test_results WHERE process_id=" + con.escape(pin) + " and answer_number=" + con.escape(actual);
+        con.query(sqla, function (err, result) {
+            if (err) throw err;
+            //console.log(result);
+            
+            res = JSON.parse(JSON.stringify(result));
+            var xValues = [];
+            var yValues = [];
+
+            //slice logic
+            res.forEach(element => {
+                if(element.answers>9){
+                    var str;
+                    str = element.answers.toString()
+                    if (str.includes("1")){
+                        xValues.push(1);
+                    }
+                    if (str.includes("2")){
+                        xValues.push(2);
+                    }
+                    if (str.includes("3")){
+                        xValues.push(3);
+                    }
+                    if (str.includes("4")){
+                        xValues.push(4);
+                    }
+                }else{
+                    xValues.push(element.answers);
+                }
+            });
+
+            //collect logic
+            yValues[0] = xValues.filter(check1).length;
+            function check1(ans) {
+            return ans == 1;
+            }
+            yValues[1] = xValues.filter(check2).length;
+            function check2(ans) {
+            return ans == 2;
+            }
+            yValues[2] = xValues.filter(check3).length;
+            function check3(ans) {
+            return ans == 3;
+            }
+            yValues[3] = xValues.filter(check4).length;
+            function check4(ans) {
+            return ans == 4;
+            }
+            console.log("yvalues: " + yValues);
+            io.to(pin).emit('resChart', yValues);
+        });
+        
+    });
+
+
 
     
 socket.on('disconnect', () => {

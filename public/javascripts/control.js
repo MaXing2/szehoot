@@ -1,5 +1,5 @@
 const socket = io();
-var actual = 0;
+var actual = 1;
 // var getCookieValue;
 var atad;
 var helyes = 0;
@@ -11,6 +11,7 @@ var time = 0 ;
 var pincode;
 var cname;
 var mod;
+var char;
 window.onload = (event) => {
   $("#popUpDiv").show();
   console.log(cname + " - ez a neve");
@@ -18,9 +19,9 @@ window.onload = (event) => {
   console.log(mod + " - ez a jatek modja");
   kerdesadatok(pincode);
     color = '#'+Math.random().toString(16).substr(-6);
-    document.body.style.background = color;
+    // document.body.style.background = color;
     ad=cname;
-    if (ad != "admin"){
+    if (ad != "admin"){       //tanár teszt vezerlo!!
         vezerlo();
         document.getElementById("BT9").style.display = "none"; 
         // name = "username";
@@ -61,11 +62,11 @@ instance.readOnly(true);
 
 //kerdesek
 function sqlm (){
-    actual++;
     socket.emit('sgetter',actual,pincode,mod);
 }
 
 socket.on('getter',ered => {
+  actual++;
   $("#popUpDiv").hide();
     show();
     hiv(ered);
@@ -152,11 +153,104 @@ function startTimer(duration, display) {
             if (teacher==0){
                 valaszolt();
                 subm(0);
+            }else{
+              resChart();
             }
             clearInterval(interid);
         }
     };
 }
+
+//Chart
+function resChart() {
+  socket.emit('sresChart',actual,pincode); 
+}
+
+
+socket.on('resChart',yValues => {
+  //chart_data
+  if(char)
+  {
+    char.destroy();
+  }
+  if (mod == 1){
+    document.getElementById("myChart").style.display = "";
+  }
+  var xValues = [];
+  xValues.push(atad[0].answer_1)
+  xValues.push(atad[0].answer_2)
+  if(atad[0].type==3 || atad[0].type==4 || atad[0].type==5){
+    xValues.push(atad[0].answer_3)
+  }
+  if(atad[0].type==4 || atad[0].type==5){
+    xValues.push(atad[0].answer_4)
+  }
+
+  var parser = atad[0].question;
+  for (var i = 0; i <((atad[0].question.match(/]/g)||[]).length)/2; i++){
+    parser = parser.replace(/\[(\w+)[^w]*?](.*?)\[\/\1]/g, '$2');
+    parser = parser.replace(/\:(.*?)\:/g, "");    //emoji
+  }
+
+  //chart_gen
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var myChart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: xValues,
+        datasets: [{
+          // backgroundColor: barColors,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(255, 159, 64, 0.5)',
+            'rgba(100, 114, 186, 0.5)',
+            'rgba(30, 177, 76, 0.5)',
+          ],
+          borderColor: [
+            'rgb(255, 99, 132)',
+            'rgb(255, 159, 64)',
+            'rgb(100, 114, 186)',
+            'rgb(30, 177, 76)',
+          ],
+          borderWidth: 3
+        ,
+          data: yValues
+        }]
+      },
+      options: {
+        //zero
+          scales: {
+              yAxes: [
+                  {
+                      ticks: {
+                          beginAtZero: true,
+                          min: 0,
+                          suggestedMin: 0
+                      }
+                  }
+              ],
+              yAxes: [
+                  {
+                      ticks: {
+                          beginAtZero: true,
+                          min: 0,
+                          suggestedMin: 0
+                      }
+                  }
+              ]
+          },
+        //zero
+        legend: {display: false},
+        responsive: true,
+        title: {
+          display: true,
+          text: parser
+        },
+      }
+    });
+    char=myChart;
+});
+
 
 //adatok_rogzitese
 function subm (ertek){
@@ -256,6 +350,7 @@ function vezerlo() {
 
 //show all button in start
   function starterbutton(){
+    document.getElementById("myChart").style.display = "none";
     document.getElementById("BT1").style.display = "";
     document.getElementById("BT2").style.display = "";
     document.getElementById("BT3").style.display = "";
@@ -325,7 +420,7 @@ document.getElementById("BT5").onclick = function back () {
 };
 
 document.getElementById("BT6").onclick = function next () { 
-    if (actual < osszvalasz)
+    if (actual <= osszvalasz)
      sqlm(); 
      //subm(0);       
 };
