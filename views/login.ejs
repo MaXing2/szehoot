@@ -1,24 +1,25 @@
-<% if (typeof error !== 'undefined') { %>
-	<% if (error == '1') { %>
+<% if (typeof status !== 'undefined') { %>
 	<div class="alert alert-danger d-flex alert-dismissible" role="alert">
 		<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
 		<div class="float-end">
-		  A teszt kitöltése regisztrációhoz kötött!
+			<% switch (status) {
+			case '1' : %>
+				A teszt kitöltése regisztrációhoz kötött!
+				<% break;
+			case '2' : %>
+				A belépéshez használt pinkód nem létezik!
+				<% break;
+			case '3' : %>
+				A belépéshez használt jelszó hibás!
+				<% break;
+			case '4' : %>
+				A belépéshez használt felhasználónév nem létezik!
+				<% break; %>
+		  	<% } %>
 		</div>
 		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 	  </div>
-<% } } %>
-
-<% if (typeof error !== 'undefined') { %>
-	<% if (error == '2') { %>
-	<div class="alert alert-danger d-flex alert-dismissible" role="alert">
-		<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-		<div class="float-end">
-		  A belépéshez használt pinkód nem létezik!
-		</div>
-		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-	  </div>
-<% } } %>
+<% } %>
 
 		<div class="container fastjoin">
 		</br>

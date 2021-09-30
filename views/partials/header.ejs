@@ -12,19 +12,23 @@
         <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/mobile/bootstrap-table-mobile.min.js"></script> <!-- Bootstrap mobil stíluslap -->
         <script src="../javascripts/bootstrap-table-hu-HU.min.js"></script>  <!-- Magyarítás -->
         <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script> <!-- jQuery form -->
-        <script src="../minified/sceditor.min.js"></script> <!-- BB code -->
-        <script src="../minified/formats/bbcode.js"></script> <!-- BB code -->
-        <script src="../minified/formats/xhtml.js"></script> <!-- BB code -->       
+        <script src="/minified/sceditor.min.js"></script> <!-- BB code -->
         <script src="/socket.io/socket.io.js"></script> <!-- Socket.io -->
+        <script src="/minified/formats/bbcode.js"></script> <!-- BB code -->   
+        <script src="../javascripts/bbCodeParser.min.js"></script>
+
+        
+
 
         <!-- Stíluslapok -->
         <link rel="stylesheet" href="../stylesheets/bootstrap/bootstrap.min.css"> <!-- Bootstrap stíluslap-->
         <link rel="stylesheet" href="../stylesheets/main_styles.css"> <!-- Fő stíluslap -->
         <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css"> <!-- Bootstrap táblázatok stíluslap -->
-        <link rel="stylesheet" href="../minified/themes/default.min.css" /> <!-- BB code stíluslap -->
-        <link rel="stylesheet" href="../stylesheets/edit.css"> <!-- Teszt szerkesztő stíluslap -->
+        <link rel="stylesheet" href="/minified/themes/default.min.css" /> <!-- BB code stíluslap -->
+        <!-- <link rel="stylesheet" href="../stylesheets/edit.css"> Teszt szerkesztő stíluslap -->
 
-         
+        
+
         <% if (typeof title == 'undefined') { %>
             <title> Szehoot </title>
           <% } else { %>
@@ -63,29 +67,25 @@ function InitPopup () {
   // })
 };
 
-
             $(document).ready(function() {
                 // A megfelelő navigációs link aktívvá tétele az oldal betöltése után
-                 $("#<%= page%>").addClass("active");
+                //  $("#<%= page%>").addClass("active"); Villogó effektus miatt nem használandó
 
-                 // Navigációs link aktívvá tétele kattintás után
+                //  Navigációs link aktívvá tétele kattintás után
                 // $(function() {
                 //     $(".main").click(function() {
                 //         $("a").removeClass("active");
                 //         $(this).addClass("active");
                 //     });
                 // });
-
                 InitPopup();
-
-
-
             });
+
            </script>
 
                 
 <header>
-		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark">
 			<div class="container-fluid">
 			  <a class="navbar-brand" href="/">SZEHOOT</a>
 			  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,7 +97,7 @@ function InitPopup () {
 
                     
                 <% if (loggedIn) { %>
-                    <a id="home" class="nav-link main" href="/home">Kezdőlap</a>
+                    <a id="home" class="nav-link main <%= page === 'home' && 'active' %>" href="/home">Kezdőlap</a>
                     <!-- <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Teszt</a>
                         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarScrollingDropdown">
@@ -106,10 +106,12 @@ function InitPopup () {
                           <li><a class="dropdown-item nav-link main" href="test_bank">Tesztbank</a></li>
                         </ul>
                       </li> -->
-                    <a id="test_bank" class="nav-link main" href="/test/bank">Tesztbank</a>
-                    <a id="test_category" class="nav-link main" href="/test/category">Kategóriák</a>
-                    <a id="test_active" class="nav-link main" href="/test/active">Aktív tesztek</a>
-                    <a id="test_create" class="nav-link main" href="/test/create">Teszt létrehozás</a>
+                    <a id="test_bank" class="nav-link main <%= page === 'test_bank' && 'active' %>" href="/test/bank">Tesztbank</a>
+                    <a id="test_category" class="nav-link main <%= page === 'test_category' && 'active' %>" href="/test/category">Kategóriák</a>
+                    <a id="test_active" class="nav-link main <%= page === 'test_active' && 'active' %>" href="/test/active">Aktív tesztek</a>
+
+
+                    <a id="test_create" onClick="getMainCategory('newTest');" class="nav-link main <%= page === 'test_create' && 'active' %>" href="#">Teszt létrehozás</a>
                 <% } %>
 				  
 				</div>
@@ -126,7 +128,7 @@ function InitPopup () {
                           <li><a class="dropdown-item" href="#">Profilom</a></li>
                           <li><a class="dropdown-item" href="#">Beállítások</a></li>
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="logout">Kijelentkezés</a></li>
+                          <li><a class="dropdown-item" href="/logout">Kijelentkezés</a></li>
                         </ul>
                       </li>
                     <% }%>

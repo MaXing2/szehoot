@@ -1,3 +1,166 @@
-<footer></footer>
+<footer>
+
+</footer>
+
+<!--Új teszt létrehozása Modal  -->
+  <div class="modal fade" id="newTestModal" tabindex="-1" aria-labelledby="newTestModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Új teszt létrehozása</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+      <section class='form'>
+        <form action="/createTest" class="needs-validation" method="post" id="newTest" name="newTest" novalidate>
+          <div class="modal-body">
+            <fieldset>
+              <div class="container">
+                <div class="form-group mb-3"> 
+                    <label class="form-label" for="test_name"><b>Teszt címe:</b></label>
+                    <input class="form-control" type="text" id="test_name" name="test_name">
+                    <div class="valid-feedback">
+                      <span id="valid-text"></span>
+                    </div>
+                    <div class="invalid-feedback">
+                     <span id="invalid-text"></span>
+                    </div>
+                </div>
+                <div class="form-group mb-3 maincat"> 
+                  <label class="form-label" for="main_category_nt"><b>Főkategória:</b></label>
+                  <div class="row">
+                    <div class="col-8">
+                      <select class="form-select" onChange="getSubCategory('newTest');" id="main_category_nt" name="main_category_nt"></select>
+                      <div class="invalid-feedback">
+                        <span id="invalid-text"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                  <div class="form-group mb-3 subcat"> 
+                      <label class="form-label" for="sub_category_nt"><b>Alkategória:</b></label>
+                      <div class="row">
+                        <div class="col-8">
+                          <select class="form-select" id="sub_category_nt" name="sub_category_nt"></select>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+            </fieldset>
+          </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Kilépés</button>
+          <button type="submit" id="newTestBtn" class="btn btn-primary">Létrehozás</button>
+        </div>
+        </form>
+    </section>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
+
+
+
+<script>
+  // -------------------------------------------------FŐ ÉS ALKATEGÓRIA LEKÉRDEZÉSE A TESZT LÉREHOZÁSA MODALNÁL------------------------------------------------
+    	function getMainCategory(modal) //Főkategória lekérdezése
+		{
+      $.ajax({url:"/getCategorys", type:"POST", data: ({target: 'main'}), async:true, cache:false, success:function(result)
+          {
+          var data = JSON.parse(JSON.stringify(result));
+          switch(modal) {
+            case 'newTest':
+              $('#main_category_nt').find('option').remove().end()
+              console.log(data.data[0].length);
+              if (data.data[0].length > 0) {
+              //van főkategória
+              for (let i = 0; i < data.data[0].length; i++) {
+                $('#main_category_nt').append($('<option>', {value: data.data[0][i].id,text: data.data[0][i].name}));
+              }
+              var newTestModal = new bootstrap.Modal(document.getElementById('newTestModal'));
+              newTestModal.show();
+              getSubCategory('newTest');
+              } else {
+                //nincs még főkategória
+              window.location.href = "../test/category?status=4";
+              }   
+              break;
+            case 'duplicateTest':
+              $('#main_category_dt').find('option').remove().end()
+              console.log(data.data[0].length);
+              if (data.data[0].length > 0) {
+              //van főkategória
+              for (let i = 0; i < data.data[0].length; i++) {
+                $('#main_category_dt').append($('<option>', {value: data.data[0][i].id,text: data.data[0][i].name}));
+              }
+              getSubCategory('duplicateTest');
+              } else {
+                //nincs még főkategória
+              window.location.href = "../test/category?status=4";
+              }   
+              break;
+            default:
+              // code block
+            }
+      }});
+      //itt kéne megnyitni a modalt, ha van főkategória
+  }
+
+        function getSubCategory(modal)//Alkategória lekérdezése, !amennyiben létezik főkategória!
+		{
+      $.ajax({url:"/getCategorys", type:"POST", data: ({target: 'sub'}), async:true, cache:false, success:function(result)
+          {
+          var data = JSON.parse(JSON.stringify(result));
+          var subcat_exists = false;
+          switch(modal) {
+            case 'newTest':
+              $('#sub_category_nt').find('option').remove().end()
+              for (let i = 0; i < data.data[0].length; i++) {
+                  if (data.data[0][i].parent ==  $('#main_category_nt').val()) {
+                      subcat_exists = true;
+                      $('#sub_category_nt').append($('<option>', {value: data.data[0][i].id,text: data.data[0][i].name}));
+                  }
+              }
+              if (!subcat_exists) {
+                  $(".maincat #invalid-text").text( "A főkategóriához nincs létrehozva alkategória!" );
+                  $('#newTestBtn').addClass('d-none');
+                  $('#newTestBtn').attr('disabled', 'disabled');
+                  $('#main_category_nt').addClass('is-invalid');
+                  $('#main_category_nt').removeClass('is-valid');
+                  $('.subcat').addClass('d-none');
+              } else {
+                  $('#newTestBtn').removeClass('d-none');
+                  $('#newTestBtn').removeAttr('disabled');
+                  $('#main_category_nt').removeClass('is-invalid');
+                  $('.subcat').removeClass('d-none');
+              }
+              break;
+            case 'duplicateTest':
+            $('#sub_category_dt').find('option').remove().end()
+              for (let i = 0; i < data.data[0].length; i++) {
+                  if (data.data[0][i].parent ==  $('#main_category_dt').val()) {
+                      subcat_exists = true;
+                      $('#sub_category_dt').append($('<option>', {value: data.data[0][i].id,text: data.data[0][i].name}));
+                  }
+              }
+              if (!subcat_exists) {
+                  $(".maincat #invalid-text").text( "A főkategóriához nincs létrehozva alkategória!" );
+                  $('#duplicateTestBtn').addClass('d-none');
+                  $('#duplicateTestBtn').attr('disabled', 'disabled');
+                  $('#main_category_dt').addClass('is-invalid');
+                  $('#main_category_dt').removeClass('is-valid');
+                  $('.subcat').addClass('d-none');
+              } else {
+                  $('#duplicateTestBtn').removeClass('d-none');
+                  $('#duplicateTestBtn').removeAttr('disabled');
+                  $('#main_category_dt').removeClass('is-invalid');
+                  $('.subcat').removeClass('d-none');
+              }
+              break;
+            default:
+              // code block
+          }
+
+      }});
+        }
+</script>

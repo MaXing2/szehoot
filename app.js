@@ -42,7 +42,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(fileUpload());
 //dátum formázás
 app.locals.moment = require('moment');
 
@@ -65,7 +64,7 @@ app.get('/',function (req, res) {
   res.render('main.ejs', {page: 'home', loggedIn: true, username: req.session.username}); // ebben az esetben a main.ejs sablonban a home.ejs nyílik meg
   } 
   else
-  res.render('main.ejs', {page: 'login', loggedIn: false, error: req.query.error}); // ha nincs bejelentkezve, akkor pedig a login.ejs
+  res.render('main.ejs', {page: 'login', loggedIn: false, status: req.query.status}); // ha nincs bejelentkezve, akkor pedig a login.ejs
 })
 
 // Dashboard esetén
@@ -109,7 +108,7 @@ if (req.session.loggedIn) { // be van jelentkezve?
 //Test_create esetén
 app.get('/test/create',function (req, res) {
   if (req.session.loggedIn) { // be van jelentkezve?
-    res.render('main.ejs',{page: 'test_create', loggedIn: true, username: req.session.username, title: 'Teszt létrehozása'});
+    res.render('main.ejs',{page: 'test_create', test_name: 'Teszt cím példa', loggedIn: true, username: req.session.username, title: 'Teszt létrehozása'});
   } else {
     res.redirect('/');
   }
@@ -120,15 +119,16 @@ app.get('/test/category',function (req, res) {
   if (req.session.loggedIn) { // be van jelentkezve?
       // kategóriák lekérdezése az adatbázisból
       connection.query("CALL GetAllCategorys(?)", [req.session.username], function(err, result, fields) {
-      // connection.query("SELECT * FROM users", function(err, result, fields) {
-
-      if (err) throw err;
-      if (!result[0].length <= 0) {
-        //const resultok = Object.values(JSON.parse(JSON.stringify(result)));
-        console.log(result);
-     console.log("Hossz:" + result[0].length);
-      res.render('main.ejs',{page: 'test_category',data: result, loggedIn: true, username: req.session.username, status: req.query.status, maincatid: req.query.maincatid, title: 'Kategóriák'});}
-      })
+        if (err) throw err;
+        if (!result[0].length <= 0) {
+          //const resultok = Object.values(JSON.parse(JSON.stringify(result)));
+          console.log(result);
+          console.log("Hossz:" + result[0].length);
+          res.render('main.ejs',{page: 'test_category',data: result, loggedIn: true, username: req.session.username, status: req.query.status, maincatid: req.query.maincatid, title: 'Kategóriák'});
+        } else {
+          res.render('main.ejs',{page: 'test_category',data: result, loggedIn: true, username: req.session.username, status: '4', maincatid: req.query.maincatid, title: 'Kategóriák'});
+        }
+     })
   } else {
       res.redirect('/');
   } 
@@ -154,21 +154,25 @@ app.get('/test/bank',function (req, res) {
       console.log("Hossz:" + result[0].length);
       connection.query("CALL GetAllProcess(?)", [req.session.username], function(err, result2, fields) {
       if (err) throw err;
-      var noprocess = true;
+      var noprocess = true; //inicializáljuk úgy, hogy nem létezik teszt folyamat
       if (!result2[0].length <= 0) {
-      noprocess = false;
+      noprocess = false; //létezik folyamat az adott tesztből
       }
       console.log('Noprocess értéke: '+noprocess)
+      console.log(result2[0]);
       res.render('main.ejs',{page: 'test_bank', test_data: result, noprocess: noprocess, process_data: result2, loggedIn: true, username: req.session.username, test_id: req.query.test_id, pincode: req.query.pincode, title: 'Tesztbank'});
       })
-    } //nincs az adatbázisban a kérésnek megfelelő érték..
-
+    } else { //nincs egyetlen teszt sem...
+    res.render('main.ejs',{page: 'test_bank', test_data: result, loggedIn: true, username: req.session.username, test_id: req.query.test_id, pincode: req.query.pincode, title: 'Tesztbank'});
+    }
     })
   } else {
   //nincs bejelentkezve
   res.redirect('/');
   } 
 })
+
+
 //Login esetén
 app.get('/login',function (req, res) {
   if (req.session.loggedIn) { // be van jelentkezve?
@@ -191,6 +195,7 @@ else {
 
 // Csatlakozás
 app.post('/joinTest',function (req, res) {
+  var status = 0; //alapértelmezetten nincs hiba, ezért 0
   if (req.session.loggedIn) { // bejelentkezett felhasználók számára
 
   } else { // nem bejelentkezett, gyors belépés
@@ -203,17 +208,72 @@ app.post('/joinTest',function (req, res) {
           if (result[0].mode == 0 || result[0].mode == 1) {//ha a pinhez tartozó tesztfolyamat módja 0 (gyakorlási) vagy 1 (tantermi)
             res.render('join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0].mode, 'nickname': nickname}); //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot       
           } else {
-            res.redirect('/?error=1'); //hiba: létezik a pinkód, de a teszt módja nem engedélyezi a gyors belépést
-           return;
+            status = 1; //hiba: létezik a pinkód, de a teszt módja nem engedélyezi a gyors belépést
           }
         } else {
-          res.redirect('/?error=2'); //hiba: nem létezik a pinkód, így a belépés sem engedélyezett (nincs hova belépni)
-          return;
+          status = 2; //hiba: nem létezik a pinkód, így a belépés sem engedélyezett (nincs hova belépni)
         }
+        res.redirect('/?status=' + status); 
       })
   }
 })
 
+//Teszt létrehozása
+app.post('/createTest',function (req, res) {
+  var userid = req.session.userid;
+  var test_name = req.body.test_name;
+  var sub_category = req.body.sub_category_nt;
+
+  if (req.session.loggedIn) { // be van jelentkezve?
+    
+    connection.query("CALL CreateTest(?,?,?)", [userid, test_name, '0'], function(err, result, fields) {
+      // if (err) throw err;
+      if (!result[0].length <= 0) {
+        var test_id = result[0][0].test_id;
+        console.log(result[0]);
+        //a létrehozott test ID -t visszakapjuk
+        connection.query("CALL CreateCategoryRelation(?,?)",[test_id, sub_category], function(err, result, fields) {
+            // if (err) throw err;
+            //megnyitjuk a tesztösszeállító oldalt, és átadjuk a létrehozott test ID -jét
+            res.render('main.ejs',{page: 'test_create', loggedIn: true, username: req.session.username, test_id: test_id, test_name: test_name});
+            console.log(result);
+        })
+      } else {
+        //nincs visszakapott test ID, így valami probléma történt..
+      }
+  })
+  } else {
+    //nincs bejelentkezve az illető
+  }
+})
+
+app.post('/duplicateTest',function (req, res) {
+  var userid = req.session.userid;
+  var username = req.session.username;
+  var test_id = req.body.test_id_dt;
+  var test_name = req.body.test_name_dt;
+  var cat_id = req.body.cat_id_dt;
+
+  if (req.session.loggedIn) { // be van jelentkezve?
+    //
+    
+    connection.query("CALL GetTestByIDnUser(?,?)", [username, test_id], function(err, result, fields) {
+      if (err) throw err;
+      if (!result[0].length <= 0) { 
+        connection.query("CALL DuplicateTest(?,?,?)", [test_name, test_id, cat_id], function(err, result, fields) {
+          if (err) throw err;
+          console.log(result);
+          res.redirect('/test/bank');
+        })
+      } else {  
+        //nem tartozik ilyen teszt azonosító a felhasználóhoz
+      }
+    })
+
+  } else {
+    //nincs bejelentkezve az illető
+  }
+})
 
 //A kiválasztott tesztből egy folyamat létrehozása
 app.post('/createTestProcess',function (req, res) {
@@ -222,9 +282,10 @@ app.post('/createTestProcess',function (req, res) {
   var mode = req.body.mode;
   var start_date = req.body.start_date;
   var end_date = req.body.end_date;
+
   console.log("Username: "+username+" Test_ID: "+test_id);
   if (req.session.loggedIn) { // be van jelentkezve?
-    // megvizsgáljuk, hogy egyáltalán tartozik -e ilyen azonosítószámú teszt a felhasználóhoz a GetTestByUsernTest eljárással
+    // megvizsgáljuk, hogy egyáltalán tartozik -e ilyen azonosítószámú teszt a felhasználóhoz a GetTestByUsernTest tárolt eljárással
     connection.query("CALL GetTestByIDnUser(?,?)", [username, test_id], function(err, result, fields) {
       if (err) throw err;
       if (!result[0].length <= 0) {
@@ -335,7 +396,7 @@ app.post('/newSubCategory',function (req, res) {
           status = 3; //létezik már a kategória
             }
         }
-        res.redirect('/test/category?status=' + (status) + '&maincatid='+(maincatid)); 
+        res.redirect('/test/category?status=' + (status) + '&maincatid='+ (maincatid)); 
   })
 
   } else { //nincs bejelentkezve az illető
@@ -347,6 +408,8 @@ app.post('/newSubCategory',function (req, res) {
 app.post('/', function(req, res) {
   var username = req.body.username; // felhasználónév, jelszó lekérés a postból
   var password = req.body.password;
+  var status = 0;
+
   const saltRounds = 10; // a hashelés költsége, ami exponenciálisan nő az érték növelése esetén (biztonság vs sebesség)
   bcrypt.hash(password, saltRounds, function(err, hash) {// hashelés
     password = hash;
@@ -360,30 +423,29 @@ app.post('/', function(req, res) {
       if (err) throw err;
       else {
         console.log(result.length);
-        var userid = result[0].uid;
         if (result.length > 0) { // ha van eredménye a lekérdezésnek, akkor létezik és jöhet a jelszóellenőrzés
-          bcrypt.compare(password, result[0].password).then(function(result) {
-            if (result) {
-              
-
+          var userid = result[0].uid;
+          var result = bcrypt.compareSync(password, result[0].password); //szinkron módban hasonlítjuk össze
+          if (result) { //ha a tárolt jelszó hash és a beírt jelszó hash egyezik..
               console.log("Sikeres bejelentkezés: "+username);
               req.session.loggedIn = true; // a sessionban a loggedIn bool mostantól igaz értékű lesz
               req.session.username = username; // username bekerül a sessionba
               req.session.userid = userid; // userid szintén bekerül
               console.log(req.session);
-              res.redirect('/home')
-            } else {
-                console.log("Hibás jelszó: "+username);
-                console.log(result);
-                res.redirect('/');
-            } 
-          });
+              res.redirect('/home'); //minden rendben, így be lehet jelentkeztetni a felhasználót
+          } else { 
+              status = 3; //nem egyezik a két jelszó..
+              console.log("Hibás jelszó: "+username);
+              console.log(result);
+          } 
         // res.render('dashboard.ejs',{username: result[0].username });
-        } else { // ha nem lenne visszatérő érték az sql -ből, akkor a kezdőlapra irányítás
-          console.log(result);
-          console.log("Nem létező felhasználónév: "+username);
-          res.redirect('/');
+          } else { // ha nem lenne visszatérő érték az sql -ből, akkor a kezdőlapra irányítás
+            status = 4; //nem létezik a felhasználónév
+            console.log(result);
+            console.log("Nem létező felhasználónév: "+username);
         }
+              //itt közöljük hiba esetén a státusz kód segítségével a problémát
+     if (status != 0) res.redirect('/?status='+status);
       }
   });
 });
@@ -448,6 +510,35 @@ app.post('/signup_validator',function (req, res) {
         if (result.length > 0) {res.json({exists: true})} else {res.json({exists: false})}
       })
   }
+})
+//Ezt hívja meg az AJAX a főkategóriák és alkategóriák betöltéséhez
+app.post('/getCategorys',function (req, res) {
+  var username = req.session.username;
+
+  if (req.body.target == 'main') {
+    connection.query("CALL GetMainCategorys(?)", [username], function(err, result, fields) {
+      if (err) throw err;
+      if (result[0].length > 0) {
+        var exists = true;
+      } else {
+        var exists = false;
+      }
+        res.json({exists: true, data: result})
+    })
+  }
+
+  if (req.body.target == 'sub') {
+    connection.query("CALL GetSubCategorys(?)", [username], function(err, result, fields) {
+      if (err) throw err;
+      if (result[0].length > 0) {
+        var exists = true;
+      } else {
+        var exists = false;
+      }
+        res.json({exists: true, data: result})
+    })
+  }
+
 })
 //--------------------------------------MAIN NAVIGÁCIÓ--------------------------------------------
 //A main -ra érkező postok alapján tölti be az oldal a megfelelő tartalmat (ejs fájlokat) ajax segítségével
@@ -561,7 +652,6 @@ setTimeout(function(){
 pdfmaker.adat(jsPDF,app,connection,fs);
 data_export.exp(fs,app,connection);
 result_export.resexp(fs,app,connection);
-data_import.imp(fs,app,connection);
 
 //list post kezelese
 app.post('/list', function (req, res) {

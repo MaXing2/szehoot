@@ -1,4 +1,5 @@
 
+
 .signup {
 	max-width: 500px;
 }
@@ -10,7 +11,159 @@
 .table {
     --bs-table-hover-bg: #e7f1ff;
 }
+/* test/create */
 
-.operations-button > .btn {
-    /* margin: 1px !important; */
+.trash-icon {
+    height: 1.5rem;
+    /* font-size: 20px; */
+    /* margin-right: 5px; */
+}
+
+.modify-icon {
+    height: 1.5rem;
+    margin: 8px; 
+    color: #bf9b25;
+}
+
+.save-icon {
+    height: 1.5rem;
+    margin-right: 5px;
+}
+
+.export-icon {
+    height: 1.5rem;
+    margin-right: 5px;
+}
+
+.btn-export {
+    background-color: antiquewhite;
+    border-color: #f7ddbb;
+}
+
+.btn-export:hover {
+    background-color: #f7ddbb;
+
+}
+
+.plus-icon {
+    flex: none;
+}
+
+.notification-icon {
+    height: 1.5rem;
+    margin: 8px; 
+}
+
+.clock-icon {
+    height: 1.5rem;
+    margin: 0px;
+    color: grey; 
+}
+
+.star-icon {
+    height: 1.5rem;
+    margin: 0px;
+    color: grey; 
+}
+
+.answers-icon {
+    height: 1rem;
+}
+
+.reward-icon {
+    height: 1.5rem;
+    margin: 0px;
+    font-size: 18px;
+    color: grey; 
+}
+
+.plus-icon>a>svg:hover {
+    color: cornflowerblue;
+}
+
+.task-header
+{
+    color: grey;
+}
+
+
+.card:hover > div:first-of-type:not(:last-child){
+    background-color: rgba(0,0,0,.09);
+}
+
+.card:hover {
+cursor:pointer;
+}
+
+.toolbar {
+    font-size: 24px;
+}
+
+#characters {
+    font-weight: normal;
+}
+
+#type-1 textarea, #type-2 textarea {
+resize: none;
+}
+
+.labels {
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.task-labels>span {
+    line-height: 1.2;
+    text-align: center;
+}
+
+#contenteditor {
+    min-height: 500px;
+    border: 1px solid rgba(0,0,0,.125); 
+    border-radius: .25rem; padding: 20px;
+}
+#taskNumber {
+    font-size: 1.5rem;
+}
+.plr-5px {
+    padding: 0px 5px 0px 5px
+}
+#imageDiv {
+    width: 100%;
+    min-height: 300px;
+    border: black 1px solid;
+    margin-top: .5rem;
+}
+#textDiv {
+    width: 100%;
+    min-height: 338px;
+    border: black 1px solid;
+    margin-top: .5rem;
+}
+#dnd {
+    width: 100%;
+    min-height: 300px;
+}
+
+.answerDiv {
+    width: 100%; 
+    min-height: 50px;
+}
+#trueAnswer {
+    background-color: forestgreen; 
+    width: 100%;
+}
+#falseAnswer {
+    background-color: #e64c41; 
+    width: 100%;
+}
+.zi-4 {
+   z-index:4; 
+}
+
+.wrongTask > div:first-of-type:not(:last-child){ 
+    background-color: #ff4d4d8a !important;
+}
+.wrongTask:hover > div:first-of-type:not(:last-child){
+    background-color: #ff4d4dd1 !important;
 }

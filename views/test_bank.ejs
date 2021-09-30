@@ -18,8 +18,26 @@ background-color: beige !important;
   background-color:rgb(231, 241, 255) !important;
 }
 
+.btn-start{
+  background-color:#228b58 !important;
+  color: #fff;
+  border-color: #196741;
+}
+.btn-start:hover {
+  background-color: #1e7b4e !important;
+  color: #fff !important;
+}
 
+.btn-duplicate{
+  background-color:#6480c1 !important;
+  color: #fff;
+  border-color: #496ab6;
+}
 
+.btn-duplicate:hover{
+  background-color: #496ab6 !important;
+  color: #fff !important;
+}
 </style>
 <% if (typeof pincode !== 'undefined') { %>
 	<div class="alert alert-success d-flex alert-dismissible" role="alert">
@@ -45,8 +63,10 @@ id="table"
 data-toggle="table"
 data-mobile-responsive="true"
 data-search="true"
-data-pagination="true" 
-data-page-number="2">
+data-pagination="false" 
+data-page-number="1"
+data-page-size="10"
+data-pagination-parts="[pageList, pageInfo]">
   <thead>
     <tr>
       <th data-field="id">ID</th>
@@ -58,101 +78,116 @@ data-page-number="2">
     </tr>
   </thead>
   <tbody>
+<% if (test_data[0].length > 0) { %>
   <% for(var i=0; i<test_data[0].length; i++) {%>
           <tr data-bs-toggle="collapse" data-bs-target="#hiddenRow<%= i %>" aria-expanded="false" aria-controls="#hiddenRow<%= i %>" id="Row<%= i %>" class="">
               <td><%= test_data[0][i].test_id %></td>
               <td><%= test_data[0][i].test_name %></td>
               <td><%= test_data[0][i].question_num %></td>
-              <td><%= test_data[0][i].cat_name %></td>
+              <td><%= test_data[0][i].maincat_name %>/<%= test_data[0][i].subcat_name %></td>
               <td><%= moment(test_data[0][i].created_date).format("YYYY.MM.DD HH:mm");  %></td>
               <td><%= moment(test_data[0][i].modified_date).format("YYYY.MM.DD HH:mm");  %></td>
           </tr>
+  <% } %>
+<% } %>
+  </tbody>
+</table>
 
-          <tr id="hiddenRow<%= i %>">
-                <td style="display: none"><%= test_data[0][i].test_id %></td>
-                <td style="display: none"><%= test_data[0][i].test_name %></td>
-                <td style="display: none"><%= test_data[0][i].question_num %></td>
-                <td style="display: none"><%= test_data[0][i].cat_name %></td>
-                <td style="display: none"><%= moment(test_data[0][i].created_date).format("YYYY.MM.DD HH:mm");  %></td>
-                <td class="hiddenRow p-0 w-100" colspan="6">
-                <div class="collapse" id="hiddenRow<%= i %>">
-                  <div class="card card-body">                
-                    <div class="row">
-                      <div class="col-sm-4">
-                        <div class="card h-100">
-                          <div class="card-body">
-                            <h5 class="card-title">Aktív példányok</h5>
-                            <div class="row">
-                            <% if (1==2) { %>
-                              <p class="card-text">Ebből a tesztből jelenleg nem fut egy példány sem.</p>
-                            <% } else { %>
 
-                              <div class="item">
-                              <div class="table-responsive">  
-                                <table class="table process-table">
-                                  <thead>
-                                    <tr>
-                                      <th>ID</th>
-                                      <th>Indítás dátuma</th>
-                                      <th>Pinkód</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                      <% var process_count=0 %>
-                                      <% for(var j=0; j<process_data[0].length; j++)  {%>
-                                        <% if (process_data[0][j].test_id == test_data[0][i].test_id) { %>
-                                          <% process_count++ %>
-                                          <tr>
-                                            <td class="col-sm-2"><%= process_data[0][j].process_id %></td>
-                                            <td class="col-sm-6"><%= moment(process_data[0][j].start_date).format("YYYY.MM.DD HH:mm"); %></td>
-                                            <td class="col-sm-4"><%= process_data[0][j].pincode %></td>
-                                         </tr>                    
-                                        <% } } %>
-                                  </tbody>
-                                </table>
-                              </div> 
-                              </div>
-                              <% if (process_count <= 0) { %>
-                                <p class="card-text pt-2">Ebből a tesztből jelenleg nem fut egy példány sem.</p>
-                                <% } %> 
-                              <% } %> 
-                            </div>
+<table class="d-none" id="shadowTable">
+  <tbody>
+<% if (test_data[0].length > 0) { %>
+  <% for(var i=0; i<test_data[0].length; i++) {%>
+          <tr id="hiddenRow<%= i %>_src">
+            <td class="hiddenRow p-0 w-100" colspan="6">
+            <div class="collapse" id="hiddenRow<%= i %>Div_src">
+              <div class="card card-body">                
+                <div class="row">
+                  <div class="col-sm-5">
+                    <div class="card h-100">
+                      <div class="card-body">
+                        <h5 class="card-title">Példányok</h5>
+                        <div class="row">
+                          <div class="item">
+                          <div class="table-responsive">  
+                            <table class="table process-table">
+                              <thead>
+                                <tr>
+                                  <th>ID</th>
+                                  <th>Indítás dátuma</th>
+                                  <th>Pinkód</th>
+                                  <th></th>
+                                  <th></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <% var process_count=0 %>
+                                <% if (typeof process_data !== 'undefined') { %>
+                                  <% for(var j=0; j<process_data[0].length; j++)  {%>
+                                    <% if (process_data[0][j].test_id == test_data[0][i].test_id) { %>
+                                      <% process_count++ %>
+                                      <tr>
+                                        <td class="col-sm-2"><%= process_data[0][j].process_id %></td>
+                                        <td class="col-sm-6"><%= moment(process_data[0][j].start_date).format("YYYY.MM.DD HH:mm"); %></td>
+                                        <td class="col-sm-3"><%= process_data[0][j].pincode %></td>
+                                          <%var time = moment.duration(moment(new Date(), "YYYY.MM.DD HH:mm").diff(moment(process_data[0][j].end_date, "YYYY.MM.DD HH:mm")));%>
+                                          <% if (time.asSeconds() >= 0) { %> 
+                                            <td class="col-sm-1"><span class="iconify" data-icon="carbon:dot-mark" style="color: red;"></span>
+                                          <% } else { %>
+                                            <td class="col-sm-1"><span class="iconify" data-icon="carbon:dot-mark" style="color: green;"></span>
+                                          <% } %>
+                                      </td>
+                                      </tr>                    
+                                    <% } %>
+                                   <% } %>
+                                <% } %>
+                              </tbody>
+                            </table>
+                          </div> 
                           </div>
-                        </div>
-                      </div>
-                      <div class="col-sm-4">
-                        <div class="card h-100">
-                          <div class="card-body">
-                            <h5 class="card-title">Statisztika</h5>
-                            <dl class="row">
-                              <dt class="col-sm-8">Kitöltések száma</dt>
-                              <dd class="col-sm-4">0</dd>
-                              <dt class="col-sm-8">Futtatások száma</dt>
-                              <dd class="col-sm-4">0</dd>
-                            </dl>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-sm-4">
-                        <div class="card h-100">
-                          <div class="card-body">
-                            <h5 class="card-title">Műveletek <img color="green" src="/images/info-circle.svg" 
-                              tabindex="0" class="btninfo" role="button" data-bs-toggle="popover" data-bs-trigger="hover focus" 
-                              title="Információ" data-bs-content="A műveletek segítségével elindíthatod a tesztet egy tetszőleges módban, szerkesztheted vagy törölheted azt.">
-                              </img></h5>
-                              <a href="#" data-bs-toggle="modal" OnClick="LoadDataToModal('<%= test_data[0][i].test_id %>')" data-bs-target="#createTestProcessModal" class="btn btn-primary btn-sm">Indítás</a>
-                              <a href="#" class="btn btn-secondary btn-sm">Módosítás</a>
-                              <a href="#" data-bs-toggle="modal" data-bs-target="#deleteTestModal" class="btn btn-danger btn-sm">Törlés</a><br>
-                              <a href="#" class="btn btn-outline-warning btn-sm mt-2">Exportálás</a>
-                              <a href="#" class="btn btn-outline-warning btn-sm mt-2">Nyomtatás</a>
-                          </div>
+                          <% if (process_count <= 0) { %>
+                            <p class="card-text pt-2">Ebből a tesztből jelenleg nem fut egy példány sem.</p>
+                            <% } %> 
                         </div>
                       </div>
                     </div>
-                  </div> 
-              </div>
-          </td></tr>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="card h-100">
+                      <div class="card-body">
+                        <h5 class="card-title">Statisztika</h5>
+                        <dl class="row">
+                          <dt class="col-sm-8">Összes kitöltés</dt>
+                          <dd class="col-sm-4">0</dd>
+                          <dt class="col-sm-8">Helyes kitöltés</dt>
+                          <dd class="col-sm-4">0</dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="card h-100">
+                      <div class="card-body">
+                        <h5 class="card-title">Műveletek <img color="green" src="/images/info-circle.svg"
+                          tabindex="0" class="btninfo" role="button" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                          title="Információ" data-bs-content="A műveletek segítségével elindíthatod a tesztet egy tetszőleges módban, szerkesztheted vagy törölheted azt.">
+                          </img></h5>
+                          <a href="#" OnClick="LoadDataToModal('newTestProcess', '<%= test_data[0][i].test_id %>','')" class="btn btn-start btn-sm">Indítás</a>
+                          <a href="#" OnClick="LoadDataToModal('duplicateTest', '<%= test_data[0][i].test_id %>','<%= test_data[0][i].category_id %>')" class="btn btn-duplicate btn-sm">Duplikálás</a>
+                          <a href="#" data-bs-target="#deleteTestModal" class="btn btn-danger btn-sm">Törlés</a><br>
+                          <a href="#" class="btn btn-secondary btn-sm mt-2">Szerkesztés</a>
+                          <a href="#" class="btn btn-secondary btn-sm mt-2">Átnevezés</a><br>
+                          <a href="#" class="btn btn-outline-warning btn-sm mt-2">Exportálás</a>
+                          <a href="#" class="btn btn-outline-warning btn-sm mt-2">Nyomtatás</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div> 
+          </div>
+      </td></tr>
   <% } %>
+<% } %>
   </tbody>
 </table>
 
@@ -170,7 +205,7 @@ data-page-number="2">
        
         
 
-            <fieldset>
+          <fieldset>
             <div class="container">
                 <input class="form-control" hidden type="text" id="test_id" name="test_id" value="">
                 <div class="form-group mb-3 mode_select"> 
@@ -205,7 +240,10 @@ data-page-number="2">
                 </div>
     
                 <div class="form-group mb-3 "> 
-                  <label class="form-label" for="end_date"><b>Lejárati dátum:</b></label>
+                  <label class="form-label" for="end_date"><b>Lejárati dátum: <img color="green" src="/images/info-circle.svg" 
+                    tabindex="0" class="btninfo" role="button" data-bs-toggle="popover" data-bs-trigger="hover focus" 
+                    title="Információ" data-bs-content="A lejárati dátum üresen hagyásával a teszt példány határozatlan ideig fog futni.">
+                    </img></b></label>
                   <input class="form-control"  type="datetime-local" id="end_date" name="end_date" min="<%= moment().format("YYYY-MM-DD[T]HH:mm");  %>">
                   <div class="valid-feedback">
                   <span id="valid-text"></span>
@@ -216,7 +254,7 @@ data-page-number="2">
                 </div>
 
             </div>
-            </fieldset>
+          </fieldset>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Kilépés</button>
@@ -256,10 +294,131 @@ data-page-number="2">
   </div>
 </div>
 
+<!--Teszt duplikálása Modal  -->
+<div class="modal fade" id="duplicateTestModal" tabindex="-1" aria-labelledby="duplicateTestModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Teszt duplikálása</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+    <section class='form'>
+      <form action="/duplicateTest" class="needs-validation" method="post" id="duplicateTest" novalidate>
+        <div class="modal-body">
+          <fieldset>
+            <div class="container">
+              <div class="form-group mb-3"> 
+                  <label class="form-label" for="test_name_dt"><b>Teszt másolat címe:</b></label>
+                  <input class="form-control" type="text" id="test_name_dt" name="test_name_dt">
+                  <input class="form-control" hidden type="text" id="test_id_dt" name="test_id_dt" value="">
+                  <div class="valid-feedback">
+                    <span id="valid-text"></span>
+                  </div>
+                  <div class="invalid-feedback">
+                   <span id="invalid-text"></span>
+                  </div>
+              </div>
+              <div class="form-group mb-3"> 
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="newCatCheck">
+                  <input class="form-control" hidden type="text" id="cat_id_dt" name="cat_id_dt" value="">
+                  <label class="form-check-label" for="newCatCheck">
+                    Új kategóriába helyezés
+                  </label>
+                </div>
+              </div>
+              <div class="form-group mb-3 maincat d-none"> 
+                <label class="form-label" for="main_category_dt"><b>Főkategória:</b></label>
+                <div class="row">
+                  <div class="col-8">
+                    <select class="form-select" onChange="getSubCategory('duplicateTest');" id="main_category_dt" name="main_category_dt"></select>
+                    <div class="invalid-feedback">
+                      <span id="invalid-text"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                <div class="form-group mb-3 subcat d-none"> 
+                    <label class="form-label" for="sub_category_dt"><b>Alkategória:</b></label>
+                    <div class="row">
+                      <div class="col-8">
+                        <select class="form-select" id="sub_category_dt" name="sub_category_dt"></select>
+                      </div>
+                    </div>
+                </div>
+            </div>
+          </fieldset>
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Kilépés</button>
+        <button type="submit" id="duplicateTestBtn" class="btn btn-primary">Létrehozás</button>
+      </div>
+      </form>
+  </section>
+    </div>
+  </div>
+</div>
+
+
 <script>
+  var courrentLength = 10; //inicializáljuk a jelenlegi értékkel a hosszúságot
+$(document).ready(function() {
+    ShowRowByID('<%= test_id %>'); //meghívjuk a függvényt, ezzel lenyitjuk azt a tesztet, amiről új folyamatot hoztunk létre
+    AddPageChangeBar(); //hozzáadjuk az oldal betöltését követően a "menüt"
+});
+
+function htmlToElement(html) {
+		var template = document.createElement('template');
+		html = html.trim();
+		template.innerHTML = html;
+		return template.content.firstChild;
+	} 
+
+function AddPageChangeBar() {
+  if (!$("#pageLengthValue").length) {
+      var html=`
+      <div class="float-left pagination"> 
+      <select OnChange="ChangePageLength()" class="form-select" id="pageLengthValue" aria-label="">
+        <option selected value="10">10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+      </div>`;
+      var PageSize = htmlToElement(html);
+			var PagenationContainer = $(".fixed-table-pagination");
+			PagenationContainer.append(PageSize);
+      $('#pageLengthValue').val(courrentLength); //az épp aktuális hosszra állítjuk be
+    }
+  }
+
+function ChangePageLength() { //oldalhossz váltás esetén
+  courrentLength = $('#pageLengthValue').val(); //elmentjük a kiválasztott értéket
+  $("#table").bootstrapTable('refreshOptions', { //beállítjuk
+    pageSize: $('#pageLengthValue').val()
+  })
+  console.log(courrentLength);
+  AddPageChangeBar();//újra hozzáadjuk a "menüt"
+  $('#pageLengthValue').val(courrentLength); //visszaállítjuk az előzőleg kiválasztott értéket
+}
+
 
 $("#table").bootstrapTable({
 onClickRow:function(row, $element){
+  console.log($element);
+  var index = row._id; //A megjelenő row indexe
+  if (!$("#hidden"+index).length) {//ha nem létezik még a rejtett row, akkor átrakjuk a shadowTable-ből
+        $('#'+index).after('<tr id="hidden'+index+'">'+$( "#hidden"+index+'_src').html()+'</tr>'); //hiddenrow id beállítás
+        $("#hidden"+index+'Div_src').attr('id', 'hidden'+index); //bennelévő div id beállítás
+        $("#hidden"+index).addClass('additional');
+        $element.click(); //muszáj egy klikket szimulálni, mert másképp nem nyílik le a hiddenrow
+        InitPopup();//mindig meg kell hívni újra, hogy megjelenjen a felugró ablakok
+  } else {
+        $("#hidden"+index).on('hidden.bs.collapse', function(){ //csak akkor törölje a tr elemet, ha már megtörtént az animáció
+        $("#hidden"+index).remove();
+        });
+  }
+ 
   if ($element.attr('aria-expanded') === "true" ) {
     $element.css("background-color", "#e7f1ff");
   } else {
@@ -278,13 +437,20 @@ onToggle:function(cardView){
 },
 
 onLoadSuccess: function (data) {
-
 },
+
+onPageChange: function(number, size) {
+  AddPageChangeBar(); //oldalváltás esetén újra hozzá kell adni a "menüt"
+},
+
+
 
 //Mobilnézetben(card-view) generál két span elemet a bootstrap-table, ezzel szabadulunk meg tőle
 onResetView : function (data, index) {
-  InitPopup();
+  
+  // $('#table tr[id*="hiddenRow"]').addClass('additional');
 
+  InitPopup();
   $(".additional .card-view-title").remove();
   $("[colspan=6]").addClass('p-0');
 },
@@ -298,18 +464,19 @@ onResetView : function (data, index) {
 
 rowStyle: function (row, index) {
 
-  if (index % 2 === 1) {
-    return {
-      classes: 'additional',
-    }
-  }
+  // if (index % 2 === 1) {
+  //   return {
+  //     classes: 'additional',
+  //   }
+  // }
   return {
             classes: 'p-0 table-hover', //minden 2 -vel nem osztható sor megkapja a table-hover classt
             css: {
               cursor: 'pointer'
             }
           };
-      
+  
+
 }
 })
 
@@ -324,35 +491,82 @@ function CopyToTheClipboard() {
     textArea.remove();
 }
 
-$(document).ready(function() {
-ShowRowByID('<%= test_id %>'); //meghívjuk a függvényt, ezzel lenyitjuk azt a tesztet, amiről új folyamatot hoztunk létre
-});
 
 function ShowRowByID(target) {
-  var td = $('td').filter( ":nth-child(1)" ).filter(function(){ //megkeressük azt a td elemet, ahol az id egyezik az url queryben szereplővel 
-    return $(this).text() === '<%= test_id %>'
+
+  var td = $('#table td').filter( ":nth-child(1)" ).filter(function(){ //megkeressük azt a td elemet, ahol az id egyezik az url queryben szereplővel 
+    return $(this).text() === target;
   })
   var Row = td.parent('tr'); //megkeressünk a szülő tr -t
-  Row.click(); //szimulálunk egy klikket
+  var pageCount = parseInt(Row.attr('data-index')/10)+1;
+  console.log('Lap: '+pageCount);
+  $('#table').bootstrapTable('togglePagination');
+  $('#table').bootstrapTable('selectPage', pageCount);
+  Row = $('#'+Row.attr('id')); //ismeretlen okból kifolyólag enélkül nem nyílik le a rejtett row, így a row változónak át kell adni ?önmagát? és jó lesz
+
+  var index = Row.attr('id'); //A megjelenő row indexe
+  if (!$("#hidden"+index).length) {//ha nem létezik még a rejtett row, akkor átrakjuk a shadowTable-ből
+        $('#'+index).after('<tr id="hidden'+index+'">'+$( "#hidden"+index+'_src').html()+'</tr>'); //hiddenrow id beállítás
+        $("#hidden"+index+'Div_src').attr('id', 'hidden'+index); //bennelévő div id beállítás
+        $("#hidden"+index).addClass('additional');
+        Row.click(); //muszáj egy klikket szimulálni, mert másképp nem nyílik le a hiddenrow
+        InitPopup();
+  }
   if (Row.attr('aria-expanded') === "true" ) { //beszínezzük a sort
     Row.css("background-color", "#e7f1ff");
     } else {
-      Row.css("background-color", "")
+      Row.css("background-color", "");
     }
+
+
+
 }
 
-function LoadDataToModal(target) {
-$("#test_id").val(target);
-}
+function LoadDataToModal(modal, test_id, test_subcategory) {
+  switch(modal) {
 
+  case 'newTestProcess':
 
+    $("#test_id").val(test_id);
+    var createTestProcessModal = new bootstrap.Modal(document.getElementById('createTestProcessModal'));
+    createTestProcessModal.show();
+    break;
 
-  // function HideRow(target) {
-  //     var row = $('#hidden'+target);  //returns a jQuery Object
-  //     if (row.hasClass('collapse')) {
-  //         row.removeClass('collapse')
-  //     } else {
-  //         row.addClass('collapse')
-  //     }
-  // }
+  case 'duplicateTest':
+
+    var td = $('#table td').filter( ":nth-child(1)" ).filter(function(){
+      return $(this).text() === test_id;
+    })
+    var Row = td.parent('tr'); 
+    $('#test_name_dt').val(Row.find("td:eq(1)").text() + ' - másolat');  //a tr 1. td eleme a teszt neve
+    $('#newCatCheck').prop('checked', false);
+    $("#test_id_dt").val(test_id);
+    $("#cat_id_dt").val(test_subcategory);
+    originalCatId = $('#cat_id_dt').val(); //eredeti kategória ID eltárolása
+    $('#duplicateTestModal .maincat').addClass('d-none');
+    $('#duplicateTestModal .subcat').addClass('d-none');  
+    var duplicateTestModal = new bootstrap.Modal(document.getElementById('duplicateTestModal'));
+    duplicateTestModal.show();
+    break;
+  default:
+    // code block
+}}
+
+var originalCatId; //globális változóba tároljuk az eredeti kategória azonosítóját
+$("#newCatCheck").change(function() {
+    if(this.checked) {
+        getMainCategory('duplicateTest'); 
+        $('#duplicateTestModal .maincat').removeClass('d-none');
+        $('#duplicateTestModal .subcat').removeClass('d-none');
+    } else {
+        $('#duplicateTestModal .maincat').addClass('d-none');
+        $('#duplicateTestModal .subcat').addClass('d-none');     
+        $('#cat_id_dt').val(originalCatId); //eredeti visszamásolása
+    }
+});
+
+$("#sub_category_dt").change(function() {
+  $('#cat_id_dt').val($('#sub_category_dt').val()); //új kategória azonosító átmásolása a rejtett inputba..
+});
+
         </script>

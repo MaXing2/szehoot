@@ -1,0 +1,700 @@
+<style>
+
+	.labels {
+		margin-bottom: 15px;
+		font-weight: bold;
+	}
+
+	.task-labels>span {
+		line-height: 1.2;
+		text-align: center;
+	}
+
+
+@media (max-width: 1200px) {
+	#listbar {
+		display:none;
+	}
+
+	#test_title {
+		text-align:center;
+	}
+
+	#listbar-mobile {
+		display: inline;
+	}
+
+}
+
+
+@media (min-width: 992px) { 
+
+	.c-answer-center {
+		width: 50% !important;
+		padding: 0px 6px 0px 6px;
+		margin: auto;
+		/* transition: width 1s;  */
+	}
+ }
+
+@media (min-width: 1200px) {
+	#listbar-mobile {
+		display: none;
+	}
+
+}
+
+
+</style>
+
+
+	<div id="testinfo" class="row g-0">
+		<div id="test_title" class="col-xl-3 m-auto">
+			<h3 class="d-inline">Teszt címe</h3>
+		</div>
+		<div class="col-xl-2 m-auto text-center">
+			<span>Feladatok száma:</span>
+			<span class="fw-bold">6 db</span>
+		</div>
+		<div class="col-xl-2 m-auto text-center">
+			<span>Teszt kitöltési idő:</span>
+			<span class="fw-bold">00:03:40</span>
+		</div>
+		<div class="col-xl-2 m-auto text-center">
+			<span>Összes pontszám:</span>
+			<span class="fw-bold">35 pont</span>
+		</div>
+		<div id="top-buttons-group" class="col-xl-3 m-auto">
+			<button type="button" class="btn btn-success float-end p-1 m-1" id="liveToastBtn" OnClick="ShowToastMsg('save');"><span class="iconify save-icon d-inline float-start toolbar" data-icon="fluent:save-24-regular"></span>Teszt mentése</button>
+			<button type="button" class="btn btn-export float-end p-1 m-1" id="liveToastBtn" OnClick="ShowToastMsg('export');"><span class="iconify export-icon d-inline float-start toolbar" data-icon="carbon:document-export"></span>Exportálás</button>
+		</div>
+	</div>
+
+	<div id="listbar-mobile" class="container mb-5" style="">
+			<label class="form-label" for="list"><b>Feladatok</b></label>
+			<select class="form-select" aria-label="">
+				<option selected disabled value="">Kérlek válassz!</option>
+				<option value="12">1. feladat | id: #12 | Feleletválasztós/egy megoldás/4</option>
+			</select>
+	</div>
+
+	<div class="row row-eq-height row-flex align-items-start g-0">
+		<div id="listbar" class="col-xl-2 overflow-auto">
+			<div class="row g-0 ratio ratio-16x9">
+				<div class="card">
+					<div class="card-header task-header">
+						<span class="d-inline float-start text-dark">1.</span>
+						<span class="iconify reward-icon d-inline float-end ms-1" data-icon="mdi:star-plus"></span>
+						<span  class="d-inline float-end ms-1">0</span>
+						<span class="iconify star-icon d-inline float-end ms-1" data-icon="bx:bxs-star"></span>
+						<span  class="d-inline float-end ms-1">5</span>
+						<span class="iconify clock-icon d-inline float-end ms-1" data-icon="akar-icons:clock"></span>
+						<span  class="d-inline float-end">30</span>
+					</div>
+					<div class="card-body p-0 m-auto align-middle d-flex task-labels">
+						<span class="m-auto">Feleletválasztós<br>(3 megoldás)</span>
+					</div>
+					<div>
+						<span class="iconify modify-icon d-inline float-end" data-icon="eos-icons:content-modified"></span>
+					</div>	
+				</div>
+			</div>
+			<div class="row g-0 ratio ratio-16x9">
+				<div class="card">
+					<div class="card-header task-header">
+						<span class="d-inline float-start text-dark">2.</span>
+						<span class="iconify reward-icon d-inline float-end ms-1" data-icon="mdi:star-plus"></span>
+						<span  class="d-inline float-end ms-1">0</span>
+						<span class="iconify star-icon d-inline float-end ms-1" data-icon="bx:bxs-star"></span>
+						<span  class="d-inline float-end ms-1">10</span>
+						<span class="iconify clock-icon d-inline float-end ms-1" data-icon="akar-icons:clock"></span>
+						<span  class="d-inline float-end">60</span>
+					</div>
+					<div class="card-body p-0 m-auto align-middle d-flex task-labels">
+						<span class="m-auto">Feleletválasztós<br>(4 lehetőség)</span>
+					</div>
+					<div>
+						<span class="iconify modify-icon d-inline float-end" data-icon="eos-icons:content-modified"></span>
+					</div>	
+				</div>
+			</div>
+			<div class="row g-0 ratio ratio-16x9">
+				<div class="card">
+					<div class="card-header task-header">
+						<span class="d-inline float-start text-dark">3.</span>
+						<span class="iconify reward-icon d-inline float-end ms-1" data-icon="mdi:star-plus"></span>
+						<span  class="d-inline float-end ms-1">0</span>
+						<span class="iconify star-icon d-inline float-end ms-1" data-icon="bx:bxs-star"></span>
+						<span  class="d-inline float-end ms-1">2</span>
+						<span class="iconify clock-icon d-inline float-end ms-1" data-icon="akar-icons:clock"></span>
+						<span  class="d-inline float-end">20</span>
+					</div>
+					<div class="card-body p-0 m-auto align-middle d-flex task-labels">
+						<span class="m-auto">Igaz/Hamis</span>
+					</div>
+					<div>
+						<span class="iconify modify-icon d-inline float-end" data-icon="eos-icons:content-modified"></span>
+					</div>	
+				</div>
+			</div>
+			<div class="row g-0 ratio ratio-16x9">
+				<div class="card">
+					<div class="card-header task-header">
+						<span class="d-inline float-start text-dark">4.</span>
+						<span class="iconify reward-icon d-inline float-end ms-1" data-icon="mdi:star-plus"></span>
+						<span  class="d-inline float-end ms-1">0</span>
+						<span class="iconify star-icon d-inline float-end ms-1" data-icon="bx:bxs-star"></span>
+						<span  class="d-inline float-end ms-1">3</span>
+						<span class="iconify clock-icon d-inline float-end ms-1" data-icon="akar-icons:clock"></span>
+						<span  class="d-inline float-end">20</span>
+					</div>
+					<div class="card-body p-0 m-auto align-middle d-flex task-labels">
+						<span class="m-auto">Igaz/Hamis</span>
+					</div>
+					<div>
+						<span class="iconify modify-icon d-inline float-end" data-icon="eos-icons:content-modified"></span>
+					</div>	
+				</div>
+			</div>
+			<div class="row g-0 ratio ratio-16x9">
+				<div class="card">
+					<div class="card-header task-header">
+						<span class="d-inline float-start text-dark">5.</span>
+						<span class="iconify reward-icon d-inline float-end ms-1" data-icon="mdi:star-plus"></span>
+						<span  class="d-inline float-end ms-1">0</span>
+						<span class="iconify star-icon d-inline float-end ms-1" data-icon="bx:bxs-star"></span>
+						<span  class="d-inline float-end ms-1">8</span>
+						<span class="iconify clock-icon d-inline float-end ms-1" data-icon="akar-icons:clock"></span>
+						<span  class="d-inline float-end">60</span>
+					</div>
+					<div class="card-body p-0 m-auto align-middle d-flex task-labels">
+						<span class="m-auto">Feleletválasztós<br>(több megoldás)</span>
+					</div>
+					<div>
+						<span class="iconify modify-icon d-inline float-end" data-icon="eos-icons:content-modified"></span>
+					</div>	
+				</div>
+			</div>
+			<div class="row g-0 ratio ratio-16x9">
+				<div class="card">
+					<div class="card-header task-header">
+						<span class="d-inline float-start text-dark">6.</span>
+						<span class="iconify reward-icon d-inline float-end ms-1" data-icon="mdi:star-plus"></span>
+						<span  class="d-inline float-end ms-1">5</span>
+						<span class="iconify star-icon d-inline float-end ms-1" data-icon="bx:bxs-star"></span>
+						<span  class="d-inline float-end ms-1">7</span>
+						<span class="iconify clock-icon d-inline float-end ms-1" data-icon="akar-icons:clock"></span>
+						<span  class="d-inline float-end">30</span>
+					</div>
+					<div class="card-body p-0 m-auto align-middle d-flex task-labels">
+						<span class="m-auto">Feleletválasztós<br>(több megoldás)</span>
+					</div>
+					<div>
+						<span class="iconify modify-icon d-inline float-end" data-icon="eos-icons:content-modified"></span>
+					</div>	
+				</div>
+			</div>
+			
+			<div style="" class="row g-0 ratio ratio-16x9">
+				<div class="card">
+				<div class="card-body m-auto text-center align-middle d-flex text-center plus-icon">
+					<a href="#" data-bs-toggle="modal" data-bs-target="#newTaskModal">
+						<span class="iconify m-auto img-fluid" data-icon="eos-icons:content-new" color="grey" data-width="40%" data-height="40%"></span>
+					</a><br>
+				</div></div>
+			</div>
+
+
+		</div>
+
+
+	  <div id="contenteditor" class="col-xl-10 pb-0 overflow-auto" style="min-height: 500px;border: 1px solid rgba(0,0,0,.125); border-radius: .25rem; padding: 20px; ">
+		<div class="row">
+			<div class="col-lg text-center">
+				<span style="font-size: 1.5rem;" class="">#7</span>
+				<button type="button" class="btn btn-danger float-end p-1" id="liveToastBtn2" OnClick="ShowToastMsg('delete');"><span class="iconify trash-icon d-inline float-start toolbar" data-icon="fluent:delete-24-regular"></span></button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg">
+				<label class="form-label mt-2" for="username"><b>Időkorlát</b></label>
+				<select class="form-select" aria-label="Default select example">
+					<option selected disabled value="">Kérlek válassz!</option>
+					<optgroup label="Másodperc"></optgroup>
+					<option value="10">10</option>
+					<option value="20">20</option>
+					<option value="30">30</option>
+					<option value="40">40</option>
+					<option value="50">50</option>
+					<optgroup label="Perc"></optgroup>
+					<option value="60">1</option>
+					<option value="90">1,5</option>
+					<option value="120">2</option>
+					<option value="150">2,5</option>
+				</select>
+			</div>
+			<div class="col-lg">
+				<label class="form-label mt-2" for="username"><b>Alappontszám</b></label>
+				<select class="form-select" aria-label="Default select example">
+					<option selected disabled value="">Kérlek válassz!</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+				</select>
+			</div>
+			<div class="col-lg">
+				<label class="form-label mt-2" for="username"><b>Extra pontszám (opcionális)</b><img src="images/info_black_24dp.svg" 
+				tabindex="0" id="extrap-info" class="btninfo" role="button" data-bs-toggle="popover" data-bs-trigger="hover focus" 
+				title="Információ" data-bs-content="A leggyorsabb kitöltő az alappontszámon felül az itt meghatározott pontszámot is elnyeri. Csak versenymódban érvényes!">
+				</img></label>
+				<select class="form-select" aria-label="Default select example">
+					<option selected value="0">Nincs</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+				</select>
+			</div>
+		  </div>
+		  <div class="row" style="padding: 0px 5px 0px 5px">
+			<div class="col-lg-6 mt-3">
+				<span class="labels">Megjelenítendő kép</span>
+				<div style="width: 100%; min-height: 300px; border: black 1px solid; margin-top: .5rem;">
+					<form ref='uploadForm' 
+					id='uploadForm' 
+					action='http://localhost:3000/upload' 
+					method='post' 
+					encType="multipart/form-data" accept=".gif, .jpg, .png, .doc">
+					<div class="d-flex align-items-center" id="dnd" style="width: 100%; min-height: 300px;" ondragover="preventszar(event)" ondragenter="preventszar(event)" ondrop="dropped(event)">
+						<span class="m-auto">Kattints ide vagy húzd be a képet!</span>
+					</div>
+					<input id="fileUploadField" type="file" name="sampleFile" hidden />
+					  <input type='submit' value='Upload!' hidden  />
+					  <input type="text" placeholder="URL megadása esetén másold ide a teljes címet!" class="form-control"/>
+				  </form>
+
+				</div>
+			</div>
+			<div id="editor" class="col-lg-6 mt-3">
+				<span id="characters" class="labels float-end m-0"></span>
+				<span class="labels">Megjelenítendő szöveg</span>
+				<div style="width: 100%; min-height: 338px; border: black 1px solid; margin-top: .5rem;">
+					<textarea width=80% id="bbcode-textarea"></textarea>
+				</div>
+			</div>
+		  </div>
+		  <div class="row m-auto">
+			  	<span id="choose-label" class="labels mt-4 d-flex justify-content-center">Válasz lehetőségek</span>
+				<input id="task_type" type="hidden">
+			 	<div class="col-sm-12 d-flex justify-content-center">
+			 		 <button type="button" class="btn border m-1 w-auto p-1" id="answerCountChangeBtn"><span>4</span><span class="iconify m-1 answers-icon d-inline float-end toolbar" data-icon="vaadin:options"></span></button>
+			 		 <button type="button" data-bs-toggle="modal" data-bs-target="#typeChange" class="btn border m-1 w-auto p-1" id="typeChangeBtn"><span class="iconify m-1 answers-icon d-inline float-end toolbar" data-icon="icon-park:change"></span></button>
+				</div>
+			</div>
+
+		  <div class="row" id="type-1" style="padding: 0px 5px 0px 5px"> <!--4 lehetőség, több megoldás is lehet jó-->
+			<div class="col-sm-12">
+				<div class="row">
+					<div class="col-lg-6">
+						<span class="labels d-flex justify-content-center">A válasz</span>
+						<div style="width: 100%; min-height: 50px;">
+							<div class="input-group mb-3">
+							<div class="input-group-text">
+								<input class="form-check-input m-0" type="checkbox" name="type-1-A-check" value="correct">
+							</div>
+								<textarea rows="1" class="form-control" id="type-1-A" name="type-1-A"></textarea>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<span class="labels d-flex justify-content-center">B válasz</span>
+						<div style="width: 100%; min-height: 50px;">
+							<div class="input-group mb-3">
+							<div class="input-group-text">
+								<input class="form-check-input m-0" type="checkbox" name="type-1-B-check" value="correct">
+							</div>
+								<textarea rows="1" class="form-control" id="type-1-B" name="type-1-B"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<span class="labels d-flex justify-content-center">C válasz</span>
+						<div style="width: 100%; min-height: 50px;">
+							<div class="input-group mb-3">
+							<div class="input-group-text">
+								<input class="form-check-input m-0" type="checkbox" name="type-1-C-check" value="correct">
+							</div>
+								<textarea rows="1" class="form-control" id="type-1-C" name="type-1-C"></textarea>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<span class="labels d-flex justify-content-center">D válasz</span>
+						<div style="width: 100%; min-height: 50px;">
+							<div class="input-group mb-3">
+							<div class="input-group-text">
+								<input class="form-check-input m-0" type="checkbox" name="type-1-D-check" value="correct">
+							</div>
+								<textarea rows="1" class="form-control" id="type-1-D" name="type-1-D"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row" id="type-2" style="padding: 0px 5px 0px 5px"> <!--4 lehetőség, csak egy megoldás jó-->
+			<div class="col-sm-12">
+			<div class="row">
+				<div class="col-lg-6">
+					<span class="labels d-flex justify-content-center">A válasz</span>
+					<div style="width: 100%; min-height: 50px;">
+						<div class="input-group mb-3">
+						<div class="input-group-text">
+							<input class="form-check-input m-0" type="radio" name="type-2-radio" value="1">
+						</div>
+							<textarea rows="1" class="form-control" id="type-2-A" name="type-2-A"></textarea>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<span class="labels d-flex justify-content-center">B válasz</span>
+					<div style="width: 100%; min-height: 50px;">
+						<div class="input-group mb-3">
+						<div class="input-group-text">
+							<input class="form-check-input m-0" type="radio" name="type-2-radio" value="2">
+						</div>
+							<textarea rows="1" class="form-control" id="type-2-B" name="type-2-B"></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div id="c-answer-col" class="col-lg-6">
+					<span class="labels d-flex justify-content-center">C válasz</span>
+					<div id="c-answer-align" style="width: 100%; min-height: 50px;">
+						<div class="input-group mb-3">
+						<div class="input-group-text">
+							<input class="form-check-input m-0" type="radio" name="type-2-radio" value="3">
+						</div>
+							<textarea rows="1" class="form-control" id="type-2-C" name="type-2-C"></textarea>
+						</div>
+					</div>
+				</div>
+				<div id="d-answer" class="col-lg-6">
+					<span class="labels d-flex justify-content-center">D válasz</span>
+					<div style="width: 100%; min-height: 50px;">
+						<div class="input-group mb-3">
+						<div class="input-group-text">
+							<input class="form-check-input m-0" type="radio" name="type-2-radio" value="4">
+						</div>
+							<textarea rows="1" class="form-control" id="type-2-D" name="type-2-D"></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+			</div>
+		</div>
+
+		<div class="row mt-5" id="type-3" style="padding: 0px 5px 0px 5px"> <!--Igaz/Hamis-->
+			<div class="col-sm-12">
+			<div class="row">
+				<div class="col-sm-6">
+					<div  style="width: 100%; min-height: 50px;">
+						<div class="input-group mb-3">
+						<div class="input-group-text" style="background-color: forestgreen; width: 100%;">
+							<input class="form-check-input m-0" type="radio" id="true" name="trueorfalse" value="" aria-label="Checkbox for following text input">
+							<label class="form-check-label p-1 m-auto w-100" for="true">Igaz</label>
+						</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div style="width: 100%; min-height: 50px;">
+						<div class="input-group mb-3">
+						<div class="input-group-text" style="background-color: #e64c41; width: 100%;">
+							<input class="form-check-input m-0" type="radio" id="false" name="trueorfalse" value="" aria-label="Checkbox for following text input">
+							<label class="form-check-label p-1 m-auto w-100" for="false">Hamis</label>
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			</div>
+		</div>
+
+		
+
+	  </div>
+	</div>
+
+<!--Új feladat létrehozása Modal  -->
+<div class="modal fade" id="newTaskModal" tabindex="-1" aria-labelledby="newTaskModal" aria-hidden="true">
+	<div class="modal-dialog">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title" id="newTaskModal">Új feladat létrehozása</h5>
+		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<section class='form'>
+		<form action="/newTask" class="needs-validation" method="get" id="newTask" name="newTask" novalidate>
+		<div class="modal-body">
+			  <fieldset>
+				<div class="container">
+					<div class="form-group mb-3 "> 
+					  <label class="form-label" for="newTaskSelect"><b>Feladat típusa:</b></label>
+					  <div class="row">
+						<div class="col-8">
+						  <select class="form-select" id="newTaskSelect" name="newTaskSelect">
+							<option value="0" selected>Igaz/Hamis</option>
+							<option value="1">Feleletválasztós (egy megoldás)</option>
+							<option value="2">Feleletválasztós (több megoldás)</option>
+						  </select>
+						</div>
+					  </div>
+					</div>
+				</div>
+			  </fieldset>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Kilépés</button>
+		  <button type="button" id="newTaskBtn" class="btn btn-primary" data-bs-dismiss="modal">Létrehozás</button>
+		</div>
+	  </form>
+	</section>
+	  </div>
+	</div>
+</div>
+
+<!--Feladat típusának módosítása -->
+<div class="modal fade" id="typeChange" tabindex="-1" aria-labelledby="typeChange" aria-hidden="true">
+	<div class="modal-dialog">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title" id="typeChange">Típus módosítása</h5>
+		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<section class='form'>
+		<form action="" class="needs-validation" method="get" novalidate>
+		<div class="modal-body">
+			  <fieldset>
+				<div class="container">
+					<div class="form-group mb-3 "> 
+					  <label class="form-label" for="changeTaskSelect"><b>Feladat típusa:</b></label>
+					  <div class="row">
+						<div class="col-8">
+						  <select class="form-select" id="changeTaskSelect" name="changeTaskSelect">
+							<option value="0" selected>Igaz/Hamis</option>
+							<option value="1">Feleletválasztós (egy megoldás)</option>
+							<option value="2">Feleletválasztós (több megoldás)</option>
+						  </select>
+						</div>
+					  </div>
+					</div>
+				</div>
+			  </fieldset>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Kilépés</button>
+		  <button type="button" id="changeTaskBtn" class="btn btn-primary" data-bs-dismiss="modal">Módosítás</button>
+		</div>
+	  </form>
+	</section>
+	  </div>
+	</div>
+</div>
+
+<!-- Tájékoztató üzenetek -->
+
+
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:4;" id="toast-container">
+
+
+  </div>
+
+	<script src="../javascripts/list.js"></script>
+	<script>
+		$(document ).ready(function() {
+			resizeToolbar();
+		});
+
+
+	function resizeToolbar() { //megjelenítés képernyőhöz igazítása
+		if ($("#contenteditor").height() <= $(window).height()-$("#navbar").height()-$("#testinfo").height()-40) { //ha a képernyő mérete nagyobb, mint amennyi a feladatszerkesztőnek minimum szükséges
+				$("#contenteditor").height($(window).height()-$("#navbar").height()-$("#testinfo").height()-40); //akkor a megjelenítést hozzá igazítjuk a képernyő méreteihez
+			}
+			$("#listbar").height($("#contenteditor").height()+20); //a listbar mindenképp követi a feladatszerkesztő méreteit
+	}
+
+	function ShowToastMsg(event) {		
+		//idő lekérdezése
+		var date = new Date();
+		var time = date.toLocaleTimeString();
+		var event_msg;
+		var event_title;
+
+		switch(event) {
+			case 'save':
+			event_title = '<color style="color: #28a745;">Mentés</color>';
+			event_msg = "A teszt mentése megtörtént!";
+				break;
+			case 'delete':
+			event_title = "Törlés";
+			event_title = '<color style="color: #dc3545;">Törlés</color>';
+			event_msg = "A feladat törlése megtörtént!";
+				break;
+		}
+
+		var html=`
+			<div id="liveToast" class="toast hide" role="alert" data-bs-delay="500000" aria-live="assertive" aria-atomic="true">
+			<div class="toast-header" style="background-color: rgb(33 37 41); color: white;">
+				<span class="iconify notification-icon" data-icon="carbon:popup" data-width="24"></span>
+				<strong class="me-auto">${event_title}</strong>
+				<small>${time}</small>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+			<div class="toast-body">
+				${event_msg}
+			</div>
+			</div>`;
+
+			var toastElement = htmlToElement(html);
+			var toastConainerElement = document.getElementById("toast-container");
+			toastConainerElement.appendChild(toastElement);
+			var toast = new bootstrap.Toast(toastElement).show();
+			resizeToolbar();
+			}
+
+	function htmlToElement(html) {
+		var template = document.createElement('template');
+		html = html.trim();
+		template.innerHTML = html;
+		return template.content.firstChild;
+	} 
+			
+	$("#type-2 textarea, #type-1 textarea").each(function () {
+		this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+		}).on("input", function () {
+		this.style.height = "auto";
+		this.style.height = (this.scrollHeight) + "px";
+
+		});
+
+
+		function newTask() {
+			//új feladat létrehozásánál
+			//............
+
+			return;
+		}
+
+	
+
+		function typeOfTask(el) {
+			//mindig a #task_type azonosítójú rejtett inputban van az aktuális feladattípus sorszáma!
+			//ha új feladat van létrehozva, akkor abból a modalból kerül bele az érték
+			//ha feladat típus van módosítva, akkor pedig onnan
+			$("#task_type").val($("#"+el).val());
+			var task_type = $("#task_type").val();
+
+			$("#answerCountChangeBtn").addClass("d-none");
+			$("#type-1").addClass("d-none");
+			$("#type-2").addClass("d-none");
+			$("#type-3").addClass("d-none");
+			switch (task_type) {
+				case '0':
+					$("#type-3").removeClass("d-none");
+					break;
+				case '1':
+					$("#type-2").removeClass("d-none");
+					$("#answerCountChangeBtn").removeClass("d-none");
+					$("#type-2-A").val($("#type-1-A").val());
+					$("#type-2-B").val($("#type-1-B").val());
+					$("#type-2-C").val($("#type-1-C").val());
+					$("#type-2-D").val($("#type-1-D").val());
+					
+					break;
+				case '2':
+					$("#type-1").removeClass("d-none");
+					$("#type-1-A").val($("#type-2-A").val());
+					$("#type-1-B").val($("#type-2-B").val());
+					$("#type-1-C").val($("#type-2-C").val());
+					$("#type-1-D").val($("#type-2-D").val());
+					break;
+				}
+				resizeToolbar();
+		}
+
+
+
+		sceditor.instance(textarea).keyUp(function(e) {
+			var full_content = instance.getWysiwygEditorValue(); //a teljes, bb kódokat is tartalmazó tartalom
+			var clean_text = parser(full_content); //a bb kódok és szmájlik nélküli tiszta szöveg
+			var char_count = clean_text.length; //a szöveg karaktereinek száma (beleértve a szóközt is)
+			//olvasási időtartam kalkulálása
+			console.log(clean_text);
+			console.log(char_count);
+			avg_reading_time = char_count / ((165*6.5) /60);
+			$("#characters").text("Becsült elolvasási idő: "+Math.round(avg_reading_time)+" mp ("+char_count+")"); //
+		});
+		
+		function parser (content){
+			content = content.replace(/\[\/?[^\]]*\]/g, ''); //bb kódokra
+			content = content.replace(/:[^:\s]*(?:::[^:\s]*)*:/g, ""); //szmájlikra
+			return content;
+     	}
+		var answerCount = 4;
+
+		function answerCountChange() {
+			if (answerCount == 4) {
+				$("#d-answer").hide("1000",function(){
+					$("#c-answer-align").addClass("c-answer-center");
+					$("#c-answer-col").removeClass("col-lg-6");
+					$("#c-answer-col").addClass("col-lg-12");
+					$("#answerCountChangeBtn span:first-child").text("3");
+					if ($("input[name='type-2-radio']:checked").val() == '4') { //ha a D van kiválasztva, akkor átrakjuk az A -ra, mert elvileg "megszűnik" a lehetőség
+						$("#type-2 input").first().prop("checked", "true");
+					}
+				});
+				answerCount = 3;
+			} else {
+				$("#c-answer-align").removeClass("c-answer-center");
+				$("#c-answer-col").removeClass("col-lg-12");
+				$("#c-answer-col").addClass("col-lg-6");
+				$("#d-answer").show("1000",function(){
+					$("#answerCountChangeBtn span:first-child").text("4");
+				});
+				answerCount = 4;
+			};
+     	}
+
+            
+//hozzárendelések
+$("#answerCountChangeBtn").click(function() {
+	answerCountChange();
+});
+$("#newTaskBtn").click(function() {
+	typeOfTask('newTaskSelect');
+	newTask();
+});
+$("#changeTaskBtn").click(function() {
+	typeOfTask('changeTaskSelect');
+});
+
+
+	</script>
