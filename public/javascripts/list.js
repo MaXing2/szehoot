@@ -101,22 +101,28 @@ function alltime(counttime) {
 }
 
 //bbcode
-var textarea = document.getElementById("elem");
+var textarea = document.getElementById("bbcode-textarea");
 sceditor.create(textarea, {
   format: 'bbcode',
   plugins: 'undo',
-   toolbar: 'bold,italic,underline|font,size,subscript,superscript|color,emoticon|left,center,right,justify',
-  style: 'minified/themes/content/default.min.css',
-  resizeEnabled: null,
+  
+  style: '/minified/themes/content/default.min.css',
+  width: '100%',
+  height: '338',
+  resizeEnabled: false,
+  id: 'bbcode',
+  emoticonsRoot: '/'
 });
+
+// toolbar: 'bold,italic,underline|font,size,subscript,superscript|color,emoticon|left,center,right,justify',
 
 var instance = sceditor.instance(textarea);
 // instance.readOnly(true);
 
 //auto change type layout
 $("#type").change(function(e) {
-  qsave(elem);
-  dofunc(elem);
+  qsave(bbcode-textarea);
+  dofunc(bbcode-textarea);
 });
 
 //hozza ad
