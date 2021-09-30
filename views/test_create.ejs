@@ -636,17 +636,24 @@ function typeOfTask(el) {
 			$("#type-2").removeClass("d-none");
 			$("#answerCountChangeBtn").removeClass("d-none");
 			$("#type-2-A").val($("#type-1-A").val());
+			$("#type-2-A").height($("#type-1-A").height());
 			$("#type-2-B").val($("#type-1-B").val());
+			$("#type-2-B").height($("#type-1-B").height());
 			$("#type-2-C").val($("#type-1-C").val());
+			$("#type-2-C").height($("#type-1-C").height());
 			$("#type-2-D").val($("#type-1-D").val());
-			
+			$("#type-2-D").height($("#type-1-D").height());
 			break;
 		case '2':
 			$("#type-1").removeClass("d-none");
 			$("#type-1-A").val($("#type-2-A").val());
+			$("#type-1-A").height($("#type-2-A").height());
 			$("#type-1-B").val($("#type-2-B").val());
+			$("#type-1-B").height($("#type-2-B").height());
 			$("#type-1-C").val($("#type-2-C").val());
+			$("#type-1-C").height($("#type-2-C").height());
 			$("#type-1-D").val($("#type-2-D").val());
+			$("#type-1-D").height($("#type-2-D").height());
 			break;
 		}
 	resizeToolbar();
