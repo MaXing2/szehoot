@@ -109,9 +109,9 @@ function InitPopup () {
                     <a id="test_bank" class="nav-link main <%= page === 'test_bank' && 'active' %>" href="/test/bank">Tesztbank</a>
                     <a id="test_category" class="nav-link main <%= page === 'test_category' && 'active' %>" href="/test/category">Kategóriák</a>
                     <a id="test_active" class="nav-link main <%= page === 'test_active' && 'active' %>" href="/test/active">Aktív tesztek</a>
-
-
                     <a id="test_create" onClick="getMainCategory('newTest');" class="nav-link main <%= page === 'test_create' && 'active' %>" href="#">Teszt létrehozás</a>
+                    <!-- <a id="test_join" onClick="" data-bs-toggle="modal" data-bs-target="#joinTestModal" class="nav-link main" href="#">Csatlakozás</a> -->
+
                 <% } %>
 				  
 				</div>
@@ -121,6 +121,22 @@ function InitPopup () {
                     <a class="nav-link main" href="signup"><span class="iconify" data-icon="ant-design:user-add-outlined" data-inline="false"></span> Regisztráció</a>
                     <a class="nav-link main" href="login"><span class="iconify" data-icon="clarity:login-line" data-inline="false"></span> Bejelentkezés</a>
                 <% } else {%>
+
+                  <div class="form-group d-flex m-auto"> 
+                    <!-- <label class="form-label" for="pincode"><b>PIN kód</b></label> -->
+                    <!-- <input class="input-pincode-loggedin" type="text" maxlength="6" placeholder="pinkód" name="pincode" required> -->
+                    <!-- <button class="join" type="submit" onclick="">Csatlakozás</button> -->
+
+                    
+
+                  </div>	
+                  <div class="button d-md-none d-sm-none d-none d-lg-block">
+                    <a class="nav-link main" data-bs-toggle="modal" data-bs-target="#joinTestModal" class="nav-link main" href="#">
+                      Csatlakozás
+                      <!-- <span class="shift">›</span> -->
+                    </a>
+                    <div class="mask"></div>
+                  </div>
                     <!-- <a class="nav-link" href="#"><span class="iconify" data-icon="ant-design:user-outlined" data-inline="false"></span> Profilom</a> -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="iconify" data-icon="ant-design:user-outlined" data-inline="false"></span> <%= username%></a>

@@ -18,18 +18,37 @@
 		<script src="../minified/formats/xhtml.js"></script>
 
 	</head>
-	<body>	
-<% if (access && fastjoin) { %>
-	<p>Sikeres gyorsbelépés! 
-	<p><%= nickname%></p>
+	<body>
+		
+
+
+<% if (access) { %>
+	<% if (fastjoin) { %>
+		<p>Üdv <%= nickname%>! (regisztráció nélküli üzemmód)</p>
+		<script>
+			// var cname = '<%= nickname%>';	//nev string
+			var cname = JSON.parse('<%- JSON.stringify(nickname) %>');	//nev string
+		</script>
+
+		<!-- Ez a rész akkor történik meg, ha nem regisztráltan lépett be a tesztbe az illető -->
+	<% } else { %>
+		<p>Üdv <%= username%>! (regisztrált felhasználói üzemmód)</p>
+		<script>
+			// var cname = '<%= username%>';	//nev string
+			var cname = JSON.parse('<%- JSON.stringify(username) %>');	//nev string
+		</script>
+		<!-- Ez akkor történik, ha regisztrált lépett be.. -->
+	<% } %>
+
 	<p><%= pincode%></p>
 	<p><%= mode%></p>
 
-		<script>
-			var mod = JSON.parse('<%- JSON.stringify(mode) %>');	//mode code
-			var pincode = JSON.parse('<%- JSON.stringify(pincode) %>');  // send pin
-			var cname = JSON.parse('<%- JSON.stringify(nickname) %>');	//nev string
-		 </script>
+	<script>
+		var mod = JSON.parse('<%- JSON.stringify(mode) %>');	//mode code
+		var pincode = JSON.parse('<%- JSON.stringify(pincode) %>');  // send pin
+		// var mod = '<%= mode%>';	//mode code
+		// var pincode = '<%= pincode%>';  // send pin
+	 </script>
 
 		<div id="sorszam"></div> <div id="correct"></div>
 		

@@ -176,7 +176,8 @@ data-pagination-parts="[pageList, pageInfo]">
                           <a href="#" OnClick="LoadDataToModal('duplicateTest', '<%= test_data[0][i].test_id %>','<%= test_data[0][i].category_id %>')" class="btn btn-duplicate btn-sm">Duplikálás</a>
                           <a href="#" data-bs-target="#deleteTestModal" class="btn btn-danger btn-sm">Törlés</a><br>
                           <a href="#" class="btn btn-secondary btn-sm mt-2">Szerkesztés</a>
-                          <a href="#" class="btn btn-secondary btn-sm mt-2">Átnevezés</a><br>
+                          <a href="#" OnClick="LoadDataToModal('renameTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-secondary btn-sm mt-2">Átnevezés</a>
+                          <a href="#" OnClick="LoadDataToModal('moveTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-secondary btn-sm mt-2">Áthelyezés</a><br>
                           <a href="#" class="btn btn-outline-warning btn-sm mt-2">Exportálás</a>
                           <a href="#" class="btn btn-outline-warning btn-sm mt-2">Nyomtatás</a>
                       </div>
@@ -308,7 +309,7 @@ data-pagination-parts="[pageList, pageInfo]">
           <fieldset>
             <div class="container">
               <div class="form-group mb-3"> 
-                  <label class="form-label" for="test_name_dt"><b>Teszt másolat címe:</b></label>
+                  <label class="form-label" for="test_name_dt"><b>Teszt neve:</b></label>
                   <input class="form-control" type="text" id="test_name_dt" name="test_name_dt">
                   <input class="form-control" hidden type="text" id="test_id_dt" name="test_id_dt" value="">
                   <div class="valid-feedback">
@@ -352,6 +353,90 @@ data-pagination-parts="[pageList, pageInfo]">
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Kilépés</button>
         <button type="submit" id="duplicateTestBtn" class="btn btn-primary">Létrehozás</button>
+      </div>
+      </form>
+  </section>
+    </div>
+  </div>
+</div>
+
+<!--Teszt áthelyezése Modal  -->
+<div class="modal fade" id="moveTestModal" tabindex="-1" aria-labelledby="moveTestModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Teszt áthelyezése</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+    <section class='form'>
+      <form action="/moveTest" class="needs-validation" method="post" id="moveTest" novalidate>
+        <div class="modal-body">
+          <fieldset>
+            <div class="container">
+              <div class="form-group mb-3 maincat"> 
+                <label class="form-label" for="main_category_mt"><b>Főkategória:</b></label>
+                <div class="row">
+                  <div class="col-8">
+                    <select class="form-select" onChange="getSubCategory('moveTest');" id="main_category_mt" name="main_category_mt"></select>
+                    <input class="form-control" hidden type="text" id="cat_id_mt" name="cat_id_mt" value="">
+                    <input class="form-control" hidden type="text" id="test_id_mt" name="test_id_mt" value="">
+                    <div class="invalid-feedback">
+                      <span id="invalid-text"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                <div class="form-group mb-3 subcat"> 
+                    <label class="form-label" for="sub_category_mt"><b>Alkategória:</b></label>
+                    <div class="row">
+                      <div class="col-8">
+                        <select class="form-select" id="sub_category_mt" name="sub_category_mt"></select>
+                      </div>
+                    </div>
+                </div>
+            </div>
+          </fieldset>
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Kilépés</button>
+        <button type="submit" id="moveTestBtn" class="btn btn-primary">Áthelyezés</button>
+      </div>
+      </form>
+  </section>
+    </div>
+  </div>
+</div>
+
+<!--Teszt átnevezése Modal  -->
+<div class="modal fade" id="renameTestModal" tabindex="-1" aria-labelledby="renameTestModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Teszt átnevezése</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+    <section class='form'>
+      <form action="/renameTest" class="needs-validation" method="post" id="renameTest" novalidate>
+        <div class="modal-body">
+          <fieldset>
+            <div class="container">
+              <div class="form-group mb-3"> 
+                  <label class="form-label" for="test_name_dt"><b>Teszt új neve:</b></label>
+                  <input class="form-control" type="text" id="test_name_rt" name="test_name_rt">
+                  <input class="form-control" hidden type="text" id="test_id_rt" name="test_id_rt" value="">
+                  <div class="valid-feedback">
+                    <span id="valid-text"></span>
+                  </div>
+                  <div class="invalid-feedback">
+                   <span id="invalid-text"></span>
+                  </div>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Kilépés</button>
+        <button type="submit" id="renameTestBtn" class="btn btn-primary">Átnevezés</button>
       </div>
       </form>
   </section>
@@ -548,6 +633,20 @@ function LoadDataToModal(modal, test_id, test_subcategory) {
     var duplicateTestModal = new bootstrap.Modal(document.getElementById('duplicateTestModal'));
     duplicateTestModal.show();
     break;
+
+  case 'renameTest':
+    $("#test_id_rt").val(test_id);
+    var renameTestModal = new bootstrap.Modal(document.getElementById('renameTestModal'));
+    renameTestModal.show();
+    break;
+
+    case 'moveTest':
+    $("#test_id_mt").val(test_id);
+    getMainCategory('moveTest');
+    var moveTestModal = new bootstrap.Modal(document.getElementById('moveTestModal'));
+    moveTestModal.show();
+    break;
+
   default:
     // code block
 }}
@@ -567,6 +666,10 @@ $("#newCatCheck").change(function() {
 
 $("#sub_category_dt").change(function() {
   $('#cat_id_dt').val($('#sub_category_dt').val()); //új kategória azonosító átmásolása a rejtett inputba..
+});
+
+$("#sub_category_mt").change(function() {
+  $('#cat_id_mt').val($('#sub_category_mt').val()); //új kategória azonosító átmásolása a rejtett inputba..
 });
 
         </script>

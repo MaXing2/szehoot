@@ -56,6 +56,41 @@
       </div>
     </div>
   </div>
+
+  <!--Csatlakozás teszthez Modal  -->
+  <div class="modal fade" id="joinTestModal" tabindex="-1" aria-labelledby="joinTestModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Pinkód megadása</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+      <section class='form'>
+        <form action="/joinTest" class="needs-validation" method="post" id="joinTest" name="joinTest" novalidate>
+          <div class="modal-body">
+            <fieldset>
+              <div class="container">
+                <div class="form-group mb-3"> 
+                  <input class="input-pincode" maxlength="6" type="text" placeholder="000000" name="pincode" required>
+                    <div class="valid-feedback">
+                      <span id="valid-text"></span>
+                    </div>
+                    <div class="invalid-feedback">
+                     <span id="invalid-text"></span>
+                    </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        <div class="modal-footer">
+          <button type="submit" id="joinTestBtn" class="btn btn-primary rainbow-button">Csatlakozás</button>
+        </div>
+        </form>
+    </section>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
 
@@ -94,6 +129,20 @@
                 $('#main_category_dt').append($('<option>', {value: data.data[0][i].id,text: data.data[0][i].name}));
               }
               getSubCategory('duplicateTest');
+              } else {
+                //nincs még főkategória
+              window.location.href = "../test/category?status=4";
+              }   
+              break;
+            case 'moveTest':
+              $('#main_category_mt').find('option').remove().end()
+              console.log(data.data[0].length);
+              if (data.data[0].length > 0) {
+              //van főkategória
+              for (let i = 0; i < data.data[0].length; i++) {
+                $('#main_category_mt').append($('<option>', {value: data.data[0][i].id,text: data.data[0][i].name}));
+              }
+              getSubCategory('moveTest');
               } else {
                 //nincs még főkategória
               window.location.href = "../test/category?status=4";
@@ -154,6 +203,28 @@
                   $('#duplicateTestBtn').removeClass('d-none');
                   $('#duplicateTestBtn').removeAttr('disabled');
                   $('#main_category_dt').removeClass('is-invalid');
+                  $('.subcat').removeClass('d-none');
+              }
+              break;
+            case 'moveTest':
+            $('#sub_category_mt').find('option').remove().end()
+              for (let i = 0; i < data.data[0].length; i++) {
+                  if (data.data[0][i].parent ==  $('#main_category_mt').val()) {
+                      subcat_exists = true;
+                      $('#sub_category_mt').append($('<option>', {value: data.data[0][i].id,text: data.data[0][i].name}));
+                  }
+              }
+              if (!subcat_exists) {
+                  $(".maincat #invalid-text").text( "A főkategóriához nincs létrehozva alkategória!" );
+                  $('#moveTestBtn').addClass('d-none');
+                  $('#moveTestBtn').attr('disabled', 'disabled');
+                  $('#main_category_mt').addClass('is-invalid');
+                  $('#main_category_mt').removeClass('is-valid');
+                  $('.subcat').addClass('d-none');
+              } else {
+                  $('#moveTestBtn').removeClass('d-none');
+                  $('#moveTestBtn').removeAttr('disabled');
+                  $('#main_category_mt').removeClass('is-invalid');
                   $('.subcat').removeClass('d-none');
               }
               break;

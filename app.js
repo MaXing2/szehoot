@@ -195,29 +195,44 @@ else {
 //-------------------------------------------------------POST kérések kezelése-----------------------------------------------------------
 
 // Csatlakozás
-app.post('/joinTest',function (req, res) {
+app.post('/joinTest',function (req, res) { //------------------------------------MÉG NINCS VIZSGÁLVA A LEJÁRATI DÁTUM--------------------------------------------------
+  var pincode = req.body.pincode;
   var status = 0; //alapértelmezetten nincs hiba, ezért 0
-  if (req.session.loggedIn) { // bejelentkezett felhasználók számára
+  connection.query("CALL GetProcessByPincode(?)", [pincode], function(err, result, fields) {
+    if (err) throw err;
 
-  } else { // nem bejelentkezett, gyors belépés
-    var pincode = req.body.pincode;
-    var nickname = req.body.nickname;
-    connection.query("SELECT * FROM test_process_list WHERE pincode=" + connection.escape(pincode) + "",
-      function(err, result, fields) {
-        if (err) throw err;
-        if (!result.length <= 0) {
-          if (result[0].mode == 0 || result[0].mode == 1) {//ha a pinhez tartozó tesztfolyamat módja 0 (gyakorlási) vagy 1 (tantermi)
-            res.render('join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0].mode, 'nickname': nickname}); //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot       
-          } else {
-            status = 1; //hiba: létezik a pinkód, de a teszt módja nem engedélyezi a gyors belépést
-          }
+    if (!result[0].length <= 0) {
+      if (req.session.loggedIn) {
+        console.log('EZ MOST MEGTÖRTÉNIK ELVILEG!!!!!!!!!!!!!!!!!!!!!!');
+
+        var username = req.session.username;
+        console.log(username);
+        var userid = req.session.userid;
+        status = 6; //belépés regisztrált felhasználóként
+      } else {
+        var nickname = req.body.nickname;
+        if (result[0][0].mode == 0 || result[0][0].mode == 1) {//ha a pinhez tartozó tesztfolyamat módja 0 (gyakorlási) vagy 1 (tantermi)
+          status = 5; //beléphet a tesztbe
         } else {
-          status = 2; //hiba: nem létezik a pinkód, így a belépés sem engedélyezett (nincs hova belépni)
+          status = 1; //hiba: létezik a pinkód, de a teszt módja nem engedélyezi a gyors belépést
         }
-        res.redirect('/?status=' + status); 
-      })
-  }
-})
+      }
+
+    } else {
+      status = 2; //hiba: nem létezik a pinkód, így a belépés sem engedélyezett (nincs hova belépni)
+    }
+
+    switch(status) {
+      case 5:
+        res.render('join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode, 'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
+        break;
+      case 6:
+        res.render('join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'username': username, 'userid': userid}); //bejelentkezett felhasználó esetében   
+        break;
+      default:
+        res.redirect('/?status=' + (status));
+    }})
+  })
 
 //Teszt létrehozása
 app.post('/createTest',function (req, res) {
@@ -262,6 +277,59 @@ app.post('/duplicateTest',function (req, res) {
       if (err) throw err;
       if (!result[0].length <= 0) { 
         connection.query("CALL DuplicateTest(?,?,?)", [test_name, test_id, cat_id], function(err, result, fields) {
+          if (err) throw err;
+          console.log(result);
+          res.redirect('/test/bank');
+        })
+      } else {  
+        //nem tartozik ilyen teszt azonosító a felhasználóhoz
+      }
+    })
+
+  } else {
+    //nincs bejelentkezve az illető
+  }
+})
+
+app.post('/moveTest',function (req, res) {
+  var username = req.session.username;
+  var test_id = req.body.test_id_mt;
+  var cat_id = req.body.cat_id_mt;
+
+  if (req.session.loggedIn) { // be van jelentkezve?
+    //
+    
+    connection.query("CALL GetTestByIDnUser(?,?)", [username, test_id], function(err, result, fields) {
+      if (err) throw err;
+      if (!result[0].length <= 0) { 
+        connection.query("CALL MoveTest(?,?)", [test_id, cat_id], function(err, result, fields) {
+          if (err) throw err;
+          console.log(result);
+          res.redirect('/test/bank');
+        })
+      } else {  
+        //nem tartozik ilyen teszt azonosító a felhasználóhoz
+      }
+    })
+
+  } else {
+    //nincs bejelentkezve az illető
+  }
+})
+
+app.post('/renameTest',function (req, res) {
+  var userid = req.session.userid;
+  var username = req.session.username;
+  var test_id = req.body.test_id_rt;
+  var test_name = req.body.test_name_rt;
+
+  if (req.session.loggedIn) { // be van jelentkezve?
+    //
+    
+    connection.query("CALL GetTestByIDnUser(?,?)", [username, test_id], function(err, result, fields) {
+      if (err) throw err;
+      if (!result[0].length <= 0) { 
+        connection.query("CALL RenameTest(?,?)", [test_id, test_name], function(err, result, fields) {
           if (err) throw err;
           console.log(result);
           res.redirect('/test/bank');
