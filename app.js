@@ -14,6 +14,9 @@ var connection = mysql.createConnection(config.databaseOptions);
 var bcrypt = require('bcrypt');
 //dátum formázás
 var moment = require('moment');
+//mail sender
+const nodemailer = require("nodemailer");
+
 
 //PDF
 const { jsPDF } = require("jspdf"); // will automatically load the node version
@@ -21,6 +24,7 @@ var pdfmaker = require("./inc/pdfmake.js");
 var data_export = require("./inc/data_export.js");
 var result_export = require("./inc/result_export.js");
 var data_import = require("./inc/data_import.js");
+var email_sender = require("./inc/email_sender.js");
 
 const fs = require('fs');
 
@@ -721,6 +725,8 @@ setTimeout(function(){
 pdfmaker.adat(jsPDF,app,connection,fs);
 data_export.exp(fs,app,connection);
 result_export.resexp(fs,app,connection);
+data_import.imp(fs,app,connection)
+email_sender.to(app,nodemailer);
 
 //list post kezelese
 app.post('/list', function (req, res) {

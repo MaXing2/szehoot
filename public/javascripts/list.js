@@ -40,6 +40,17 @@ function RESEXP(testSzoveg) {
   form.trigger('submit', function(){});
 }
 
+//EMAIL
+function MAIL(testSzoveg) {
+  testSzoveg = document.getElementById("tippem").value;
+  console.log(testSzoveg);
+  var form = $('#testmail');
+  var hiddencucc = $('#postmail');
+  hiddencucc.val(testSzoveg);
+  console.log(hiddencucc.val());
+  form.trigger('submit', function(){});
+}
+
 
 function doAjax(testSzoveg) {
   alldel();

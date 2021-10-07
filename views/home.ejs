@@ -6,6 +6,7 @@
 		<button class="button button0" id="BT" onclick="PDF();" >PDF</button>
 		<button class="button button0" id="BT" onclick="EXP();" >EXP</button>
 		<button class="button button0" id="BT" onclick="RESEXP();" >RESULT_EXPORT</button>
+		<button class="button button0" id="BT" onclick="MAIL();" >EMAIL</button>
 		
 		<form id='importForm' action="IMPORT" method="POST" encType="multipart/form-data">
 			<input type="file" id = "importFile" name="importFile" />
@@ -20,6 +21,9 @@
 		</form>
 		<form id='testresexp' action="resexp" method="POST">
 			<input type="hidden" id = "postresexp" name="postresexp" />
+		</form>
+		<form id='testmail' action="resmail" method="POST">
+			<input type="hidden" id = "postmail" name="postmail" />
 		</form>
 	</div>
 
