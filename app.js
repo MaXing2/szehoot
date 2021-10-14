@@ -165,10 +165,10 @@ app.get('/test/bank',function (req, res) {
       }
       console.log('Noprocess értéke: '+noprocess)
       console.log(result2[0]);
-      res.render('main.ejs',{page: 'test_bank', test_data: result, noprocess: noprocess, process_data: result2, loggedIn: true, username: req.session.username, test_id: req.query.test_id, pincode: req.query.pincode, title: 'Tesztbank'});
+      res.render('main.ejs',{page: 'test_bank', test_data: result, noprocess: noprocess, process_data: result2, loggedIn: true, username: req.session.username, test_id: req.query.test_id, pincode: req.query.pincode, status: req.query.status, title: 'Tesztbank'});
       })
     } else { //nincs egyetlen teszt sem...
-    res.render('main.ejs',{page: 'test_bank', test_data: result, loggedIn: true, username: req.session.username, test_id: req.query.test_id, pincode: req.query.pincode, title: 'Tesztbank'});
+    res.render('main.ejs',{page: 'test_bank', test_data: result, loggedIn: true, username: req.session.username, test_id: req.query.test_id, pincode: req.query.pincode, status: req.query.status, title: 'Tesztbank'});
     }
     })
   } else {
@@ -613,6 +613,36 @@ app.post('/getCategorys',function (req, res) {
   }
 
 })
+
+app.post('/printTest',function (req, res) {
+  var userid = req.session.userid;
+  var username = req.session.username;
+  var test_id = req.body.test_id_pt;
+  var test_name = req.body.test_name_pt;
+  var print_points = req.body.print_points; // ha 0, akkor ne legyenek rajta a pontszámok, ha 1, akkor legyenek
+  
+
+  if (req.session.loggedIn) { // be van jelentkezve?
+    //
+    
+    connection.query("CALL GetTestByIDnUser(?,?)", [username, test_id], function(err, result, fields) { //hozzá tartozik egyáltalán a teszt?
+      if (err) throw err;
+      if (!result[0].length <= 0) { 
+        //--------------------------------------------------------------ide jöhet az a kód, amivel pdf -et generálsz!------------------------------------------------------------------------
+
+        res.redirect('/test/bank'); //
+      } else {  
+        //nem tartozik ilyen teszt azonosító a felhasználóhoz
+        res.redirect('/test/bank?status=1');
+      }
+    })
+
+  } else {
+    //nincs bejelentkezve az illető
+  }
+})
+
+
 //--------------------------------------MAIN NAVIGÁCIÓ--------------------------------------------
 //A main -ra érkező postok alapján tölti be az oldal a megfelelő tartalmat (ejs fájlokat) ajax segítségével
 //A lényege, hogy a header és a footer így nem kerül mindig betöltésre az oldalon történő navigáció során
