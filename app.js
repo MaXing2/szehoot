@@ -618,7 +618,7 @@ app.post('/printTest',function (req, res) {
   var userid = req.session.userid;
   var username = req.session.username;
   var test_id = req.body.test_id_pt;
-  var test_name = req.body.test_name_pt;
+  var print_test_name = req.body.print_test_name; // ha 0, akkor ne legyenek rajta a teszt neve, ha 1, akkor legyen
   var print_points = req.body.print_points; // ha 0, akkor ne legyenek rajta a pontszámok, ha 1, akkor legyenek
   
 

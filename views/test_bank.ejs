@@ -774,4 +774,12 @@ $("#printPointsCheck").change(function() {
     }
 });
 
+$("#printTestNameCheck").change(function() {
+    if(this.checked) {
+      $('#print_test_name').val('1');
+    } else {
+      $('#print_test_name').val('0');
+    }
+});
+
         </script>
