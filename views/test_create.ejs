@@ -32,15 +32,15 @@
 	</div>
 	<div class="col-xl-2 m-auto text-center">
 		<span>Feladatok száma:</span>
-		<span class="fw-bold">0 db</span>
+		<span class="fw-bold" id="tabla_szam">0 db</span>
 	</div>
 	<div class="col-xl-2 m-auto text-center">
 		<span>Teszt kitöltési idő:</span>
-		<span class="fw-bold">00:03:40</span>
+		<span class="fw-bold" id="CountTime"></span>
 	</div>
 	<div class="col-xl-2 m-auto text-center">
 		<span>Összes pontszám:</span>
-		<span class="fw-bold">35 pont</span>
+		<span class="fw-bold" id="CountPoint" ></span>
 	</div>
 	<div id="top-buttons-group" class="col-xl-3 m-auto">
 		<button type="button" class="btn btn-success float-end p-1 m-1" id="testSaveBtn"><span class="iconify save-icon d-inline float-start toolbar" data-icon="fluent:save-24-regular"></span>Teszt mentése</button>
@@ -58,7 +58,7 @@
 
 <div class="row row-eq-height row-flex align-items-start g-0">
 	<div id="listbar" class="col-xl-2 overflow-auto">
-		<div class="row g-0 ratio ratio-16x9">
+	<!--	<div class="row g-0 ratio ratio-16x9">
 			<div class="card">
 				<div class="card-header task-header">
 					<span class="d-inline float-start text-dark">1.</span>
@@ -171,6 +171,8 @@
 					<span class="iconify modify-icon d-inline float-end" data-icon="eos-icons:content-modified"></span>
 				</div>	
 			</div>
+		</div> -->
+		<div id="Bar">
 		</div>
 		<div class="row g-0 ratio ratio-16x9">
 			<div class="card">
@@ -185,14 +187,14 @@
 	<div id="contenteditor" class="col-xl-10 pb-0">
 		<div class="row">
 			<div class="col-lg text-center">
-				<span id="taskNumber">#7</span>
+				<span id="taskNumber"></span>
 				<button type="button" class="btn btn-danger float-end p-1" data-bs-toggle="modal" data-bs-target="#deleteTaskModal"><span class="iconify trash-icon d-inline float-start toolbar" data-icon="fluent:delete-24-regular"></span></button>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-lg">
 				<label class="form-label mt-2" for="username"><b>Időkorlát</b></label>
-				<select class="form-select" aria-label="Default select example">
+				<select id="timeset" class="form-select" aria-label="Default select example">
 					<option selected disabled value="">Kérlek válassz!</option>
 					<optgroup label="Másodperc"></optgroup>
 					<option value="10">10</option>
@@ -209,7 +211,7 @@
 			</div>
 			<div class="col-lg">
 				<label class="form-label mt-2" for="username"><b>Alappontszám</b></label>
-				<select class="form-select" aria-label="Default select example">
+				<select id="points" class="form-select" aria-label="Default select example">
 					<option selected disabled value="">Kérlek válassz!</option>
 					<option value="1">1</option>
 					<option value="2">2</option>
@@ -253,7 +255,7 @@
 						</div>
 					<input id="fileUploadField" type="file" name="sampleFile" hidden />
 						<input type='submit' value='Upload!' hidden  />
-						<input type="text" placeholder="URL megadása esetén másold ide a teljes címet!" class="form-control"/>
+						<input type="text" id="kepurl"  class="form-control"/>
 					</form>
 				</div>
 			</div>
@@ -281,7 +283,7 @@
 						<div class="answerDiv">
 							<div class="input-group mb-3">
 							<div class="input-group-text">
-								<input class="form-check-input m-0" type="checkbox" name="type-1-A-check" value="correct">
+								<input class="form-check-input m-0" type="checkbox" name="type-1-A-check" id="type-1-A-check" value="correct">
 							</div>
 								<textarea rows="1" class="form-control" id="type-1-A" name="type-1-A"></textarea>
 							</div>
@@ -292,7 +294,7 @@
 						<div class="answerDiv">
 							<div class="input-group mb-3">
 							<div class="input-group-text">
-								<input class="form-check-input m-0" type="checkbox" name="type-1-B-check" value="correct">
+								<input class="form-check-input m-0" type="checkbox" name="type-1-B-check" id="type-1-B-check" value="correct">
 							</div>
 								<textarea rows="1" class="form-control" id="type-1-B" name="type-1-B"></textarea>
 							</div>
@@ -305,7 +307,7 @@
 						<div class="answerDiv">
 							<div class="input-group mb-3">
 							<div class="input-group-text">
-								<input class="form-check-input m-0" type="checkbox" name="type-1-C-check" value="correct">
+								<input class="form-check-input m-0" type="checkbox" name="type-1-C-check" id="type-1-C-check" value="correct">
 							</div>
 								<textarea rows="1" class="form-control" id="type-1-C" name="type-1-C"></textarea>
 							</div>
@@ -316,7 +318,7 @@
 						<div class="answerDiv">
 							<div class="input-group mb-3">
 							<div class="input-group-text">
-								<input class="form-check-input m-0" type="checkbox" name="type-1-D-check" value="correct">
+								<input class="form-check-input m-0" type="checkbox" name="type-1-D-check" id="type-1-D-check" value="correct">
 							</div>
 								<textarea rows="1" class="form-control" id="type-1-D" name="type-1-D"></textarea>
 							</div>
@@ -334,7 +336,7 @@
 						<div class="answerDiv">
 							<div class="input-group mb-3">
 							<div class="input-group-text">
-								<input class="form-check-input m-0" type="radio" name="type-2-radio" value="1">
+								<input class="form-check-input m-0" type="radio" name="type-2-radio" id="type-2-A-radio" value="1">
 							</div>
 								<textarea rows="1" class="form-control" id="type-2-A" name="type-2-A"></textarea>
 							</div>
@@ -345,7 +347,7 @@
 						<div class="answerDiv">
 							<div class="input-group mb-3">
 							<div class="input-group-text">
-								<input class="form-check-input m-0" type="radio" name="type-2-radio" value="2">
+								<input class="form-check-input m-0" type="radio" name="type-2-radio"  id="type-2-B-radio" value="2">
 							</div>
 								<textarea rows="1" class="form-control" id="type-2-B" name="type-2-B"></textarea>
 							</div>
@@ -358,7 +360,7 @@
 						<div id="c-answer-align" class="answerDiv">
 							<div class="input-group mb-3">
 							<div class="input-group-text">
-								<input class="form-check-input m-0" type="radio" name="type-2-radio" value="3">
+								<input class="form-check-input m-0" type="radio" name="type-2-radio"  id="type-2-C-radio" value="3">
 							</div>
 								<textarea rows="1" class="form-control" id="type-2-C" name="type-2-C"></textarea>
 							</div>
@@ -369,7 +371,7 @@
 						<div class="answerDiv">
 							<div class="input-group mb-3">
 							<div class="input-group-text">
-								<input class="form-check-input m-0" type="radio" name="type-2-radio" value="4">
+								<input class="form-check-input m-0" type="radio" name="type-2-radio"  id="type-2-D-radio" value="4">
 							</div>
 								<textarea rows="1" class="form-control" id="type-2-D" name="type-2-D"></textarea>
 							</div>
@@ -601,13 +603,9 @@ $("#type-2 textarea, #type-1 textarea").each(function () {
 	}
 });
 
+var pincode = JSON.parse('<%- JSON.stringify(test_id) %>')
+console.log(pincode);
 
-function newTask() {
-	//új feladat létrehozásánál
-	//ha gondolod akkor ide írod a műveleteket, ha nem, akkor nem
-
-	return;
-}
 
 function deleteTask() {
 	//törlésnél
@@ -664,8 +662,6 @@ sceditor.instance(textarea).keyUp(function(e) {
 	var clean_text = parser(full_content); //a bb kódok és szmájlik nélküli tiszta szöveg
 	var char_count = clean_text.length; //a szöveg karaktereinek száma (beleértve a szóközt is)
 	//olvasási időtartam kalkulálása
-	console.log(clean_text);
-	console.log(char_count);
 	avg_reading_time = char_count / ((165*6.5) /60);
 	$("#characters").text("Becsült elolvasási idő: "+Math.round(avg_reading_time)+" mp ("+char_count+")"); //
 });
@@ -677,9 +673,14 @@ function parser (content){
 }
 
 var answerCount = 4;
-function answerCountChange() {
+function answerCountChange(count) {
+	var delay=500;
+	if (count != '') {
+		count == 4 ? answerCount = 3 : answerCount = 4;
+		delay=0;
+	};
 	if (answerCount == 4) {
-		$("#d-answer").hide("1000",function(){
+		$("#d-answer").hide(delay,function(){
 			$("#c-answer-align").addClass("c-answer-center");
 			$("#c-answer-col").removeClass("col-lg-6");
 			$("#c-answer-col").addClass("col-lg-12");
@@ -693,7 +694,7 @@ function answerCountChange() {
 		$("#c-answer-align").removeClass("c-answer-center");
 		$("#c-answer-col").removeClass("col-lg-12");
 		$("#c-answer-col").addClass("col-lg-6");
-		$("#d-answer").show("1000",function(){
+		$("#d-answer").show(delay,function(){
 			$("#answerCountChangeBtn span:first-child").text("4");
 		});
 		answerCount = 4;
@@ -703,23 +704,44 @@ function answerCountChange() {
             
 //hozzárendelések
 $("#answerCountChangeBtn").click(function() {
-	answerCountChange();
+	answerCountChange('');
 });
 $("#newTaskBtn").click(function() {
+    $("#"+ bar).trigger('click');
 	typeOfTask('newTaskSelect');
-	newTask();
+	var task_type = $("#task_type").val();
+	var type="";
+	switch(task_type) {
+    case '0':
+	type="Igaz/Hamis";
+      break;
+      case '1':
+	  type="Felelet választós (egy megoldás)";
+      break;
+      case '2':
+	  type="Felelet választós (több megoldás)";
+      break;
+  }
+  doadd()
+  work = false;
+  newTask(bar,type);
+  dynamicDivOnClick(bar);
+  bar++;
 });
+
 $("#changeTaskBtn").click(function() {
 	typeOfTask('changeTaskSelect');
 });
 $("#testSaveBtn").click(function() {
 	ShowToastMsg('save');
+	dosave();
 });
 $("#testExportBtn").click(function() {
 	ShowToastMsg('export');
 });
 $("#taskDeleteBtn").click(function() {
 	ShowToastMsg('delete');
+	dotrol();
 });
 
 	</script>
