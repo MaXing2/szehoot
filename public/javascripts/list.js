@@ -571,7 +571,7 @@ function dofunc(szam){
       document.getElementById('dnd').innerHTML = "Kattints ide vagy húzd be a képet!";
       document.getElementById('kepurl').value = "URL megadása esetén másold ide a teljes címet!";
     }else{
-      document.getElementById('dnd').innerHTML = "<img id='kepBox' style='height: 100%; width: 100%; object-fit: contain' src='" + data[szam].image + "'/>";
+      document.getElementById('dnd').innerHTML = "<img id='kepBox' class='img-fluid' src='" + data[szam].image + "'/>";
       document.getElementById('kepurl').value = data[szam].image;
     }
 }

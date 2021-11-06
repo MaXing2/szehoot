@@ -513,10 +513,10 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
         <div class="modal-body">
-            <span id="result_percent">Az általad elért eredmény:</span><span class="float-end fw-bold">95%</span><br>
-            <span id="result_score">Elért/összes pontszám:</span><span class="float-end fw-bold">52 / 55</span><br>
+            <span>Az általad elért eredmény:</span><span id="result_percent" class="float-end fw-bold">95%</span><br>
+            <span>Elért/összes pontszám:</span><span id="result_score" class="float-end fw-bold">52 / 55</span><br>
             <hr>
-            <span id="result_rating">Értékelés:</span><span class="float-end fw-bold">Jeles</span><br>
+            <span>Értékelés:</span><span id="result_rating" class="float-end fw-bold">Jeles</span><br>
             
         </div>
       <div class="modal-footer">
@@ -544,7 +544,7 @@ $( "#btn5, #btn6, #btn7, #btn8" ).click(function() {
   
 });
 
-function countDown(time) {
+function countDown(time) { //túl erőforrásigényes, nem jó
   fulltime=time;
   var timeText = '00:00';  
   time = time/1000;
@@ -597,7 +597,7 @@ function taskDuration(event) {
   }
 }
 
-function startTimer2(duration) {
+function startTimer(duration) {
   display = $('.timeLeft');
   $('.timeProgressbar').width('100%');
   if ($('.timeProgressbar').hasClass('bg-danger')) {
@@ -639,7 +639,7 @@ function startTimer2(duration) {
 
 $( document ).ready(function() {
   //Tesztmód szerinti inicializálás (Tantermi módban "lobby", többinél "test" jelenik meg először)
-  if (1 == 2) {
+  if (1 == 3) { // ide a 3 helyére kell beszúrni a módot ejssel: <%= mode %>
     $("#test").hide();
     $("#lobby").show();
     $('.chart-content-group').hide(); 
