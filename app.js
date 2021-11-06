@@ -66,7 +66,7 @@ app.use(session({secret:'Szehoot2021'
 // Gyökér esetén
 app.get('/',function (req, res) {
   if (req.session.loggedIn) { // be van jelentkezve? 
-  res.render('main.ejs', {page: 'home', loggedIn: true, username: req.session.username}); // ebben az esetben a main.ejs sablonban a home.ejs nyílik meg
+  res.render('main.ejs', {page: 'home', loggedIn: true, status: req.query.status, username: req.session.username}); // ebben az esetben a main.ejs sablonban a home.ejs nyílik meg
   } 
   else
   res.render('main.ejs', {page: 'login', loggedIn: false, status: req.query.status}); // ha nincs bejelentkezve, akkor pedig a login.ejs
@@ -118,6 +118,11 @@ app.get('/test/create',function (req, res) {
     res.redirect('/');
   }
   })
+
+  app.get('/test/join',function (req, res) {
+    res.render('test_join.ejs');
+      })
+    
 
 //Kategóriák
 app.get('/test/category',function (req, res) {
@@ -237,6 +242,44 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
         res.redirect('/?status=' + (status));
     }})
   })
+
+  app.post('/joinTest2',function (req, res) { //------------------------------------MÉG NINCS VIZSGÁLVA A LEJÁRATI DÁTUM--------------------------------------------------
+    var pincode = req.body.pincode;
+    var status = 0; //alapértelmezetten nincs hiba, ezért 0
+    connection.query("CALL GetProcessByPincode(?)", [pincode], function(err, result, fields) {
+      if (err) throw err;
+  
+      if (!result[0].length <= 0) {
+        if (req.session.loggedIn) {
+  
+          var username = req.session.username;
+          console.log(username);
+          var userid = req.session.userid;
+          status = 6; //belépés regisztrált felhasználóként
+        } else {
+          var nickname = req.body.nickname;
+          if (result[0][0].mode == 0 || result[0][0].mode == 1) {//ha a pinhez tartozó tesztfolyamat módja 0 (gyakorlási) vagy 1 (tantermi)
+            status = 5; //beléphet a tesztbe
+          } else {
+            status = 1; //hiba: létezik a pinkód, de a teszt módja nem engedélyezi a gyors belépést
+          }
+        }
+  
+      } else {
+        status = 2; //hiba: nem létezik a pinkód, így a belépés sem engedélyezett (nincs hova belépni)
+      }
+  
+      switch(status) {
+        case 5:
+          res.render('test_join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode, 'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
+          break;
+        case 6:
+          res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'username': username, 'userid': userid}); //bejelentkezett felhasználó esetében   
+          break;
+        default:
+          res.redirect('/?status=' + (status));
+      }})
+    })
 
 //Teszt létrehozása
 app.post('/createTest',function (req, res) {

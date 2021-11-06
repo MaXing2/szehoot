@@ -1,3 +1,28 @@
+<% if (typeof status !== 'undefined') { %>
+	<div class="alert alert-danger d-flex alert-dismissible" role="alert">
+		<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+		<div class="float-end">
+			<% switch (status) {
+			case '1' : %>
+				A teszt kitöltése regisztrációhoz kötött!
+				<% break;
+			case '2' : %>
+				A belépéshez használt pinkód nem létezik!
+				<% break;
+			case '3' : %>
+				A belépéshez használt jelszó hibás!
+				<% break;
+			case '4' : %>
+				A belépéshez használt felhasználónév nem létezik!
+				<% break; %>
+		  	<% } %>
+		</div>
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	  </div>
+<% } %>
+
+
+
 <h1>Üdvözöllek a kezdőlapon!</h1>
 	<p>Itt majd valami dashboard szerű lesz, ami az aktualitásokat mutatja.</p>
 	<div id="tipp">

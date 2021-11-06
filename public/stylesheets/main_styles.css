@@ -168,6 +168,15 @@ resize: none;
     background-color: #ff4d4dd1 !important;
 }
 
+.process-table td {
+    padding-left: 0px;
+    padding-right: 15px;
+}
+.process-table td:last-child {
+    padding-right: 0px;
+    text-align: center;
+}
+
 
 .input-pincode {
     color: red;
@@ -278,6 +287,19 @@ resize: none;
 body.show {
 	background-color: #282828;
 }
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 /*
 .button:hover {
 	background-image: url('http://.com/img/codepen/savvy.jpg');

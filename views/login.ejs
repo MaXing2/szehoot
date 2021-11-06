@@ -54,7 +54,7 @@
 						<div class="card-header">
 							<div class="row justify-content-center">
 								<div class="col-12">
-									<h5 style="text-align: center" class="card-title">Gyors csatlakozás</h5>
+									<h5 style="text-align: center" class="card-title">Gyorsbelépés</h5>
 								</div>
 							</div>
 						</div>
@@ -64,7 +64,7 @@
 						</div>
 						<div class="form-group mb-3"> 
 							<label class="form-label" for="pincode"><b>PIN kód</b></label>
-							<input class="input-pincode" maxlength="6" type="text" placeholder="000000" name="pincode" required>
+							<input class="input-pincode" maxlength="6"  type="text" pattern=".{6}" title="6 számjegyű pinkód" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" placeholder="000000" name="pincode" required>
 						</div>	
 						<button class="btn btn-primary mt-2" type="submit" onclick="">Csatlakozás</button>
 					</div>
