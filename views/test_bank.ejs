@@ -213,7 +213,7 @@ data-pagination-parts="[pageList, pageInfo]">
                           <a href="#" class="btn btn-secondary btn-sm mt-2">Szerkesztés</a>
                           <a href="#" OnClick="LoadDataToModal('renameTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-secondary btn-sm mt-2">Átnevezés</a>
                           <a href="#" OnClick="LoadDataToModal('moveTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-secondary btn-sm mt-2">Áthelyezés</a><br>
-                          <a href="#" class="btn btn-outline-warning btn-sm mt-2">Exportálás</a>
+                          <a href="#" onclick="EXP();" class="btn btn-outline-warning btn-sm mt-2">Exportálás</a>
                           <a href="#" data-bs-toggle="modal" data-bs-target="#printTestModal" class="btn btn-outline-warning btn-sm mt-2">Nyomtatás</a>
                       </div>
                     </div>
@@ -519,7 +519,7 @@ data-pagination-parts="[pageList, pageInfo]">
         </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Kilépés</button>
-        <button type="submit" id="" class="btn btn-primary">Nyomtatás</button>
+        <button id="" onclick="PDF();" data-bs-dismiss="modal" class="btn btn-primary">Nyomtatás</button>
       </div>
       </form>
   </section>
@@ -527,8 +527,39 @@ data-pagination-parts="[pageList, pageInfo]">
   </div>
 </div>
 
+<form id='testPost' action="/pdf" method="POST">
+  <input type="hidden" id = "postTippem" name="postTippem" />
+</form>
+<form id='testexp' action="/exp" method="POST">
+  <input type="hidden" id = "postexp" name="postexp" />
+</form>
 
 <script>
+//PDF
+function PDF() {
+  console.log('<%= test_id %>');
+    // testSzoveg = document.getElementById("tippem").value;
+    var testSzoveg = 78945;
+    console.log(testSzoveg);
+    var form = $('#testPost');
+    var hiddencucc = $('#postTippem');
+    hiddencucc.val(testSzoveg);
+    console.log(hiddencucc.val());
+    form.trigger('submit', function(){});
+  }
+
+  //EXP
+function EXP(testSzoveg) {
+  // testSzoveg = document.getElementById("tippem").value;
+  var testSzoveg = 141450;
+  console.log(testSzoveg);
+  var form = $('#testexp');
+  var hiddencucc = $('#postexp');
+  hiddencucc.val(testSzoveg);
+  console.log(hiddencucc.val());
+  form.trigger('submit', function(){});
+}
+
   var courrentLength = 10; //inicializáljuk a jelenlegi értékkel a hosszúságot
 $(document).ready(function() {
     ShowRowByID('<%= test_id %>'); //meghívjuk a függvényt, ezzel lenyitjuk azt a tesztet, amiről új folyamatot hoztunk létre
