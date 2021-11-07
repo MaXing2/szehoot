@@ -63,16 +63,15 @@ app.post('/pdf', function (req, res) {
             doc.setFontSize(14);
             var typ="";
             switch(element.type) {
-              case 1:
-                typ="Írd meg a megoldást!";
-              break; 
+              case 0:
+                typ="Igaz/Hamis"
+              break;
               case 2:
-              case 3:
-              case 4:
-                typ="Egy jó válasz lehetőség!";
-              break; 
-              case 5:
                 typ="Több jó válasz lehetőség!";
+              break;
+              case 13:
+              case 14:
+                typ="Egy jó válasz lehetőség!";                
               break; 
             };
   
@@ -87,7 +86,7 @@ app.post('/pdf', function (req, res) {
             }
             
             //questions
-            var egesz = element.question_number + ". "  + parser;
+            var egesz = (element.question_number)+1 + ". "  + parser;
             var tort = doc.splitTextToSize(egesz, 150);
             last = tort.length - 1;
             doc.text(tort,  10, (curPos)*2 + i);

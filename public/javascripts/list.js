@@ -21,12 +21,12 @@ function PDF(testSzoveg) {
 
 
 //EXP
-function EXP(testSzoveg) {
+function EXP(pincode) {
   // testSzoveg = document.getElementById("tippem").value;
-  console.log(testSzoveg);
+  console.log(pincode);
   var form = $('#testexp');
   var hiddencucc = $('#postexp');
-  hiddencucc.val(testSzoveg);
+  hiddencucc.val(pincode);
   console.log(hiddencucc.val());
   form.trigger('submit', function(){});
 }
@@ -89,11 +89,11 @@ function typeselect(i){
         add("Igaz/Hamis");
       break;
       case 2:
-        add("Felelet választós");
+        add("Felelet választós (több megoldás)");
       break;
       case 13:
       case 14:
-        add("Felelet választós (több megoldás)");
+        add("Felelet választós");
       break;
   }
 }
@@ -171,9 +171,9 @@ var instance = sceditor.instance(textarea);
               <span class="iconify reward-icon d-inline float-end ms-1" data-icon="mdi:star-plus"></span>
               <span  class="d-inline float-end ms-1">0</span>
               <span class="iconify star-icon d-inline float-end ms-1" data-icon="bx:bxs-star"></span>
-              <span  class="d-inline float-end ms-1">` + poi + `</span>
+              <span id="spoint`+ bar +`" class="d-inline float-end ms-1">` + poi + `</span>
               <span class="iconify clock-icon d-inline float-end ms-1" data-icon="akar-icons:clock"></span>
-              <span  class="d-inline float-end">`+ ido +`</span>
+              <span  id="stime`+ bar +`" class="d-inline float-end">`+ ido +`</span>
             </div>
             <div class="card-body p-0 m-auto align-middle d-flex task-labels">
               <span class="m-auto">`+ type +`</span>
@@ -188,6 +188,7 @@ var instance = sceditor.instance(textarea);
     var toastConainerElement = document.getElementById("Bar");
     toastConainerElement.appendChild(toastElement);
     // document.getElementById("name").value = bar;
+    mobile(type);
   }
 
 
@@ -204,6 +205,51 @@ var instance = sceditor.instance(textarea);
     }
     dofunc(bars);
   }
+
+
+//mobile list
+function mobile(type) {
+  $("#mobile").append(new Option( (bar+1) +". feladat | " + type, bar));
+}
+
+$("#mobile").change(function(e) {
+  var i =($("#mobile").val());
+  if(i == "plus"){
+    console.log("hozza ad");
+    $("#newTaskBtn").trigger('click');
+  }else{
+  $("#"+ i).trigger('click');
+  }
+});
+
+
+// point auto change
+$("#points").change(function(e) {
+  qsave(elem);
+  var temp = 0;
+  data.forEach(calcp => {
+    temp = temp + calcp.score;
+  });
+  temp=(temp/100);
+  console.log(temp);
+  $("#CountPoint").text(temp);
+  $("#spoint"+elem).text((data[elem].score/100));
+});
+
+
+// time auto change
+$("#timeset").change(function(e) {
+  qsave(elem);
+  var temp = 0;
+  data.forEach(calcp => {
+    temp = temp + parseInt(calcp.time);
+  });
+  console.log(temp);
+  // $("#CountTime").text(temp);
+  alltime(temp);
+  $("#stime"+elem).text(data[elem].time);
+});
+
 
 function alldel(){
   var list = document.getElementById("Bar");
@@ -332,6 +378,8 @@ function qsave (modified){
     console.log(data[modified].type);
   break;
   case 0:
+    data[modified].answer_1 ="Igaz";
+    data[modified].answer_2 = "Hamis";
     if(document.getElementById("true").checked){
       fuz=1;
     }
@@ -370,7 +418,7 @@ $("#dnd").click(function(e) {
 
 $("#fileUploadField").on('change', function () {
   var formdata = new FormData($('#uploadForm')[0]);
-  formdata.append('tippem', $("#tippem").val());
+  formdata.append('tippem', pincode);
   formdata.append('elem', elem+1);
 
   $.ajax({
@@ -415,7 +463,7 @@ function dropped(ev) {
   uploadField.files = ev.dataTransfer.files;
   //$("#uploadForm").submit();
   var formdata = new FormData($('#uploadForm')[0]);
-  formdata.append('tippem', $("#tippem").val());
+  formdata.append('tippem', pincode);
   formdata.append('elem', elem+1);
 
   //useless?!
@@ -478,7 +526,7 @@ function dotrol() {
   var counttime = 0;
   var countpoint = 0;
   for (i = 0; i <tmpbar ; i++) {
-    counttime = counttime + data[i].time;
+    counttime = counttime + parseInt(data[i].time);
     countpoint = countpoint + data[i].score;
     typeselect(i);
     $("#"+ i).trigger('click');
@@ -492,8 +540,7 @@ function dotrol() {
   });
 
   document.getElementById("CountPoint").innerHTML = (countpoint/100); 
-                                                          //TODO itt szamolja az idot rosszul
-  // alltime(counttime);
+  alltime(counttime);
 }
 
 
