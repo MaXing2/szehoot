@@ -194,7 +194,7 @@ var instance = sceditor.instance(textarea);
 
   function dynamicDivOnClick(bars) {
     // console.log(element.id);
-    document.getElementById("taskNumber").textContent=+bars+1+"#";
+    document.getElementById("taskNumber").textContent="#"+(bars+1);
     var modified = elem;
     elem=bars;
     if (work){
@@ -204,6 +204,9 @@ var instance = sceditor.instance(textarea);
       work=true;
     }
     dofunc(bars);
+    calculateReadtime();
+    $("#points").change();
+    $("#timeset").change();
   }
 
 

@@ -666,13 +666,17 @@ function typeOfTask(el) {
 }
 
 sceditor.instance(textarea).keyUp(function(e) {
+calculateReadtime();
+});
+
+function calculateReadtime() {
 	var full_content = instance.getWysiwygEditorValue(); //a teljes, bb kódokat is tartalmazó tartalom
 	var clean_text = parser(full_content); //a bb kódok és szmájlik nélküli tiszta szöveg
 	var char_count = clean_text.length; //a szöveg karaktereinek száma (beleértve a szóközt is)
 	//olvasási időtartam kalkulálása
 	avg_reading_time = char_count / ((165*6.5) /60);
 	$("#characters").text("Becsült elolvasási idő: "+Math.round(avg_reading_time)+" mp ("+char_count+")"); //
-});
+}
 		
 function parser (content){
 	content = content.replace(/\[\/?[^\]]*\]/g, ''); //bb kódokra
