@@ -22,154 +22,184 @@
 <% } %>
 
 
+<div class="container">
 
-<h1>Üdvözöllek a kezdőlapon!</h1>
-	<p>Itt majd valami dashboard szerű lesz, ami az aktualitásokat mutatja.</p>
-	<div id="tipp">
-		<input id="tippem">
-		<button class="button button0" id="BT" onclick="doAjax();" >Beküld</button>
-		<button class="button button0" id="BT" onclick="PDF();" >PDF</button>
-		<button class="button button0" id="BT" onclick="EXP();" >EXP</button>
-		<button class="button button0" id="BT" onclick="RESEXP();" >RESULT_EXPORT</button>
-		<button class="button button0" id="BT" onclick="MAIL();" >EMAIL</button>
-		
-		<form id='importForm' action="IMPORT" method="POST" encType="multipart/form-data">
-			<input type="file" id = "importFile" name="importFile" />
-			<input type="submit" class="button button0" id="BT" value="IMPORT" title="IMPORT" />
-		</form>
-		
-		<form id='testPost' action="pdf" method="POST">
-			<input type="hidden" id = "postTippem" name="postTippem" />
-		</form>
-		<form id='testexp' action="exp" method="POST">
-			<input type="hidden" id = "postexp" name="postexp" />
-		</form>
-		<form id='testresexp' action="resexp" method="POST">
-			<input type="hidden" id = "postresexp" name="postresexp" />
-		</form>
-		<form id='testmail' action="resmail" method="POST">
-			<input type="hidden" id = "postmail" name="postmail" />
-		</form>
+	<div class="row mt-3">
+		<span class="h3 p-0">Létrehozás</span>
 	</div>
-
-	<div id='tabla_szam'>
-	</div>
-	<!-- menu -->
-	<div id="menuline">
-			<!-- time -->
-		<label for="timeset"> Időkorlát:</label>
-		<select name="timeset" id="timeset">
-		</optgroup>
-		<optgroup label="Seconds">
-			<option value="10">10</option>
-			<option value="15">15</option>
-			<option value="20">20</option>
-			<option value="30">30</option>
-			<option value="45">45</option>
-			<option value="50">50</option>
-		</optgroup>
-		<optgroup label="Minutes">
-			<option value="60">1:00</option>
-			<option value="70">1:10</option>
-			<option value="75">1:15</option>
-			<option value="80">1:20</option>
-			<option value="90">1:30</option>
-		  </select>
-		  <!-- points -->
-		  <label for="points">Pontszám:</label>
-		<select name="points" id="points">
-			<option value="100">100</option>
-			<option value="200">200</option>
-			<option value="300">300</option>
-			<option value="400">400</option>
-			<option value="500">500</option>
-			<option value="600">600</option>
-			<option value="700">700</option>
-			<option value="800">800</option>
-			<option value="900">900</option>
-			<option value="1000">1000</option>
-		  </select>
-		  <!-- tipus -->
-		  <label for="type">Tipus:</label>
-		  <select name="type" id="type">
-			  <option value="1">Tipp mix</option>
-			  <option value="2">Igaz / hamis</option>
-			  <option value="3">Felelet választós 3 lehetőség</option>
-			  <option value="4">Felelet választós 4 lehetőség</option>
-			  <option value="5">Több jó válasz</option>
-			</select>
-
-			<div id="CountTime" class="CountTime"></div>
-		<button class="buttonsav" id="BT7" onclick="dosave();" >Ment</button>
-
-
-	</div>
-
-	<!-- bar -->
-	<div id="divsor">
-		<input id="cim">
-		<p id="Bar"></p>
-		<button class="buttonadd" id="BT5" >Hozzá ad</button>
-	</div>
-
-	<div id="editor">
-		
-
-		<form ref='uploadForm' 
-		id='uploadForm' 
-		action='http://localhost:3000/upload' 
-		method='post' 
-		encType="multipart/form-data" accept=".gif, .jpg, .png, .doc"
-		 >
-		<div id="dnd" class="kep"  ondragover="preventszar(event)" ondragenter="preventszar(event)" ondrop="dropped(event)">
-			huzd ide
+	<div class="row mt-2">
+		<div class="col-3">
+			<div class="card text-dark w-100 bg-light h-100">
+				<div class="card-header text-center">Tesztek száma
+				</div>
+				<div class="card-body text-center">
+					<p class="card-text fs-2"><%= testCount[0][0].testCount%></p>
+				</div>
+			</div>
 		</div>
-		<input id="fileUploadField" type="file" name="sampleFile" hidden />
+		<div class="col-3">
+			<div class="card text-dark bg-light h-100">
+				<div class="card-header text-center">Tesztfolyamatok száma
+				</div>
+				<div class="card-body text-center">
+					<p class="card-text fs-2"><%= processCount[0][0].processCount%></p>
+				</div>
+			</div>
+		</div>
+		<div class="col-3">
+			<div class="card text-dark bg-light h-100">
+				<div class="card-header text-center">Feladatok száma
+				</div>
+				<div class="card-body text-center">
+					<p class="card-text fs-2"><%= questionCount[0][0].questionCount%></p>
+				</div>
+			</div>
+		</div>
+		<div class="col-3">
+			<div class="card text-dark bg-light h-100">
+				<div class="card-header text-center">Kitöltések száma
+				</div>
+				<div class="card-body text-center">
+					<p class="card-text fs-2">20</p>
+				</div>
+			</div>
+		</div>
+		</div>
+		<div>
+			<div class="row mt-3">
+				<div class="col-6">
+					<span class="h5 float-start m-0">Utolsó 5</span>
+				</div>
+			</div>
+			<div class="row mt-3">
+				<div class="col-lg-6">
+					<table data-toggle="table" id="test_table">
+						<thead>
+							<tr>
+								<th class="text-center p-1" colspan="3">Teszt</th>
+							</tr>
+							<tr>
+								<th>ID</th>
+								<th>Teszt neve</th>
+								<th>Módosítás dátuma</th>
+							</tr>
+						</thead>
+						<tbody>
+								<% if (test_data[0].length > 0) { %>
+									<% for(var i=0; i<test_data[0].length; i++) {%>
+										<tr>
+											<td data-field="id"><%= test_data[0][i].test_id %></td>
+											<td style="width:60%" data-field="name"><%= test_data[0][i].test_name %></td>
+											<td class="text-center "data-field="date"><%= moment(test_data[0][i].modified_date).format("YYYY.MM.DD HH:mm");  %></td>
+										</tr>
+									<% } }%>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-lg-6">
+					<table data-toggle="table" id="process_table">
+						<thead>
+							<tr>
+								<th class="text-center p-1" colspan="5">Tesztfolyamat</th>
+							</tr>
+							<tr>
+								<th>ID</th>
+								<th>Teszt neve</th>
+								<th>Mód</th>
+								<th>Pinkód</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+								<% if (process_data[0].length > 0) { %>
+									<% for(var i=0; i<process_data[0].length; i++) {%>
+										<tr>
+											<td data-field="id"><%= process_data[0][i].process_id %></td>
+											<td style="width:60%" data-field="name"><%= process_data[0][i].test_name %></td>
+											<td><% switch (process_data[0][i].mode) {
+												case 0 : %>
+														Gyakorló
+														<% break;
+												
+												case 1 : %>
+														Tantermi
+														<% break;
+												
+												case 2 : %>
+														Vizsga
+														<% break;
+	
+												case 3 : %>
+														Vizsga (verseny)
+														<% break;
+												
+												} %>
+											</td>
+											<td class="col-sm-3"><%= process_data[0][i].pincode %>
+											<%var time = moment.duration(moment(new Date(), "YYYY.MM.DD HH:mm").diff(moment(process_data[0][i].end_date, "YYYY.MM.DD HH:mm")));%>
+											<% if (time.asSeconds() >= 0) { %> 
+											  <td class="col-sm-1"><span class="iconify" data-icon="carbon:dot-mark" style="color: red;"></span>
+											<% } else { %>
+											  <td class="col-sm-1"><span class="iconify" data-icon="carbon:dot-mark" style="color: green;"></span>
+											<% } %>
+										  </td>
+										</tr>
 
-		  <input type='submit' value='Upload!' hidden  />
-	  </form>
-	  <input class="kepurl" id="kepurl" value="URL"> 
-		<textarea id="bbcode-textarea" cols="5" rows="5"></textarea>
-		<p></p>
-		
-		<input class="jelol" id="r1" type="radio" value="1" name="radio">
-		<input class="jelol" type="checkbox" id="box1">
-		<input class="button1" id="BT1">
-		<input class="jelol" id="r2" type="radio" value="2" name="radio">
-		<input class="jelol" type="checkbox" id="box2">
-		<input class="button2" id="BT2">
-		<p></p>
-		<input class="jelol" id="r3" type="radio" value="3"  name="radio">
-		<input class="jelol" type="checkbox" id="box3">
-		<input class="button3" id="BT3">
-		<input class="jelol" id="r4" type="radio" value="4"  name="radio">
-		<input class="jelol" type="checkbox" id="box4">
-		<input class="button4" id="BT4">
-		<input class="kozepbox" id="megold">
-		<p></p>
-
-		<button class="buttondel" id="BT8" onclick="dotrol();" >Töröl!!</button>
-
-		<div id="popUpDiv">
-			<select id="popupSelect">
-				<option value="none" selected disabled hidden>
-					Válasz egy lehetőséget
-				<option value="1">Tipp mix</option>
-				<option value="2">Igaz / hamis</option>
-				<option value="3">Felelet választós 3 lehetőség</option>
-				<option value="4">Felelet választós 4 lehetőség</option>
-				<option value="5">Több jó válasz</option>
-			</select>
+									<% } }%>
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
 
-
+		<div class="row mt-3">
+			<span class="h3 p-0">Kitöltés</span>
 		</div>
+		<div class="row mt-2">
+			<div class="col-3">
+				<div class="card text-dark bg-light h-100">
+					<div class="card-header text-center">Kitöltött tesztek száma
+					</div>
+					<div class="card-body text-center">
+						<p class="card-text fs-2">50</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-3">
+				<div class="card text-dark bg-light h-100">
+					<div class="card-header text-center">Tesztfolyamatok száma
+					</div>
+					<div class="card-body text-center">
+						<p class="card-text fs-2">20</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-3">
+				<div class="card text-dark bg-light h-100">
+					<div class="card-header text-center">Feladatok száma
+					</div>
+					<div class="card-body text-center">
+						<p class="card-text fs-2">20</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-3">
+				<div class="card text-dark bg-light h-100">
+					<div class="card-header text-center">Kitöltések száma
+					</div>
+					<div class="card-body text-center">
+						<p class="card-text fs-2">20</p>
+					</div>
+				</div>
+			</div>
+			</div>
 	</div>
+</div>
 
+<script>
 
-
-
-<script src="../javascripts/list.js"></script>
-<p></p>
-
-<a href="/logout">Kijelentkezés!</a>
+$('#test_table').bootstrapTable({
+});
+$('#process_table').bootstrapTable({
+});
+</script>

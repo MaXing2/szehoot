@@ -77,6 +77,11 @@
     color: grey; 
 }
 
+#kepBox {
+    height:300px !important;
+    margin: auto !important;
+}
+
 .plus-icon>a>svg:hover {
     color: cornflowerblue;
 }
@@ -87,11 +92,11 @@
 }
 
 
-.card:hover > div:first-of-type:not(:last-child){
+.card-taskbar:hover > div:first-of-type:not(:last-child){
     background-color: rgba(0,0,0,.09);
 }
 
-.card:hover {
+.card-taskbar:hover {
 cursor:pointer;
 }
 

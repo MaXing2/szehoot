@@ -66,10 +66,11 @@ app.use(session({secret:'Szehoot2021'
 // Gyökér esetén
 app.get('/',function (req, res) {
   if (req.session.loggedIn) { // be van jelentkezve? 
-  res.render('main.ejs', {page: 'home', loggedIn: true, status: req.query.status, username: req.session.username}); // ebben az esetben a main.ejs sablonban a home.ejs nyílik meg
+    res.redirect('/home'); // ebben az esetben a main.ejs sablonban a home.ejs nyílik meg
   } 
-  else
-  res.render('main.ejs', {page: 'login', loggedIn: false, status: req.query.status}); // ha nincs bejelentkezve, akkor pedig a login.ejs
+  else {
+    res.render('main.ejs', {page: 'login', loggedIn: false, status: req.query.status}); // ha nincs bejelentkezve, akkor pedig a login.ejs
+  }
 })
 
 // Dashboard esetén
@@ -103,7 +104,36 @@ req.session.destroy(function (err) {
 //Home esetén
 app.get('/home',function (req, res) {
 if (req.session.loggedIn) { // be van jelentkezve?
-  res.render('main.ejs',{page: 'home', loggedIn: true, username: req.session.username, title: 'Kezdőlap'});
+
+
+
+
+  connection.query("CALL GetLast5Test(?)", [req.session.username], function(err, result, fields) {
+    if (err) throw err;
+      connection.query("CALL GetLast5Process(?)", [req.session.username], function(err, result2, fields) {
+        if (err) throw err;
+        connection.query("CALL GetTestCount(?)", [req.session.username], function(err, result3, fields) {
+          if (err) throw err;
+          connection.query("CALL GetProcessCount(?)", [req.session.username], function(err, result4, fields) {
+            if (err) throw err;
+            connection.query("CALL GetQuestionCount(?)", [req.session.username], function(err, result5, fields) {
+              if (err) throw err;
+                res.render('main.ejs',{page: 'home', loggedIn: true, test_data: result, process_data: result2, testCount: result3, processCount: result4, questionCount: result5, username: req.session.username, title: 'Kezdőlap'}); // ebben az esetben a main.ejs sablonban a home.ejs nyílik meg
+          })
+        })
+      })
+    })
+  })
+    
+
+
+
+
+
+
+
+
+
 } else {
   res.redirect('/');
 }
@@ -191,6 +221,16 @@ app.get('/login',function (req, res) {
       res.render('main.ejs', {page: 'login', loggedIn: false, title: 'Bejelentkezés'}); //Login betöltése
   } 
   })
+
+//IDEIGLENES HOME2 (RÉGI TESZT ÖSSZEÁLLÍTÁS)
+app.get('/home2',function (req, res) {
+  if (req.session.loggedIn) { // be van jelentkezve?
+      res.render('main.ejs',{page: 'home2', loggedIn: true, username: req.session.username});
+  } else {
+      res.render('main.ejs', {page: 'login', loggedIn: false, title: 'Bejelentkezés'}); //Login betöltése
+  } 
+  })
+
 //Signup esetén
 app.get('/signup',function (req, res) {
 if (req.session.loggedIn) { // be van jelentkezve?
@@ -233,10 +273,10 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
 
     switch(status) {
       case 5:
-        res.render('join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode, 'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
+        res.render('join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode,  'process_id': result[0][0].id, 'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
         break;
       case 6:
-        res.render('join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'username': username, 'userid': userid}); //bejelentkezett felhasználó esetében   
+        res.render('join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'process_id': result[0][0].id, 'username': username, 'userid': userid}); //bejelentkezett felhasználó esetében   
         break;
       default:
         res.redirect('/?status=' + (status));
@@ -245,7 +285,14 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
 
   app.post('/joinTest2',function (req, res) { //------------------------------------MÉG NINCS VIZSGÁLVA A LEJÁRATI DÁTUM--------------------------------------------------
     var pincode = req.body.pincode;
+    var attemptId;
     var status = 0; //alapértelmezetten nincs hiba, ezért 0
+
+    //Lekérek egy azonosítót, ami az attempt_id lesz (csak, ha beléphet a felhasználó gyorsbelépéssel vagy bejelentkezve)
+      connection.query("CALL GetRandomNonExistentAttemptId", function(err, result, fields) {
+        if (err) throw err;
+        attemptId = result[0][0].attemptId;
+      }) 
     connection.query("CALL GetProcessByPincode(?)", [pincode], function(err, result, fields) {
       if (err) throw err;
   
@@ -264,17 +311,17 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
             status = 1; //hiba: létezik a pinkód, de a teszt módja nem engedélyezi a gyors belépést
           }
         }
-  
+
       } else {
         status = 2; //hiba: nem létezik a pinkód, így a belépés sem engedélyezett (nincs hova belépni)
       }
-  
       switch(status) {
+        
         case 5:
-          res.render('test_join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode, 'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
+          res.render('test_join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id,  'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
           break;
         case 6:
-          res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'username': username, 'userid': userid}); //bejelentkezett felhasználó esetében   
+          res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, 'username': username, 'userid': userid}); //bejelentkezett felhasználó esetében   
           break;
         default:
           res.redirect('/?status=' + (status));

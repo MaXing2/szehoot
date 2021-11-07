@@ -165,7 +165,7 @@ var instance = sceditor.instance(textarea);
       poi= (data[bar].score/100);
     }
     var slide = `<div class="row g-0 ratio ratio-16x9" onclick="dynamicDivOnClick(`+ bar +`);">
-          <div class="card" id=`+ barid +`>
+          <div class="card card-taskbar" id=`+ barid +`>
             <div class="card-header task-header">
               <span class="d-inline float-start text-dark">`+ barid +`.</span>
               <span class="iconify reward-icon d-inline float-end ms-1" data-icon="mdi:star-plus"></span>
