@@ -618,7 +618,7 @@ function dofunc(szam){
      }
 
   if (data[szam].image==null || data[szam].image==""){
-      document.getElementById('dnd').innerHTML = "Kattints ide vagy húzd be a képet!";
+
       document.getElementById('kepurl').value = "URL megadása esetén másold ide a teljes címet!";
     }else{
       document.getElementById('dnd').innerHTML = "<img id='kepBox' class='img-fluid' src='" + data[szam].image + "'/>";

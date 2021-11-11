@@ -118,7 +118,9 @@ if (req.session.loggedIn) { // be van jelentkezve?
             if (err) throw err;
             connection.query("CALL GetQuestionCount(?)", [req.session.username], function(err, result5, fields) {
               if (err) throw err;
-                res.render('main.ejs',{page: 'home', loggedIn: true, test_data: result, process_data: result2, testCount: result3, processCount: result4, questionCount: result5, username: req.session.username, title: 'Kezdőlap'}); // ebben az esetben a main.ejs sablonban a home.ejs nyílik meg
+              connection.query("CALL GetFullFilledCountByUser(?)", [req.session.username], function(err, result6, fields) {
+                res.render('main.ejs',{page: 'home', loggedIn: true, test_data: result, process_data: result2, testCount: result3, processCount: result4, questionCount: result5, fullfilledCount: result6, username: req.session.username, status: req.query.status, title: 'Kezdőlap'}); // ebben az esetben a main.ejs sablonban a home.ejs nyílik meg
+            })
           })
         })
       })
@@ -175,9 +177,16 @@ app.get('/test/category',function (req, res) {
   })
 
 //Aktív tesztek esetén
-app.get('/test/active',function (req, res) {
+app.get('/test/process',function (req, res) {
 if (req.session.loggedIn) { // be van jelentkezve?
-  res.render('main.ejs',{page: 'test_active', loggedIn: true, username: req.session.username, title: 'Aktív tesztek'});
+
+  connection.query("CALL GetAllProcess(?)", [req.session.username], function(err, result, fields) {
+    if (err) throw err;
+    connection.query("CALL GetFullfilledCountPerProcessByUser(?)", [req.session.username], function(err, result2, fields) {
+      res.render('main.ejs',{page: 'test_process',  process_data: result, fullfilledCount: result2,  loggedIn: true, username: req.session.username, title: 'Tesztfolyamatok'});
+    })
+
+    })
 } else {
   res.redirect('/');
 } 
@@ -273,10 +282,10 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
 
     switch(status) {
       case 5:
-        res.render('join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode,  'process_id': result[0][0].id, 'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
+        res.render('join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, 'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
         break;
       case 6:
-        res.render('join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'process_id': result[0][0].id, 'username': username, 'userid': userid}); //bejelentkezett felhasználó esetében   
+        res.render('join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, 'username': username, 'userid': userid}); //bejelentkezett felhasználó esetében   
         break;
       default:
         res.redirect('/?status=' + (status));
@@ -287,16 +296,24 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
     var pincode = req.body.pincode;
     var attemptId;
     var status = 0; //alapértelmezetten nincs hiba, ezért 0
+    if (req.session.loggedIn) {
+      // var username = req.session.username;
+      // connection.query("CALL GetResultsAttemptIdByUsernPincode", function(err, result, fields) {
+      
+      // })
 
+
+    }
     //Lekérek egy azonosítót, ami az attempt_id lesz (csak, ha beléphet a felhasználó gyorsbelépéssel vagy bejelentkezve)
-      connection.query("CALL GetRandomNonExistentAttemptId", function(err, result, fields) {
-        if (err) throw err;
-        attemptId = result[0][0].attemptId;
-      }) 
+      // connection.query("CALL GetRandomNonExistentAttemptId", function(err, result, fields) {
+      //   if (err) throw err;
+      //   attemptId = result[0][0].attemptId;
+      // }) 
+
     connection.query("CALL GetProcessByPincode(?)", [pincode], function(err, result, fields) {
-      if (err) throw err;
   
       if (!result[0].length <= 0) {
+        var process_id = result[0][0].process_id;
         if (req.session.loggedIn) {
   
           var username = req.session.username;
@@ -315,17 +332,45 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
       } else {
         status = 2; //hiba: nem létezik a pinkód, így a belépés sem engedélyezett (nincs hova belépni)
       }
-      switch(status) {
-        
-        case 5:
-          res.render('test_join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id,  'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
-          break;
-        case 6:
-          res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, 'username': username, 'userid': userid}); //bejelentkezett felhasználó esetében   
-          break;
-        default:
-          res.redirect('/?status=' + (status));
-      }})
+      connection.query("CALL GetRandomNonExistentAttemptId", function(err, result2, fields) {
+        attemptId = result2[0][0].attemptId;
+            switch(status) {
+              
+              case 5:
+                res.render('test_join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id,  'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
+                break;
+              case 6:
+                if (result[0][0].mode == 2 || result[0][0].mode == 3) { // ha a mód valamelyik vizsgamód egyike
+                    connection.query("CALL GetResultsAttemptIdByUsernProcessId(?,?)",[username, process_id], function(err, result3, fields) { //megnézzük, hogy van -e már megkezdett kitöltése
+                      if (!result3[0].length <= 0) { //ha van, akkor megnézzük, hogy befejezte-e már a tesztet (hányadik kérdésnél tart)
+                        console.log(result3[0][0].answer_number+ " és "+result[0][0].question_num);
+                        if (result3[0][0].answer_number == result[0][0].question_num) { //az utolsó leadott válasz száma egyenlő az utolsó kérdés számával a tesztből, tehát befejezte
+                          //jelezni kell, hogy nincs tovább status=7
+                          status=7;
+                          res.redirect('/home?status=' + (status));
+                      } else {
+                        //még nem fejezte be, de már elkezdte
+                        attemptId = result3[0][0].attempt_id; //megváltoztatjuk az attemptId változó értékét a már korábban elkezdettekre
+                        //átadjuk, hogy hol tart jelenleg
+                        var courrentQuestion = result3[0][0].answer_number;
+                        res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, courrentQuestion: courrentQuestion,  'username': username, 'userid': userid}); //bejelentkezett felhasználó esetében   
+                        //mehet tovább
+                      }
+                    } else { //nem kezdte még el, mehet a teszt
+                      //új teszt
+                      //minden megy rendesen
+                      res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, courrentQuestion: '0', 'username': username, 'userid': userid}); //bejelentkezett felhasználó esetében   
+                    } 
+                  })
+                } else {//bejelentkezett felhasználó és gyakorló vagy tantermi módban van a tesztfolyamat
+                  res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, 'username': username, 'userid': userid}); //bejelentkezett felhasználó esetében   
+                }
+               break;
+              default:
+                if (req.session.loggedIn) { res.redirect('/home?status=' + (status)); } else { res.redirect('/?status=' + (status));}
+            }
+    }) 
+    })
     })
 
 //Teszt létrehozása

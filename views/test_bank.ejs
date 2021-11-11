@@ -82,12 +82,12 @@ data-page-size="10"
 data-pagination-parts="[pageList, pageInfo]">
   <thead>
     <tr>
-      <th data-field="id">ID</th>
-      <th data-field="test_name">Teszt neve</th>
-      <th data-field="questions_count">Kérdések száma</th>
-      <th data-field="cat_name">Kategória</th>
-      <th data-field="created_date">Létrehozás dátuma</th> 
-      <th data-field="modified_date">Módosítás dátuma</th>  
+      <th data-field="id" data-sortable="true">ID</th>
+      <th data-field="test_name" data-sortable="true">Teszt neve</th>
+      <th data-field="questions_count" data-sortable="true">Kérdések száma</th>
+      <th data-field="cat_name" data-sortable="true">Kategória</th>
+      <th data-field="created_date" data-sortable="true">Létrehozás dátuma</th> 
+      <th data-field="modified_date" data-sortable="true">Módosítás dátuma</th>  
     </tr>
   </thead>
   <tbody>
@@ -165,12 +165,17 @@ data-pagination-parts="[pageList, pageInfo]">
                                         </td>
                                         <td class="col-sm-3"><%= process_data[0][j].pincode %>
                                         </td>
-                                        <%var time = moment.duration(moment(new Date(), "YYYY.MM.DD HH:mm").diff(moment(process_data[0][j].end_date, "YYYY.MM.DD HH:mm")));%>
-                                        <% if (time.asSeconds() >= 0) { %> 
+                                        <%var time_courrent_dif_end = moment.duration(moment(new Date(), "YYYY.MM.DD HH:mm").diff(moment(process_data[0][j].end_date, "YYYY.MM.DD HH:mm")));%>
+                                        <%var time_courrent_dif_start = moment.duration(moment(new Date(), "YYYY.MM.DD HH:mm").diff(moment(process_data[0][j].start_date, "YYYY.MM.DD HH:mm")));%>
+                                        <% if (time_courrent_dif_end.asSeconds() >= 0) { %> 
                                           <td class="col-sm-1"><span class="iconify" data-icon="carbon:dot-mark" style="color: red;"></span>
                                         <% } else { %>
-                                          <td class="col-sm-1"><span class="iconify" data-icon="carbon:dot-mark" style="color: green;"></span>
-                                        <% } %>
+                                          <% if (time_courrent_dif_start.asSeconds() >= 0) { %>
+                                            <td class="col-sm-1"><span class="iconify" data-icon="carbon:dot-mark" style="color: green;"></span>
+                                            <% } else { %>
+                                              <td class="col-sm-1"><span class="iconify" data-icon="carbon:dot-mark" style="color: orange"></span
+                                                <% } %>
+                                            <% } %>
                                       </td>
                                       </tr>                    
                                     <% } %>
@@ -213,8 +218,8 @@ data-pagination-parts="[pageList, pageInfo]">
                           <a href="#" class="btn btn-secondary btn-sm mt-2">Szerkesztés</a>
                           <a href="#" OnClick="LoadDataToModal('renameTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-secondary btn-sm mt-2">Átnevezés</a>
                           <a href="#" OnClick="LoadDataToModal('moveTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-secondary btn-sm mt-2">Áthelyezés</a><br>
-                          <a href="#" onclick="EXP();" class="btn btn-outline-warning btn-sm mt-2">Exportálás</a>
-                          <a href="#" data-bs-toggle="modal" data-bs-target="#printTestModal" class="btn btn-outline-warning btn-sm mt-2">Nyomtatás</a>
+                          <a href="#" OnClick="EXP('<%= test_data[0][i].test_id %>');" class="btn btn-outline-warning btn-sm mt-2">Exportálás</a>
+                          <a href="#" OnClick="LoadDataToModal('printTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-outline-warning btn-sm mt-2">Nyomtatás</a>
                       </div>
                     </div>
                   </div>
@@ -488,11 +493,10 @@ data-pagination-parts="[pageList, pageInfo]">
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
     <section class='form'>
-      <form action="/printTest" class="needs-validation" method="get" id="printTest" novalidate>
+      <form action="/PDF" class="needs-validation" method="post" id="printTest" novalidate>
         <div class="modal-body">
           <fieldset>
             <div class="container">
-
               <div class="form-group mb-3"> 
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" id="printTestNameCheck">
@@ -502,7 +506,6 @@ data-pagination-parts="[pageList, pageInfo]">
                   </label>
                 </div>
               </div>
-
               <div class="form-group mb-3"> 
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" id="printPointsCheck">
@@ -519,7 +522,7 @@ data-pagination-parts="[pageList, pageInfo]">
         </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Kilépés</button>
-        <button id="" onclick="PDF();" data-bs-dismiss="modal" class="btn btn-primary">Nyomtatás</button>
+        <button type="submit" id="printTestBtn" class="btn btn-primary">Nyomtatás</button>
       </div>
       </form>
   </section>
@@ -527,29 +530,29 @@ data-pagination-parts="[pageList, pageInfo]">
   </div>
 </div>
 
-<form id='testPost' action="/pdf" method="POST">
+<!-- <form id='testPost' action="/pdf" method="POST">
   <input type="hidden" id = "postTippem" name="postTippem" />
-</form>
+</form> -->
 <form id='testexp' action="/exp" method="POST">
   <input type="hidden" id = "postexp" name="postexp" />
 </form>
 
 <script>
 //PDF
-function PDF() {
-  console.log('<%= test_id %>');
-    // testSzoveg = document.getElementById("tippem").value;
-    var testSzoveg = 78945;
-    console.log(testSzoveg);
-    var form = $('#testPost');
-    var hiddencucc = $('#postTippem');
-    hiddencucc.val(testSzoveg);
-    console.log(hiddencucc.val());
-    form.trigger('submit', function(){});
-  }
+// function PDF() {
+//   console.log('<%= test_id %>');
+//     // testSzoveg = document.getElementById("tippem").value;
+//     var testSzoveg = 78945;
+//     console.log(testSzoveg);
+//     var form = $('#testPost');
+//     var hiddencucc = $('#postTippem');
+//     hiddencucc.val(testSzoveg);
+//     console.log(hiddencucc.val());
+//     form.trigger('submit', function(){});
+//   }
 
   //EXP
-function EXP(testSzoveg) {
+function EXP(testId) {
   // testSzoveg = document.getElementById("tippem").value;
   var testSzoveg = 141450;
   console.log(testSzoveg);
@@ -562,8 +565,8 @@ function EXP(testSzoveg) {
 
   var courrentLength = 10; //inicializáljuk a jelenlegi értékkel a hosszúságot
 $(document).ready(function() {
-    ShowRowByID('<%= test_id %>'); //meghívjuk a függvényt, ezzel lenyitjuk azt a tesztet, amiről új folyamatot hoztunk létre
-    AddPageChangeBar(); //hozzáadjuk az oldal betöltését követően a "menüt"
+  ShowRowByID('<%= test_id %>'); //meghívjuk a függvényt, ezzel lenyitjuk azt a tesztet, amiről új folyamatot hoztunk létre
+  AddPageChangeBar(); //hozzáadjuk az oldal betöltését követően a "menüt"
 });
 
 function htmlToElement(html) {
@@ -721,6 +724,14 @@ function ShowRowByID(target) {
 
 }
 
+//Modalok inicializálása
+var createTestProcessModal = new bootstrap.Modal(document.getElementById('createTestProcessModal'));
+var printTestModal = new bootstrap.Modal(document.getElementById('printTestModal'), {})
+var duplicateTestModal = new bootstrap.Modal(document.getElementById('duplicateTestModal'));
+var renameTestModal = new bootstrap.Modal(document.getElementById('renameTestModal'));
+var moveTestModal = new bootstrap.Modal(document.getElementById('moveTestModal'));
+var printTestModal = new bootstrap.Modal(document.getElementById('printTestModal'));
+
 function LoadDataToModal(modal, test_id, test_subcategory) {
 
   var td = $('#table td').filter( ":nth-child(1)" ).filter(function(){
@@ -735,7 +746,6 @@ function LoadDataToModal(modal, test_id, test_subcategory) {
   case 'newTestProcess':
 
     $("#test_id").val(test_id);
-    var createTestProcessModal = new bootstrap.Modal(document.getElementById('createTestProcessModal'));
     createTestProcessModal.show();
     break;
 
@@ -747,29 +757,25 @@ function LoadDataToModal(modal, test_id, test_subcategory) {
     originalCatId = $('#cat_id_dt').val(); //eredeti kategória ID eltárolása
     $('#duplicateTestModal .maincat').addClass('d-none');
     $('#duplicateTestModal .subcat').addClass('d-none');  
-    var duplicateTestModal = new bootstrap.Modal(document.getElementById('duplicateTestModal'));
     duplicateTestModal.show();
     break;
 
   case 'renameTest':
     $("#test_id_rt").val(test_id);
     $("#test_name_rt").attr('placeholder', test_name);
-    var renameTestModal = new bootstrap.Modal(document.getElementById('renameTestModal'));
     renameTestModal.show();
     break;
 
   case 'moveTest':
     $("#test_id_mt").val(test_id);
     getMainCategory('moveTest');
-    var moveTestModal = new bootstrap.Modal(document.getElementById('moveTestModal'));
     moveTestModal.show();
     break;
 
   case 'printTest':
     $("#test_id_pt").val(test_id);
     getMainCategory('moveTest');
-    var moveTestModal = new bootstrap.Modal(document.getElementById('printTestModal'));
-    moveTestModal.show();
+    printTestModal.show();
     break;
 
   default:
@@ -811,6 +817,11 @@ $("#printTestNameCheck").change(function() {
     } else {
       $('#print_test_name').val('0');
     }
+});
+
+$("#printTest").submit(function() {
+  //PDF generálás után tűnjön el a modal
+printTestModal.hide();
 });
 
         </script>

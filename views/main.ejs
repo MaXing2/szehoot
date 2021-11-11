@@ -3,15 +3,14 @@
 <div id="content" name="content"> 
    <!-- Amennyiben a gyökérre (/) érkezik egy get kérés, úgy a server postban elküldi az aktuális munkamenet állapotát.
    Bejelentkezett állapotban a home.ejs töltődik be, ellenkező esetben mindig a login.ejs kivéve a signup.ejs -re hivatkozás esetén -->
-      <% if (!loggedIn) { %>
-         <% if (page == 'signup') { %>
-            <%- include('signup'); -%>
-         <%  } else {%>
-            <%- include('login'); -%>
-         <% } %>
-      <%  } else {%>
-      <%- include(page); -%> 
+   <% if (!loggedIn) { %>
+      <% if (page == 'signup') { %>
+         <%- include('signup'); -%>
+      <% } else {%>
+         <%- include('login'); -%>
       <% } %>
+   <% } else {%>
+      <%- include(page); -%> 
+   <% } %>
 </div>
-
 <%- include('partials/footer'); -%>

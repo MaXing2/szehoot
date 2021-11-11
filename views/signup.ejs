@@ -250,7 +250,7 @@
 		{
 			if ($( "#password" ).val() != "") {
 				//jelszó nem üres
-				if ($("#password").val().match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/))
+				if ($("#password").val().match(/^(?=.*\d)(?=.*[a-zaáeéiíoóöőuúüű])(?=.*[A-ZAÁEÉIÍOÓÖŐUÚÜŰ])[0-9a-zA-ZaáeéiíoóöőuúüűAÁEÉIÍOÓÖŐUÚÜŰ]{8,}$/))
 				{
 					//a jelszó megfelel az elvártaknak
 					$(".password #valid-text").text( "Elfogadva!" );

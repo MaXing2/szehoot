@@ -1,7 +1,10 @@
 exports.adat = function (jsPDF,app,connection,fs) {
 // pdf
 app.post('/pdf', function (req, res) {
-    var test = req.body.postTippem;
+    var test = req.body.test_id_pt;
+    var print_points = req.body.print_points; // 1 az értéke, ha kell nyomtatni a pontokat, 0 ha nem
+    var print_test_name = req.body.print_test_name; // 1 az értéke, ha kell nyomtatni a teszt nevét, 0 ha nem
+    
     console.log(test);
     var json;
   
