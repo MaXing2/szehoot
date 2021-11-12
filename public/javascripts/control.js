@@ -1,5 +1,5 @@
 const socket = io();
-var actual = 1;
+var actual = 0;
 // var getCookieValue;
 var atad;
 var helyes = 0;
@@ -11,30 +11,36 @@ var time = 0 ;
 var pincode;
 var cname;
 var mod;
+var attempt;
 var char;
+var testname;
+var allpoint = 0;
 window.onload = (event) => {
-  $("#popUpDiv").show();
+  $(".test-title").text(testname);
+  $("#lobby").show();
+  $('#test').hide();
   console.log(cname + " - ez a neve");
   console.log(pincode + " - ez a szama");
   console.log(mod + " - ez a jatek modja");
   kerdesadatok(pincode);
-    color = '#'+Math.random().toString(16).substr(-6);
-    // document.body.style.background = color;
-    ad=cname;
-    if (ad != "admin"){       //tanár teszt vezerlo!!
+    if (ad != cname){       //tanár teszt vezerlo!!
         vezerlo();
-        document.getElementById("BT9").style.display = "none"; 
+        $('#control_div').hide();
         // name = "username";
         // getCookieValue = document.cookie.match('(^|;)\\s*' + pincode + '\\s*=\\s*([^;]+)')?.pop() || '';
         // getCookieValue = ad;
     }else{
-        document.getElementById("BT1").disabled = true;
-        document.getElementById("BT2").disabled = true;
-        document.getElementById("BT3").disabled = true;
-        document.getElementById("BT4").disabled = true;
-        document.getElementById("BT7").disabled = true;
-        document.getElementById("BT8").disabled = true;
-        document.getElementById("BT9").style.display = ""; 
+        document.getElementById("btn1").disabled = true;
+        document.getElementById("btn2").disabled = true;
+        document.getElementById("btn3").disabled = true;
+        document.getElementById("btn4").disabled = true;
+        document.getElementById("btn5").disabled = true;
+        document.getElementById("btn6").disabled = true;
+        document.getElementById("btn7").disabled = true;
+        document.getElementById("btn8").disabled = true;
+        document.getElementById("btn9").disabled = true;
+        document.getElementById("btn9").style.display = "none";
+        $('#control_div').show();
         teacher = 1;
       };
       //wating on start
@@ -48,7 +54,7 @@ window.onload = (event) => {
   }
 
 //bbcode
-var textarea = document.getElementById("elem");
+var textarea = document.getElementById("questionText");
 sceditor.create(textarea, {
   format: 'bbcode',
   toolbar: '',
@@ -67,7 +73,7 @@ function sqlm (){
 
 socket.on('getter',ered => {
   actual++;
-  $("#popUpDiv").hide();
+  taskDuration("start")
     show();
     hiv(ered);
 });
@@ -78,94 +84,40 @@ function hiv (ered) {
         var idom = ered[0].time;
         display = document.querySelector('#time');
         clearInterval(globalid);
-        startTimer(idom, display);
+        startTimer(idom);
+        allpoint +=  ered[0].score;
+        // startTimer(idom, display);
         starterbutton();
-        document.getElementById('sorszam').innerHTML = ered[0].question_number + "./" + osszvalasz +".kérdés"; 
+        $("#qnumber_courrent").text((ered[0].question_number+1));
+        $("#score").text((ered[0].score/100)+" pont"); 
         instance.val(ered[0].question);
         //picture 
         if (ered[0].image==null || ered[0].image==""){
-          document.getElementById("kep").style.display = "none";
+          document.getElementById("questionImage").style.display = "none";
         }else{
-          document.getElementById('kep').innerHTML = "<img style='height: 100%; width: 100%; object-fit: contain' src='" + ered[0].image + "'/>";
+          document.getElementById("questionImage").style.display = "";
+          document.getElementById('questionImage').innerHTML = "<img style='height: 100%; width: 100%; object-fit: contain' src='" + ered[0].image + "'/>";
         }
-        switch (ered[0].type) {
-            case 1:         //tipp
-                document.getElementById("tipp").style.display = "";
-                document.getElementById('tippem').value = "";
-                document.getElementById("BT1").style.display = "none";
-                document.getElementById("BT2").style.display = "none";
-                document.getElementById("BT3").style.display = "none";
-                document.getElementById("BT4").style.display = "none";
-              break;
-            case 2:         //igazhamis
-                document.getElementById('BT1').innerHTML = ered[0].answer_1;
-                document.getElementById('BT2').innerHTML = ered[0].answer_2;
-                document.getElementById("BT3").style.display = "none";
-                document.getElementById("BT4").style.display = "none";
-              break;
-            case 3:         //harom
-                document.getElementById('BT1').innerHTML = ered[0].answer_1;
-                document.getElementById('BT2').innerHTML = ered[0].answer_2;
-                document.getElementById('BT3').innerHTML = ered[0].answer_3;
-                document.getElementById("BT4").style.display = "none";
-              break;
-            case 4:         //negy
-                document.getElementById('BT1').innerHTML = ered[0].answer_1;
-                document.getElementById('BT2').innerHTML = ered[0].answer_2;
-                document.getElementById('BT3').innerHTML = ered[0].answer_3;
-                document.getElementById('BT4').innerHTML = ered[0].answer_4;
-              break;
-            case 5:
-                document.getElementById("check").style.display = "";
-                document.getElementById('box1').checked = false;
-                document.getElementById('box2').checked = false;
-                document.getElementById('box3').checked = false;
-                document.getElementById('box4').checked = false;
-                document.getElementById('labbox1').innerHTML = ered[0].answer_1;
-                document.getElementById('labbox2').innerHTML = ered[0].answer_2;
-                document.getElementById('labbox3').innerHTML = ered[0].answer_3;
-                document.getElementById('labbox4').innerHTML = ered[0].answer_4;
-                document.getElementById("BT1").style.display = "none";
-                document.getElementById("BT2").style.display = "none";
-                document.getElementById("BT3").style.display = "none";
-                document.getElementById("BT4").style.display = "none";
-              break;
-        }
+        console.log("ez a tipusa: "+ered[0].type);
+        taskType(ered[0].type);
+        document.getElementById('btn1').innerHTML = ered[0].answer_1;
+        document.getElementById('btn2').innerHTML = ered[0].answer_2;
+        document.getElementById('btn3').innerHTML = ered[0].answer_3;
+        document.getElementById('btn4').innerHTML = ered[0].answer_4;
+        document.getElementById('btn5').innerHTML = ered[0].answer_4;
+        document.getElementById('btn6').innerHTML = ered[0].answer_4;
+        document.getElementById('btn7').innerHTML = ered[0].answer_4;
+        document.getElementById('btn8').innerHTML = ered[0].answer_4;
+        $(window).resize();
+
     }
 }
 
-//ido
-function startTimer(duration, display) {
-    var timer = duration, minutes, seconds;
-    var interid = setInterval(idozit, 1000);       //Interval
-        globalid=interid;
-        function idozit () {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
-        time = minutes*60 + seconds;
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-        display.textContent = minutes + ":" + seconds;
-
-        if (--timer < 0) {
-            //sqlm();
-            //subm(0);
-            if (teacher==0){
-                valaszolt();
-                subm(0);
-            }else{
-              resChart();
-            }
-            clearInterval(interid);
-        }
-    };
-}
 
 //Chart
 function resChart() {
   socket.emit('sresChart',actual,pincode); 
 }
-
 
 socket.on('resChart',yValues => {
   //chart_data
@@ -174,15 +126,17 @@ socket.on('resChart',yValues => {
     char.destroy();
   }
   if (mod == 1){
-    document.getElementById("myChart").style.display = "";
+    // document.getElementById("myChart").style.display = "";
+    $('.question-content-group').hide();
+    $('.chart-content-group').show();
   }
   var xValues = [];
   xValues.push(atad[0].answer_1)
   xValues.push(atad[0].answer_2)
-  if(atad[0].type==3 || atad[0].type==4 || atad[0].type==5){
+  if(atad[0].type==13 || atad[0].type==14 || atad[0].type==2){
     xValues.push(atad[0].answer_3)
   }
-  if(atad[0].type==4 || atad[0].type==5){
+  if(atad[0].type==14 || atad[0].type==2){
     xValues.push(atad[0].answer_4)
   }
 
@@ -254,7 +208,9 @@ socket.on('resChart',yValues => {
 
 //adatok_rogzitese
 function subm (ertek){
-    socket.emit('rogzit',ertek,pincode,cname,actual);   
+var pond = taskDuration("end");
+console.log(pond);
+    socket.emit('rogzit',ertek,pincode,cname,actual,ad,attempt,pond);   
 
   };
 
@@ -262,27 +218,9 @@ function subm (ertek){
 socket.on('points',ans => {
   helyes++;
   point += ans; 
-  document.getElementById('correct').innerHTML = "A jó válaszok száma: " + helyes;
-  document.getElementById('end').innerHTML = "Elert pontszám: " + point;
+  // document.getElementById('correct').innerHTML = "A jó válaszok száma: " + helyes;
+  // document.getElementById('end').innerHTML = "Elert pontszám: " + point;
 });
-
-    // if (atad[0].score == null){
-    //    if (ertek == atad[0].correct_answer_no){
-    //        helyes++;
-    //        document.getElementById('jo').innerHTML = "A jó válaszok száma: " + helyes;
-    //    };
-    //    if ((osszvalasz) == atad[0].test_id){
-    //        var szazalek = Math.floor((helyes / osszvalasz * 100) * 10) / 10;
-    //        document.getElementById('vege').innerHTML = "A teszt végetért és " + helyes + " pontot és " + szazalek + "%-ot értél el.";
-    //    }
-    // }else{
-    //   if (ertek == atad[0].correct_answer_no){
-    //     helyes++;
-    //     document.getElementById('jo').innerHTML = "A jó válaszok száma: " + helyes;
-    //     pontom = pontom + ((atad[0].score / atad[0].time) * time);
-    //     console.log(pontom)
-    //   };
-    // }
 
 
 //kerdesadatok
@@ -290,9 +228,10 @@ function kerdesadatok(kod){
     socket.emit('stablakerdes', kod);
     socket.on('tablakerdes', (ered, onliNum)  => {
         osszvalasz= ered[0].question_num;
+        $("#qnumber_count").text(osszvalasz);
         console.log(osszvalasz);
         console.log(onliNum);
-        document.getElementById('onlin').innerHTML = onliNum + " Várakozó a teszt kitőltésére.";
+        $("#users_count").text(onliNum); 
     });
 };
 
@@ -300,117 +239,103 @@ function kerdesadatok(kod){
 socket.on('online', (onliNum)  => {
   console.log("data is coming");
   console.log(onliNum);
-  document.getElementById('onlin').innerHTML = onliNum + " Várakozó a teszt kitőltésére.";
+  $("#users_count").text(onliNum);
 });
 
-//inputvalide
-function setInputFilter(textbox, inputFilter) {
-    ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function(event) {
-      textbox.addEventListener(event, function() {
-        if (inputFilter(this.value)) {
-          this.oldValue = this.value;
-          this.oldSelectionStart = this.selectionStart;
-          this.oldSelectionEnd = this.selectionEnd;
-        } else if (this.hasOwnProperty("oldValue")) {
-          this.value = this.oldValue;
-          this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
-        } else {
-          this.value = "";
-        }
-      });
-    });
-  }
-
-setInputFilter(document.getElementById("tippem"), function(value) {
-    return /^-?\d*$/.test(value); 
-});
 
 //control_hide
 function vezerlo() {
-    document.getElementById("vezerlo").style.display = "none";
+  $('#controlbar').hide();
   }
 
   function valaszolt(){
-    document.getElementById("lehetosegek").style.display = "none";
-    document.getElementById("elem").style.display = "none";
-    document.getElementById("tipp").style.display = "none";
-    document.getElementById("check").style.display = "none";
-    document.getElementById("kep").style.display = "none";
-    if (mod != 1){          //mod for auto next
+    if (mod != 1){ //mod for auto next
       if (actual < osszvalasz)
       sqlm();
+    }else {
+    if (ad != cname) {
+      $('.answer-content-group').hide(); 
+    }  
+  }
+  if (actual == osszvalasz){
+    console.log("vége"); //finised test
+    showResult();
+    console.log(allpoint);
+
+    console.log(point);
+    $("#result_percent").text(Math.round((point/allpoint)*100.0)+"%");          //%
+    $("#result_score").text((point/100)+"/"+(allpoint/100));                    //pont
+    // $("#result_rating").text("alma");                                        Osztályzat beállítás (Jeles)
     }
   }
    
   function show(){
-     document.getElementById("lehetosegek").style.display = "block";
-    //document.getElementById("elem").style.display = "block";
-     document.getElementById("kep").style.display = "block";
+    //megjelenítés
+    $("#lobby").hide();
+    $('#test').show();
+    $('.answer-content-group').show();
+    $('.question-content-group').show();
+    $('.chart-content-group').hide();
   }
 
 //show all button in start
   function starterbutton(){
-    document.getElementById("myChart").style.display = "none";
-    document.getElementById("BT1").style.display = "";
-    document.getElementById("BT2").style.display = "";
-    document.getElementById("BT3").style.display = "";
-    document.getElementById("BT4").style.display = "";
-    document.getElementById("tipp").style.display = "none";
-    document.getElementById("check").style.display = "none";
+    $('.chart-content-group').hide();
+    document.getElementById("btn1").style.display = "";
+    document.getElementById("btn2").style.display = "";
+    document.getElementById("btn3").style.display = "";
+    document.getElementById("btn4").style.display = "";
+    // document.getElementById("tipp").style.display = "none";
+    // document.getElementById("check").style.display = "none";
   }
 
 //button
-document.getElementById("BT1").onclick = function doSub () { 
+document.getElementById("btn1").onclick = function doSub () { 
     subm(1);
     valaszolt();
     clearInterval(globalid);
 };
 
-document.getElementById("BT2").onclick = function doSub () { 
+document.getElementById("btn2").onclick = function doSub () { 
     subm(2);
     valaszolt();
     clearInterval(globalid);
 };
 
-document.getElementById("BT3").onclick = function doSub () { 
+document.getElementById("btn3").onclick = function doSub () { 
     subm(3);
     valaszolt();
     clearInterval(globalid);
 };
 
-document.getElementById("BT4").onclick = function doSub () { 
+document.getElementById("btn4").onclick = function doSub () { 
     subm(4);
     valaszolt();
     clearInterval(globalid);
 };
 
-document.getElementById("BT7").onclick = function doSub () { 
-    subm(document.getElementById("tippem").value);
-    valaszolt();
-    clearInterval(globalid);
-};
-
-document.getElementById("BT8").onclick = function doSub () { 
+document.getElementById("btn9").onclick = function doSub () { 
   var fuz = 0;
-  if(document.getElementById("box1").checked){
+  if($("#btn5").hasClass('btn-choosed')){
     fuz = fuz + 1;
   };
-  if(document.getElementById("box2").checked){
+  if($("#btn6").hasClass('btn-choosed')){
     fuz = fuz* 10 + 2;
   };
-  if(document.getElementById("box3").checked){
+  if($("#btn7").hasClass('btn-choosed')){
     fuz = fuz * 10 + 3;
   };
-  if(document.getElementById("box4").checked){
+  if($("#btn8").hasClass('btn-choosed')){
     fuz = fuz * 10 + 4;
   };
+  console.log(fuz);
   subm(fuz);
   valaszolt();
   clearInterval(globalid);
 };
 
 //vezerlo_gombok
-document.getElementById("BT5").onclick = function back () { 
+document.getElementById("back").onclick = function back () { 
     if (actual != 1){
         actual--;
         actual--;
@@ -419,8 +344,11 @@ document.getElementById("BT5").onclick = function back () {
     //subm(0);    
 };
 
-document.getElementById("BT6").onclick = function next () { 
-    if (actual <= osszvalasz)
-     sqlm(); 
+document.getElementById("next").onclick = function next () { 
+    if (actual < osszvalasz){
+      sqlm();
+    }else{
+      valaszolt()
+    }
      //subm(0);       
 };

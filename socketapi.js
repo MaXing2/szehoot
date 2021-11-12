@@ -51,10 +51,10 @@ io.on('connection', socket => {
     });
 
     // record button push
-    socket.on('rogzit', (ertek, gameid, cname,qnumber) => {
+    socket.on('rogzit', (ertek, gameid, cname,qnumber,ad,attempt,pond) => {
         --qnumber;
         var d = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        var sql = "INSERT INTO  test_results  (process_id ,answers, nick_name,ts, answer_number) VALUES (" + con.escape(gameid) +", "+ con.escape(ertek) +", "+ con.escape(cname) + ", " +con.escape(d)+ ", " +con.escape(qnumber)+ ")";
+        var sql = "INSERT INTO  test_results  (process_id ,answers, u_id,ts, answer_number, nick_name, attempt_id, response_time) VALUES (" + con.escape(gameid) +", "+ con.escape(ertek) +", "+ con.escape(cname) + ", " +con.escape(d)+ ", " +con.escape(qnumber)+ ", " +con.escape(ad)+ ", " +con.escape(attempt)+ ", " +con.escape(pond)+ ")";
         con.query(sql, function (err, result) {
             if (err) throw err;
         });

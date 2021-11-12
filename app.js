@@ -46,7 +46,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(fileUpload());
+// app.use(fileUpload());
 //dátum formázás
 app.locals.moment = require('moment');
 
@@ -282,10 +282,10 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
 
     switch(status) {
       case 5:
-        res.render('join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, 'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
+        res.render('join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode,  'process_id': result[0][0].id,  'attempt_id': attemptId, 'nickname': nickname, 'userid': null, 'test_name': result[0][0].test_name , 'owner': result[0][0].u_id });  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
         break;
       case 6:
-        res.render('join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, 'username': username, 'userid': userid}); //bejelentkezett felhasználó esetében   
+        res.render('join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'process_id': result[0][0].id, 'attempt_id': attemptId, 'username': username, 'userid': userid, 'test_name': result[0][0].test_name, 'owner': result[0][0].u_id }); //bejelentkezett felhasználó esetében   
         break;
       default:
         res.redirect('/?status=' + (status));
@@ -353,17 +353,17 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
                         attemptId = result3[0][0].attempt_id; //megváltoztatjuk az attemptId változó értékét a már korábban elkezdettekre
                         //átadjuk, hogy hol tart jelenleg
                         var courrentQuestion = result3[0][0].answer_number;
-                        res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, courrentQuestion: courrentQuestion,  'username': username, 'userid': userid}); //bejelentkezett felhasználó esetében   
+                        res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, courrentQuestion: courrentQuestion,  'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name}); //bejelentkezett felhasználó esetében   
                         //mehet tovább
                       }
                     } else { //nem kezdte még el, mehet a teszt
                       //új teszt
                       //minden megy rendesen
-                      res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, courrentQuestion: '0', 'username': username, 'userid': userid}); //bejelentkezett felhasználó esetében   
+                      res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, courrentQuestion: '0', 'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name}); //bejelentkezett felhasználó esetében   
                     } 
                   })
                 } else {//bejelentkezett felhasználó és gyakorló vagy tantermi módban van a tesztfolyamat
-                  res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, 'username': username, 'userid': userid}); //bejelentkezett felhasználó esetében   
+                  res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, 'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name}); //bejelentkezett felhasználó esetében   
                 }
                break;
               default:
@@ -939,7 +939,9 @@ app.post('/upload', function(req, res) {
 
   let elem = req.body.elem;
   let tippem = req.body.tippem;
-  console.log(elem, tippem);
+  console.log("req body", req.body);
+  console.log("req.files", req.files);
+
 
   var sql = "SELECT COUNT (*) as 'db' FROM test_questions WHERE test_id=" +connection.escape(tippem)+ " and question_number="+connection.escape(elem)+"";
   connection.query(sql, function (err, result) {

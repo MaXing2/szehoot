@@ -423,6 +423,10 @@ $("#fileUploadField").on('change', function () {
   var formdata = new FormData($('#uploadForm')[0]);
   formdata.append('tippem', pincode);
   formdata.append('elem', elem+1);
+  //formdata.append('sampleFile', $("#fileUploadField").files[0]);
+
+
+  console.log("form data:", formdata);
 
   $.ajax({
     url:'/upload',
@@ -462,12 +466,14 @@ function preventszar(ev) {
 }
 
 function dropped(ev) {
+
   var uploadField = document.getElementById("fileUploadField");
   uploadField.files = ev.dataTransfer.files;
   //$("#uploadForm").submit();
   var formdata = new FormData($('#uploadForm')[0]);
   formdata.append('tippem', pincode);
   formdata.append('elem', elem+1);
+  //formdata.append('sampleFile', $("#fileUploadField").files[0]);
 
   //useless?!
   for (var pair of formdata.entries()) {
@@ -492,7 +498,7 @@ function dropped(ev) {
     }
 })
 
-  ev.preventDefault();
+ev.preventDefault();
 }
 
 //delet qest

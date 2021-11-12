@@ -14,6 +14,15 @@
         <link rel="stylesheet" href="../stylesheets/bootstrap/bootstrap.min.css"> <!-- Bootstrap stíluslap-->
         <link rel="stylesheet" href="../stylesheets/main_styles.css"> <!-- Fő stíluslap -->
   
+        <!-- socket, chart -->
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    
+        <!-- bbcode -->
+        <script src="../minified/sceditor.min.js"></script>
+        <script src="../minified/formats/bbcode.js"></script>
+        <script src="../minified/formats/xhtml.js"></script>
+
   <style>
     @font-face {
       font-family: BabasNeue;
@@ -302,7 +311,7 @@
         <div class="clock-loader m-auto mt-3 mb-3"></div>
       </div>
       <div id="control_div" class="col-12 mb-3 text-center">
-        <button class="btn-start" role="button">Indítás</button>
+        <button class="btn-start" onclick="start();" role="button">Indítás</button>
       </div>
       <div class="row g-0">
         <span id="users_count_text" class="text-center">Csatlakozott felhasználók száma:</span>
@@ -352,12 +361,13 @@
         <hr class="question-content-group">
           <div id="questionImageDiv" class="row justify-content-center align-items-center question-content-group">
             <div class="col-12">
-              <img id="questionImage" src="https://static.javatpoint.com/cpages/images/while.png" class="w-auto img-fluid" alt="...">
+              <div id="questionImage" class="w-auto img-fluid" alt="..."></div>
+              <!-- <img id="questionImage" src="https://static.javatpoint.com/cpages/images/while.png" class="w-auto img-fluid" alt="..."> -->
            </div>
         </div>
         <div id="chartDiv" class="row mb-3 chart-content-group">
           <div class="col-12">
-            <!-- ide jöhet a grafikon -->
+            <canvas id="myChart" style="width:50vm; height:100%;"></canvas> <!--   need to fix here chart size -->
           </div>
         </div>
         </div>
@@ -367,8 +377,8 @@
         <div class="p-3 border h-100 bg-light" style="overflow-y: auto;">
           <div id="controlbar" class="row gx-0 mb-2">
             <div class="col-12 text-center">
-              <button type="button" class="btn me-1 btn-control btn-sm">&laquo; Előző</button>
-              <button type="button" class="btn ms-1 btn-control btn-sm">Következő &raquo;</button>
+              <button type="button" id="back" class="btn me-1 btn-control btn-sm">&laquo; Előző</button>
+              <button type="button" id="next" class="btn ms-1 btn-control btn-sm">Következő &raquo;</button>
               <button type="button" class="btn ms-1 btn-control btn-sm d-none">Befejezés</button>
             </div>
             </div>
@@ -620,7 +630,15 @@ function startTimer(duration) {
         display.text(minutes + ":" + seconds); 
         if (diff <= 0) {
             //HA LEJÁRT AZ IDŐ, AKKOR IDE KÉNE BEÍRNI, HOGY MI TÖRTÉNJEN...
-            clearInterval(x);
+            //sqlm();
+            //subm(0);
+            if (teacher==0){
+                valaszolt();
+                subm(0);
+            }else{
+              resChart();
+            }
+        clearInterval(x);
         }
         if (diff<=duration/3) {
           if (!$('.timeProgressbar').hasClass('bg-danger')) {
@@ -631,6 +649,7 @@ function startTimer(duration) {
     };
   
    x = setInterval(timer, 1000);
+   globalid = x;
    setTimeout(function(){
     $('.timeProgressbar').animate({
         width: '0%'
@@ -763,12 +782,16 @@ ResultModal.addEventListener('hidden.bs.modal', function (event) {
   window.location.href ="/";
 })
 
+var mod = JSON.parse('<%- JSON.stringify(mode) %>');	//mode code
+var pincode = JSON.parse('<%- JSON.stringify(pincode) %>');  // send pin
+var testname = JSON.parse('<%- JSON.stringify(test_name) %>');  // send testname
+var cname = JSON.parse('<%- JSON.stringify(owner) %>');  // send owner
+var ad = JSON.parse('<%- JSON.stringify(userid) %>');  // send login
+var attempt = JSON.parse('<%- JSON.stringify(attempt_id) %>');  // send attempt
+
 </script>
 
-
-
-
-
+<script src="../javascripts/control.js"></script>
 <!-- 
 
 ----------LOBBY-----------
