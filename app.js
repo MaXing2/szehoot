@@ -252,47 +252,7 @@ else {
 
 //-------------------------------------------------------POST kérések kezelése-----------------------------------------------------------
 
-// Csatlakozás
 app.post('/joinTest',function (req, res) { //------------------------------------MÉG NINCS VIZSGÁLVA A LEJÁRATI DÁTUM--------------------------------------------------
-  var pincode = req.body.pincode;
-  var status = 0; //alapértelmezetten nincs hiba, ezért 0
-  connection.query("CALL GetProcessByPincode(?)", [pincode], function(err, result, fields) {
-    if (err) throw err;
-
-    if (!result[0].length <= 0) {
-      if (req.session.loggedIn) {
-        console.log('EZ MOST MEGTÖRTÉNIK ELVILEG!!!!!!!!!!!!!!!!!!!!!!');
-
-        var username = req.session.username;
-        console.log(username);
-        var userid = req.session.userid;
-        status = 6; //belépés regisztrált felhasználóként
-      } else {
-        var nickname = req.body.nickname;
-        if (result[0][0].mode == 0 || result[0][0].mode == 1) {//ha a pinhez tartozó tesztfolyamat módja 0 (gyakorlási) vagy 1 (tantermi)
-          status = 5; //beléphet a tesztbe
-        } else {
-          status = 1; //hiba: létezik a pinkód, de a teszt módja nem engedélyezi a gyors belépést
-        }
-      }
-
-    } else {
-      status = 2; //hiba: nem létezik a pinkód, így a belépés sem engedélyezett (nincs hova belépni)
-    }
-
-    switch(status) {
-      case 5:
-        res.render('join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode,  'process_id': result[0][0].id,  'attempt_id': attemptId, 'nickname': nickname, 'userid': null, 'test_name': result[0][0].test_name , 'owner': result[0][0].u_id });  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
-        break;
-      case 6:
-        res.render('join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'process_id': result[0][0].id, 'attempt_id': attemptId, 'username': username, 'userid': userid, 'test_name': result[0][0].test_name, 'owner': result[0][0].u_id }); //bejelentkezett felhasználó esetében   
-        break;
-      default:
-        res.redirect('/?status=' + (status));
-    }})
-  })
-
-  app.post('/joinTest2',function (req, res) { //------------------------------------MÉG NINCS VIZSGÁLVA A LEJÁRATI DÁTUM--------------------------------------------------
     var pincode = req.body.pincode;
     var attemptId;
     var status = 0; //alapértelmezetten nincs hiba, ezért 0
@@ -337,7 +297,7 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
             switch(status) {
               
               case 5:
-                res.render('test_join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id,  'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
+                res.render('test_join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, 'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'userid': null,  'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
                 break;
               case 6:
                 if (result[0][0].mode == 2 || result[0][0].mode == 3) { // ha a mód valamelyik vizsgamód egyike
@@ -356,7 +316,7 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
                         res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, courrentQuestion: courrentQuestion,  'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name}); //bejelentkezett felhasználó esetében   
                         //mehet tovább
                       }
-                    } else { //nem kezdte még el, mehet a teszt
+                    } else { //nem kezdte még el, mehet a teszt 
                       //új teszt
                       //minden megy rendesen
                       res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, courrentQuestion: '0', 'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name}); //bejelentkezett felhasználó esetében   
