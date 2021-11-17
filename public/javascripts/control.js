@@ -17,8 +17,6 @@ var testname;
 var allpoint = 0;
 window.onload = (event) => {
   $(".test-title").text(testname);
-  $("#lobby").show();
-  $('#test').hide();
   console.log(cname + " - ez a neve");
   console.log(pincode + " - ez a szama");
   console.log(mod + " - ez a jatek modja");
@@ -53,17 +51,6 @@ window.onload = (event) => {
     sqlm();
   }
 
-//bbcode
-var textarea = document.getElementById("questionText");
-sceditor.create(textarea, {
-  format: 'bbcode',
-  toolbar: '',
-  style: 'minified/themes/content/default.min.css',
-  resizeEnabled: null,
-});
-
-var instance = sceditor.instance(textarea);
-instance.readOnly(true);
 
 
 //kerdesek
@@ -89,25 +76,28 @@ function hiv (ered) {
         // startTimer(idom, display);
         starterbutton();
         $("#qnumber_courrent").text((ered[0].question_number+1));
-        $("#score").text((ered[0].score/100)+" pont"); 
-        instance.val(ered[0].question);
+        $("#score").text((ered[0].score)+" pont"); 
+        // instance.val(ered[0].question);
+        $("#questionText").html(ered[0].question);
+
         //picture 
         if (ered[0].image==null || ered[0].image==""){
-          document.getElementById("questionImage").style.display = "none";
+          $("#questionImage").hide();
         }else{
-          document.getElementById("questionImage").style.display = "";
-          document.getElementById('questionImage').innerHTML = "<img style='height: 100%; width: 100%; object-fit: contain' src='" + ered[0].image + "'/>";
+          $("#questionImage").show();
+          $("#questionImage").attr("src",ered[0].image);
         }
+        $(window).resize();
         console.log("ez a tipusa: "+ered[0].type);
         taskType(ered[0].type);
-        document.getElementById('btn1').innerHTML = ered[0].answer_1;
-        document.getElementById('btn2').innerHTML = ered[0].answer_2;
-        document.getElementById('btn3').innerHTML = ered[0].answer_3;
-        document.getElementById('btn4').innerHTML = ered[0].answer_4;
-        document.getElementById('btn5').innerHTML = ered[0].answer_4;
-        document.getElementById('btn6').innerHTML = ered[0].answer_4;
-        document.getElementById('btn7').innerHTML = ered[0].answer_4;
-        document.getElementById('btn8').innerHTML = ered[0].answer_4;
+        $("#btn1-text").text(ered[0].answer_1);
+        $("#btn2-text").text(ered[0].answer_2);
+        $("#btn3-text").text(ered[0].answer_3);
+        $("#btn4-text").text(ered[0].answer_4);
+        $("#btn5-text").text(ered[0].answer_1);
+        $("#btn6-text").text(ered[0].answer_2);
+        $("#btn7-text").text(ered[0].answer_3);
+        $("#btn8-text").text(ered[0].answer_4);
         $(window).resize();
 
     }
@@ -264,7 +254,7 @@ function vezerlo() {
 
     console.log(point);
     $("#result_percent").text(Math.round((point/allpoint)*100.0)+"%");          //%
-    $("#result_score").text((point/100)+"/"+(allpoint/100));                    //pont
+    $("#result_score").text((point)+"/"+(allpoint));                    //pont
     // $("#result_rating").text("alma");                                        Osztályzat beállítás (Jeles)
     }
   }
@@ -272,10 +262,11 @@ function vezerlo() {
   function show(){
     //megjelenítés
     $("#lobby").hide();
-    $('#test').show();
+    $("#test").show();
     $('.answer-content-group').show();
     $('.question-content-group').show();
     $('.chart-content-group').hide();
+    $(window).resize();
   }
 
 //show all button in start

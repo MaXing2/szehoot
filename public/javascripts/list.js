@@ -75,7 +75,7 @@ function doAjax(testSzoveg) {
               $("#"+ i).trigger('click');
             }
             $("#0").trigger('click');
-            document.getElementById("CountPoint").innerHTML = (countpoint/100);
+            document.getElementById("CountPoint").innerHTML = (countpoint);
             alltime(counttime);
         },
         dataType: "json"
@@ -116,7 +116,7 @@ function alltime(counttime) {
 //bbcode
 var textarea = document.getElementById("bbcode-textarea");
 sceditor.create(textarea, {
-  format: 'bbcode',
+  format: 'xhtml',
   plugins: 'undo',
   toolbar: 'bold,italic,underline|font,size,subscript,superscript|color,emoticon|left,center,right,justify',
   style: '/minified/themes/content/default.min.css',
@@ -137,10 +137,10 @@ var instance = sceditor.instance(textarea);
     if (data == "nincs adat"){
       data = [];
       data.push({answer_1:"", answer_2:"", answer_3:"", answer_4:"", correct_answer_no:parseInt(""), image:"", question:"",
-    question_number: 0, score:"100", test_id: pincode,  time:"10", type:parseInt(document.getElementById('task_type').value) });
+    question_number: 0, score:"1", test_id: pincode,  time:"10", type:parseInt(document.getElementById('task_type').value) });
     }else{
     data.push({answer_1:"", answer_2:"", answer_3:"", answer_4:"", correct_answer_no:parseInt(""), image:"", question:"",
-    question_number: (data[data.length - 1].question_number) + 1, score:"100", test_id:(data[data.length - 1].test_id),  time:"10", type:parseInt(document.getElementById('task_type').value) });
+    question_number: (data[data.length - 1].question_number) + 1, score:"1", test_id:(data[data.length - 1].test_id),  time:"10", type:parseInt(document.getElementById('task_type').value) });
     }
   $("#tabla_szam").text(bar+1);
     console.log("hozza adva");
@@ -162,7 +162,7 @@ var instance = sceditor.instance(textarea);
     if (typeof data[bar] === 'undefined'){
     }else{
       ido=data[bar].time;
-      poi= (data[bar].score/100);
+      poi= (data[bar].score);
     }
     var slide = `<div class="row g-0 ratio ratio-16x9" onclick="dynamicDivOnClick(`+ bar +`);">
           <div class="card card-taskbar" id=`+ barid +`>
@@ -229,14 +229,13 @@ $("#mobile").change(function(e) {
 // point auto change
 $("#points").change(function(e) {
   qsave(elem);
-  var temp = 0;
+  temp = 0;
   data.forEach(calcp => {
-    temp = temp + calcp.score;
+    temp = temp + parseInt(calcp.score);
   });
-  temp=(temp/100);
-  console.log(temp);
   $("#CountPoint").text(temp);
-  $("#spoint"+elem).text((data[elem].score/100));
+  delete temp;
+  $("#spoint"+elem).text((data[elem].score));
 });
 
 
@@ -330,7 +329,7 @@ function qsupervision (ids){
 function qsave (modified){
   data[modified].question = instance.val();
   data[modified].time = document.getElementById("timeset").value;
-  data[modified].score = (document.getElementById("points").value*100);
+  data[modified].score = (document.getElementById("points").value);
   data[modified].type = parseInt(document.getElementById('task_type').value);
   if (document.getElementById("kepurl").value != "URL megadása esetén másold ide a teljes címet!"){
     data[modified].image = document.getElementById("kepurl").value;
@@ -548,7 +547,7 @@ function dotrol() {
     dataType: "json",
   });
 
-  document.getElementById("CountPoint").innerHTML = (countpoint/100); 
+  document.getElementById("CountPoint").innerHTML = (countpoint); 
   alltime(counttime);
 }
 
@@ -589,7 +588,7 @@ function dofunc(szam){
       document.getElementById('type-2-C').value = data[szam].answer_3;
       document.getElementById('type-2-D').value = data[szam].answer_4;
       document.getElementById('timeset').value = data[szam].time;
-      document.getElementById('points').value = (data[szam].score/100);
+      document.getElementById('points').value = (data[szam].score);
       document.getElementById('task_type').value = data[szam].type;
       if((data[szam].type)==13){
         document.getElementById('changeTaskSelect').value = 1;

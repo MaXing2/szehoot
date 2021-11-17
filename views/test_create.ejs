@@ -662,6 +662,8 @@ function typeOfTask(el) {
 			$("#type-1-D").height($("#type-2-D").height());
 			break;
 		}
+		//szintén újra kell méretezni az oldalt, mert a 4 lehetőség magassága nagyobb, mint az igaz/hamisé
+	$("#contenteditor").css('height','auto');
 	resizeToolbar();
 }
 

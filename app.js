@@ -55,7 +55,8 @@ app.locals.moment = require('moment');
 
 app.use(session({secret:'Szehoot2021'
 ,name:'uniqueSessionID'
-,saveUninitialized:false
+,saveUninitialized: false
+,rolling: true
 ,cookie: {
   maxAge: 1000*60*60} // 1 óráig él a session
 }))
