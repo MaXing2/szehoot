@@ -116,7 +116,7 @@ function alltime(counttime) {
 //bbcode
 var textarea = document.getElementById("bbcode-textarea");
 sceditor.create(textarea, {
-  format: 'xhtml',
+  format: 'bbcode',
   plugins: 'undo',
   toolbar: 'bold,italic,underline|font,size,subscript,superscript|color,emoticon|left,center,right,justify',
   style: '/minified/themes/content/default.min.css',
@@ -327,7 +327,7 @@ function qsupervision (ids){
 
 //save after onclick
 function qsave (modified){
-  data[modified].question = instance.val();
+  data[modified].question = instance.getWysiwygEditorValue(false);
   data[modified].time = document.getElementById("timeset").value;
   data[modified].score = (document.getElementById("points").value);
   data[modified].type = parseInt(document.getElementById('task_type').value);
@@ -578,7 +578,7 @@ function rest(){
 
 function dofunc(szam){
     rest();
-      instance.val(data[szam].question);
+      instance.setWysiwygEditorValue((data[szam].question));
       document.getElementById('type-1-A').value = data[szam].answer_1;
       document.getElementById('type-1-B').value = data[szam].answer_2;
       document.getElementById('type-1-C').value = data[szam].answer_3;
