@@ -4,10 +4,20 @@ app.post('/pdf', function (req, res) {
     var test = req.body.test_id_pt;
     var print_points = req.body.print_points; // 1 az értéke, ha kell nyomtatni a pontokat, 0 ha nem
     var print_test_name = req.body.print_test_name; // 1 az értéke, ha kell nyomtatni a teszt nevét, 0 ha nem
-    
+    console.log(print_test_name);
+    console.log(print_points);
     console.log(test);
     var json;
-  
+
+    sql = "SELECT test_name AS tname FROM test_list WHERE id="+connection.escape(test)+ "";
+    connection.query(sql, function (err, result) {
+      if (err) throw err;
+      var res;
+      res = JSON.parse(JSON.stringify(result));
+      console.log(res[0].tname);
+      test_name=res[0].tname;
+    });
+
     var sql = "SELECT COUNT (*) as 'db' FROM test_questions WHERE test_id="+connection.escape(test)+ "";
     connection.query(sql, function (err, result) {
         if (err) throw err;
@@ -25,7 +35,7 @@ app.post('/pdf', function (req, res) {
           //PDF
           var alltimes = 0;
           var curPos = 0; 
-          var test_name = "Matematika 1 vizsga 2021.06.12!";
+          // var test_name = "Matematika 1 vizsga 2021.06.12!";
           var i = 20;   // starter height
           var last = 0;
           var maxpoint = 0;
@@ -34,7 +44,9 @@ app.post('/pdf', function (req, res) {
           doc.addFileToVFS("arial-normal.ttf", font);
           doc.addFont("arial-normal.ttf", "arial", "normal");
           doc.setFont("arial", "normal");
-          doc.text(test_name, 105, 10 ,"center");     //name
+          if (print_test_name==1){
+            doc.text(test_name, 105, 10 ,"center");     //name
+          }
           doc.setFontSize(10);
           doc.text("Név:", 20, 10);
           doc.line(180, 12, 30, 12); 
@@ -42,7 +54,7 @@ app.post('/pdf', function (req, res) {
           //test all time
           json.forEach(element => {
             alltimes = alltimes + element.time;
-            maxpoint = maxpoint + (element.score)/100;
+            maxpoint = maxpoint + (element.score);
           });
             var minutes = Math.floor(alltimes / 60);
             var seconds = alltimes % 60;
@@ -80,13 +92,7 @@ app.post('/pdf', function (req, res) {
   
             //bbcode parser 
             var parser = element.question;
-            par();
-            async function par (){
-              for (var i = 0; i <((element.question.match(/]/g)||[]).length)/2; i++){
-               parser = parser.replace(/\[(\w+)[^w]*?](.*?)\[\/\1]/g, '$2');
-               parser = parser.replace(/\:(.*?)\:/g, "");    //emoji
-              }
-            }
+              parser = parser.replace(/<[^>]+>/g, '');
             
             //questions
             var egesz = (element.question_number)+1 + ". "  + parser;
@@ -96,7 +102,9 @@ app.post('/pdf', function (req, res) {
             curPos += last;
             doc.setFontSize(8);
             doc.text("(" + typ + ")", 195, ((curPos)*2 + i)-1,"right");
-            doc.text("(" + (element.score)/100 + " Pont)", 195, ((curPos)*2 + i)+5,"right");
+            if(print_points==1){
+              doc.text("(" + (element.score) + " Pont)", 195, ((curPos)*2 + i)+5,"right");
+            }
             doc.setFontSize(10);
             //answers
             if(element.answer_1 != null){
@@ -142,16 +150,19 @@ app.post('/pdf', function (req, res) {
               doc.setFontSize(8);
               doc.text("(Kitöltési idő: " + alltimes + ")",195,10, "right")
               doc.setFontSize(16);
-              doc.text(test_name, 105, 10, "center");
+              if (print_test_name==1){
+                doc.text(test_name, 105, 10, "center");
+              }
               doc.line(180, 12, 30, 12); 
             }
           });
 
           //marks table
           doc.setFontSize(10);
-          doc.text("Pontozás:", 58, (curPos)*2 + i-2, "center");
-          doc.text("Elérhető pont: "+maxpoint, 158, (curPos)*2 + i-2, "right");
-          
+          if(print_points==1){
+            doc.text("Pontozás:", 58, (curPos)*2 + i-2, "center");
+            doc.text("Elérhető pont: "+maxpoint, 158, (curPos)*2 + i-2, "right");
+          }
           function createHeaders(keys) {
             var result = [];
             for (var i = 0; i < keys.length; i += 1) {
@@ -185,7 +196,9 @@ app.post('/pdf', function (req, res) {
             "Jó",
             "Jeles"
           ]);
-          doc.table(50, (curPos)*2 + i, generateData(), headers,{ autoSize: true });
+          if(print_points==1){
+            doc.table(50, (curPos)*2 + i, generateData(), headers,{ autoSize: true });
+          }
 
           var filename = new Date().getTime();
 

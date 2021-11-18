@@ -51,10 +51,10 @@ io.on('connection', socket => {
     });
 
     // record button push
-    socket.on('rogzit', (ertek, gameid, cname,qnumber,ad,attempt,pond) => {
+    socket.on('rogzit', (ertek, gameid,qnumber,ad,attempt,pond,nick) => {
         --qnumber;
         var d = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        var sql = "INSERT INTO  test_results  (process_id ,answers, u_id,ts, answer_number, nick_name, attempt_id, response_time) VALUES (" + con.escape(gameid) +", "+ con.escape(ertek) +", "+ con.escape(cname) + ", " +con.escape(d)+ ", " +con.escape(qnumber)+ ", " +con.escape(ad)+ ", " +con.escape(attempt)+ ", " +con.escape(pond)+ ")";
+        var sql = "INSERT INTO  test_results  (process_id ,answers, u_id,ts, answer_number, nick_name, attempt_id, response_time) VALUES (" + con.escape(gameid) +", "+ con.escape(ertek) +", "+ con.escape(ad) + ", " +con.escape(d)+ ", " +con.escape(qnumber)+ ", " +con.escape(nick)+ ", " +con.escape(attempt)+ ", " +con.escape(pond)+ ")";
         con.query(sql, function (err, result) {
             if (err) throw err;
         });
@@ -71,7 +71,19 @@ io.on('connection', socket => {
         });
     });
 
-
+//pincode translate
+    socket.on('scode', (kod) => {
+        socket.join(kod); 
+        var sql = "SELECT test_id FROM test_process_list WHERE pincode=" + con.escape(kod) + "";
+        con.query(sql, function (err, result) {
+            if (err) throw err;
+            res = JSON.parse(JSON.stringify(result));
+            console.log(res);
+            console.log(res[0].test_id);
+        io.to(kod).emit('code', res[0].test_id);
+        });
+    });
+    
     //kerdesadatok
     socket.on('stablakerdes', (kod) => {
         var sql = "SELECT COUNT(*) AS question_num FROM test_questions WHERE test_id=" + con.escape(kod) + "";

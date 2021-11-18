@@ -8,50 +8,46 @@ var globalid;
 var teacher = 0;
 var point = 0;
 var time = 0 ;
-var pincode;
-var cname;
-var mod;
-var attempt;
 var char;
-var testname;
 var allpoint = 0;
 window.onload = (event) => {
+  socket.emit('scode',pincode);
   $(".test-title").text(testname);
   console.log(cname + " - ez a neve");
   console.log(pincode + " - ez a szama");
   console.log(mod + " - ez a jatek modja");
-  kerdesadatok(pincode);
-    if (ad != cname){       //tanár teszt vezerlo!!
-        vezerlo();
-        $('#control_div').hide();
-        // name = "username";
-        // getCookieValue = document.cookie.match('(^|;)\\s*' + pincode + '\\s*=\\s*([^;]+)')?.pop() || '';
-        // getCookieValue = ad;
-    }else{
-        document.getElementById("btn1").disabled = true;
-        document.getElementById("btn2").disabled = true;
-        document.getElementById("btn3").disabled = true;
-        document.getElementById("btn4").disabled = true;
-        document.getElementById("btn5").disabled = true;
-        document.getElementById("btn6").disabled = true;
-        document.getElementById("btn7").disabled = true;
-        document.getElementById("btn8").disabled = true;
-        document.getElementById("btn9").disabled = true;
-        document.getElementById("btn9").style.display = "none";
-        $('#control_div').show();
-        teacher = 1;
-      };
-      //wating on start
-      if (mod != 1){
-        start();
-      }
   };
+
+  socket.on('code',ered => {
+    console.log(ered);
+    pincode=ered;
+    kerdesadatok(pincode);
+    if (ad != cname){       //tanár teszt vezerlo!!
+      vezerlo();
+      $('#control_div').hide();
+  }else{
+      document.getElementById("btn1").disabled = true;
+      document.getElementById("btn2").disabled = true;
+      document.getElementById("btn3").disabled = true;
+      document.getElementById("btn4").disabled = true;
+      document.getElementById("btn5").disabled = true;
+      document.getElementById("btn6").disabled = true;
+      document.getElementById("btn7").disabled = true;
+      document.getElementById("btn8").disabled = true;
+      document.getElementById("btn9").disabled = true;
+      document.getElementById("btn9").style.display = "none";
+      $('#control_div').show();
+      teacher = 1;
+    };
+    //wating on start
+    if (mod != 1){
+      start();
+    }
+  });
 
   function start (){
     sqlm();
   }
-
-
 
 //kerdesek
 function sqlm (){
@@ -200,7 +196,8 @@ socket.on('resChart',yValues => {
 function subm (ertek){
 var pond = taskDuration("end");
 console.log(pond);
-    socket.emit('rogzit',ertek,pincode,cname,actual,ad,attempt,pond);   
+console.log(nick);
+    socket.emit('rogzit',ertek,pincode,actual,ad,attempt,pond,nick);   
 
   };
 
