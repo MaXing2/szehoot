@@ -193,8 +193,8 @@
 		</div>
 		<div class="row">
 			<div class="col-lg">
-				<label class="form-label mt-2" for="username"><b>Időkorlát</b></label>
-				<select id="timeset" class="form-select" aria-label="Default select example">
+				<label class="form-label mt-2" for="timeset"><b>Időkorlát</b></label>
+				<select id="timeset" class="form-select">
 					<option selected disabled value="">Kérlek válassz!</option>
 					<optgroup label="Másodperc"></optgroup>
 					<option value="10">10</option>
@@ -210,8 +210,8 @@
 				</select>
 			</div>
 			<div class="col-lg">
-				<label class="form-label mt-2" for="username"><b>Alappontszám</b></label>
-				<select id="points" class="form-select" aria-label="Default select example">
+				<label class="form-label mt-2" for="points"><b>Alappontszám</b></label>
+				<select id="points" class="form-select">
 					<option selected disabled value="">Kérlek válassz!</option>
 					<option value="1">1</option>
 					<option value="2">2</option>
@@ -226,11 +226,11 @@
 				</select>
 			</div>
 			<div class="col-lg">
-				<label class="form-label mt-2" for="username"><b>Extra pontszám (opcionális)</b><img src="images/info_black_24dp.svg" 
+				<label class="form-label mt-2" for="extrap-info"><b>Extra pontszám (opcionális)</b><img src="images/info_black_24dp.svg" 
 				tabindex="0" id="extrap-info" class="btninfo" role="button" data-bs-toggle="popover" data-bs-trigger="hover focus" 
 				title="Információ" data-bs-content="A leggyorsabb kitöltő az alappontszámon felül az itt meghatározott pontszámot is elnyeri. Csak versenymódban érvényes!">
 				</img></label>
-				<select class="form-select" aria-label="Default select example">
+				<select id="extra_points" class="form-select">
 					<option selected value="0">Nincs</option>
 					<option value="1">1</option>
 					<option value="2">2</option>
@@ -242,6 +242,23 @@
 					<option value="8">8</option>
 					<option value="9">9</option>
 					<option value="10">10</option>
+				</select>
+			</div>
+			<div class="col-lg">
+				<label class="form-label mt-2" for="username"><b>Extra időkorlát (opcionális)</b></label>
+				<select id="extra_timeset" class="form-select">
+					<option selected value="0">Nincs</option>
+					<optgroup label="Másodperc"></optgroup>
+					<option value="10">10</option>
+					<option value="20">20</option>
+					<option value="30">30</option>
+					<option value="40">40</option>
+					<option value="50">50</option>
+					<optgroup label="Perc"></optgroup>
+					<option value="60">1</option>
+					<option value="90">1,5</option>
+					<option value="120">2</option>
+					<option value="150">2,5</option>
 				</select>
 			</div>
 		</div>
@@ -682,7 +699,8 @@ function calculateReadtime() {
 		
 function parser (content){
 	content = content.replace(/\[\/?[^\]]*\]/g, ''); //bb kódokra
-	content = content.replace(/:[^:\s]*(?:::[^:\s]*)*:/g, ""); //szmájlikra
+	content = content.replace(/[;:8()<]['~-]?[3)(DdPpOo]/g, ''); //alap szmájlikra
+	content = content.replace(/:[^:\s]*(?:::[^:\s]*)*:/g, ""); //további szmájlikra
 	return content;
 }
 

@@ -116,7 +116,7 @@ function alltime(counttime) {
 //bbcode
 var textarea = document.getElementById("bbcode-textarea");
 sceditor.create(textarea, {
-  format: 'xhtml',
+  format: 'bbcode',
   plugins: 'undo',
   toolbar: 'bold,italic,underline|font,size,subscript,superscript|color,emoticon|left,center,right,justify',
   style: '/minified/themes/content/default.min.css',

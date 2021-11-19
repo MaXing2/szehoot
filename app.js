@@ -298,7 +298,7 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
             switch(status) {
               
               case 5:
-                res.render('test_join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, 'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'userid': null,  'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
+                res.render('test_join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, 'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'userid': null,  'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
                 break;
               case 6:
                 if (result[0][0].mode == 2 || result[0][0].mode == 3) { // ha a mód valamelyik vizsgamód egyike
@@ -314,17 +314,17 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
                         attemptId = result3[0][0].attempt_id; //megváltoztatjuk az attemptId változó értékét a már korábban elkezdettekre
                         //átadjuk, hogy hol tart jelenleg
                         var courrentQuestion = result3[0][0].answer_number;
-                        res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, courrentQuestion: courrentQuestion,  'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'nickname': null}); //bejelentkezett felhasználó esetében   
+                        res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, courrentQuestion: courrentQuestion,  'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'nickname': null}); //bejelentkezett felhasználó esetében   
                         //mehet tovább
                       }
                     } else { //nem kezdte még el, mehet a teszt 
                       //új teszt
                       //minden megy rendesen
-                      res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, courrentQuestion: '0', 'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'nickname': null}); //bejelentkezett felhasználó esetében   
+                      res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, courrentQuestion: '0', 'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'nickname': null}); //bejelentkezett felhasználó esetében   
                     } 
                   })
                 } else {//bejelentkezett felhasználó és gyakorló vagy tantermi módban van a tesztfolyamat
-                  res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].id, 'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'nickname': null}); //bejelentkezett felhasználó esetében   
+                  res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, 'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'nickname': null}); //bejelentkezett felhasználó esetében   
                 }
                break;
               default:

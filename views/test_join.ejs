@@ -330,8 +330,8 @@
     <div id="header" class="row mt-2 gx-0 mb-2 border bg-light">
       <div class="col-md-6 col-12 p-2">
         <span class="h5 mb-0 test-title">Programozás alapjai - ciklusok</span>
-        <%= process_id %>
-        <%= attempt_id %>
+        Ez a process id: <%= process_id %>
+        Ez a test id: <%= test_id %>
       </div>
       <div class="col-md-3 col-4 p-2 text-start">
         <span id="score" class="h5 mb-0">5 pont</span>
@@ -795,8 +795,9 @@ var testname = JSON.parse('<%- JSON.stringify(test_name) %>');  // send testname
 var cname = JSON.parse('<%- JSON.stringify(owner) %>');  // send owner
 var ad = JSON.parse('<%- JSON.stringify(userid) %>');  // send login
 var attempt = JSON.parse('<%- JSON.stringify(attempt_id) %>');  // send attempt
-var nick = JSON.parse('<%- JSON.stringify(nickname) %>');  // send attempt
-
+var nick = JSON.parse('<%- JSON.stringify(nickname) %>'); // send nickname
+var test_id = '<%= test_id %>';
+var process_id = '<%= process_id %>';
 </script>
 
 <script src="../javascripts/control.js"></script>
