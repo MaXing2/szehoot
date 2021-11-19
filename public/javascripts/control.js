@@ -195,10 +195,10 @@ socket.on('resChart',yValues => {
 //adatok_rogzitese
 function subm (ertek){
 var pond = taskDuration("end");
+ertek == 0 ? pond--: pond=pond;
 console.log(pond);
 console.log(nick);
-    socket.emit('rogzit',ertek,pincode,actual,ad,attempt,pond,nick);   
-
+    socket.emit('rogzit',ertek,pincode,actual,ad,attempt,pond,nick,process_id);   
   };
 
 //score from sever side
