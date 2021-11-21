@@ -391,6 +391,73 @@ app.post('/duplicateTest',function (req, res) {
   }
 })
 
+app.post('/deleteSubCat',function (req, res) {
+  var userid = req.session.userid;
+  var subcat_id = req.body.subcat_id_ds;
+  var maincat_id = req.body.maincat_id_ds;
+
+  if (req.session.loggedIn) { // be van jelentkezve?
+    //
+  
+        connection.query("CALL DeleteSubCat(?,?)", [subcat_id, userid], function(err, result, fields) {
+          if (err) throw err;
+          console.log(result);
+          res.redirect('/test/category?maincatid='+ (maincat_id)); 
+        })
+
+
+  } else {
+    //nincs bejelentkezve az illető
+  }
+})
+
+app.post('/deleteMainCat',function (req, res) {
+  var userid = req.session.userid;
+  var maincat_id = req.body.maincat_id_dm;
+
+  if (req.session.loggedIn) { // be van jelentkezve?
+    //
+  
+        connection.query("CALL DeleteMainCat(?,?)", [maincat_id, userid], function(err, result, fields) {
+          if (err) throw err;
+          console.log(result);
+          res.redirect('/test/category?maincatid='+ (maincat_id)); 
+        })
+
+
+  } else {
+    //nincs bejelentkezve az illető
+  }
+})
+
+
+app.post('/deleteTest',function (req, res) {
+  var userid = req.session.userid;
+  var username = req.session.username;
+  var test_id = req.body.test_id_delt;
+
+  if (req.session.loggedIn) { // be van jelentkezve?
+    //
+    
+    connection.query("CALL GetTestByIDnUser(?,?)", [username, test_id], function(err, result, fields) {
+      if (err) throw err;
+      if (!result[0].length <= 0) { 
+        connection.query("CALL DeleteTest(?)", [test_id], function(err, result, fields) {
+          if (err) throw err;
+          console.log(result);
+          res.redirect('/test/bank');
+        })
+      } else {  
+        //nem tartozik ilyen teszt azonosító a felhasználóhoz
+        res.redirect('/test/bank');
+      }
+    })
+
+  } else {
+    //nincs bejelentkezve az illető
+  }
+})
+
 app.post('/moveTest',function (req, res) {
   var username = req.session.username;
   var test_id = req.body.test_id_mt;
@@ -486,7 +553,7 @@ app.post('/createTestProcess',function (req, res) {
 app.post('/newMainCategory',function (req, res) {
   var username = req.session.username;
   var userid = req.session.userid;
-  var maincatname = req.body.maincatname;
+  var maincatname = req.body.maincat_name;
   var status = 0; //eredmény státuszának kódja
 
   console.log("Kategória neve: " + maincatname + " Felhasználó id: " + userid)
@@ -495,7 +562,7 @@ app.post('/newMainCategory',function (req, res) {
       if (err) throw err;
       if (result[0].length == 0) { //Még egyetlen főkategória sincs, úgy hogy azonnal létre lehet hozni
         status = 0;
-        connection.query("INSERT INTO test_category_names (u_id, name, parent) VALUES (" + connection.escape(userid) + ", " + connection.escape(maincatname) + ", 0" +")",
+        connection.query("INSERT INTO test_category_names (u_id, name) VALUES (" + connection.escape(userid) + ", " + connection.escape(maincatname) +")",
         function(err, result, fields) {
           if (err) throw err;
           else status = 0; //sikeres volt
@@ -510,7 +577,7 @@ app.post('/newMainCategory',function (req, res) {
           } while ((cat_exists == false) && (i < result[0].length));
           
           if (!cat_exists) { //Ha nem létezik, akkor létre lehet hozni
-            connection.query("INSERT INTO test_category_names (u_id, name, parent) VALUES (" + connection.escape(userid) + ", " + connection.escape(maincatname) + ", 0" +")",
+            connection.query("INSERT INTO test_category_names (u_id, name) VALUES (" + connection.escape(userid) + ", " + connection.escape(maincatname) +")",
             function(err, result, fields) {
               if (err) throw err;
               else status = 0; //sikeres volt
@@ -533,7 +600,7 @@ app.post('/newSubCategory',function (req, res) {
   var username = req.session.username;
   var userid = req.session.userid;
   var subcatname = req.body.subcatname;
-  var maincatid = req.body.maincatid;
+  var maincatid = req.body.maincat_id_ns;
   var status = 2; //eredmény státuszának kódja (alapértelmezetten sikeres)
 
 
@@ -551,7 +618,7 @@ app.post('/newSubCategory',function (req, res) {
           var cat_exists = false; //alapértelmezetten false
           var i = 0;
           do {
-            if (result[0][i].name == subcatname) {cat_exists = true;}
+            if (result[0][i].name == subcatname && result[0][i].parent == maincatid) {cat_exists = true;}
             i = i + 1;
           } while ((cat_exists == false) && (i < result[0].length));
           

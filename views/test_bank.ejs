@@ -214,7 +214,7 @@ data-pagination-parts="[pageList, pageInfo]">
                           </img></h5>
                           <a href="#" OnClick="LoadDataToModal('newTestProcess', '<%= test_data[0][i].test_id %>','')" class="btn btn-start btn-sm">Indítás</a>
                           <a href="#" OnClick="LoadDataToModal('duplicateTest', '<%= test_data[0][i].test_id %>','<%= test_data[0][i].category_id %>')" class="btn btn-duplicate btn-sm">Duplikálás</a>
-                          <a href="#" data-bs-target="#deleteTestModal" class="btn btn-danger btn-sm">Törlés</a><br>
+                          <a href="#" OnClick="LoadDataToModal('deleteTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-danger btn-sm">Törlés</a><br>
                           <a href="#" class="btn btn-secondary btn-sm mt-2">Szerkesztés</a>
                           <a href="#" OnClick="LoadDataToModal('renameTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-secondary btn-sm mt-2">Átnevezés</a>
                           <a href="#" OnClick="LoadDataToModal('moveTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-secondary btn-sm mt-2">Áthelyezés</a><br>
@@ -530,6 +530,34 @@ data-pagination-parts="[pageList, pageInfo]">
   </div>
 </div>
 
+<!-- Teszt törlése Modal -->
+<div class="modal fade" id="deleteTestModal" tabindex="-1" aria-labelledby="deleteTestModal" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title">Figyelem!</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+			<section class='form'>
+				<form action="/deleteTest" class="needs-validation" method="post" id="deleteTest" novalidate>
+					<div class="modal-body">
+					Valóban törlöd a tesztet?   
+					<fieldset>
+						<div class="container">
+              <input class="form-control" hidden type="text" id="test_id_delt" name="test_id_delt" value="">
+						</div>
+						</fieldset>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vissza</button>
+						<button type="submit" class="btn btn-danger" id="testDeleteBtn">Törlés</button>
+					</div>
+				</form>
+			</section>
+		</div>
+	</div>
+</div>
+
 <!-- <form id='testPost' action="/pdf" method="POST">
   <input type="hidden" id = "postTippem" name="postTippem" />
 </form> -->
@@ -731,6 +759,7 @@ var duplicateTestModal = new bootstrap.Modal(document.getElementById('duplicateT
 var renameTestModal = new bootstrap.Modal(document.getElementById('renameTestModal'));
 var moveTestModal = new bootstrap.Modal(document.getElementById('moveTestModal'));
 var printTestModal = new bootstrap.Modal(document.getElementById('printTestModal'));
+var deleteTestModal = new bootstrap.Modal(document.getElementById('deleteTestModal'));
 
 function LoadDataToModal(modal, test_id, test_subcategory) {
 
@@ -774,10 +803,14 @@ function LoadDataToModal(modal, test_id, test_subcategory) {
 
   case 'printTest':
     $("#test_id_pt").val(test_id);
-    getMainCategory('moveTest');
     printTestModal.show();
     break;
 
+  case 'deleteTest':
+    $("#test_id_delt").val(test_id);
+    deleteTestModal.show();
+    break;
+ 
   default:
     // code block
 }}

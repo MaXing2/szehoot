@@ -29,11 +29,11 @@ title="Információ" data-bs-content="Minden teszt egy előre meghatározott kat
  Ez a felület teszi lehetővé a kategóriák létrehozását, szerkesztését, törlését. A főkategóriákon belül lehetőség van alkategóriák létrehozására is.">
 </img>
 </h1>
-<a href="#" data-bs-toggle="modal" OnClick="" data-bs-target="#newMainCatModal" class="btn btn-primary btn-sm float-end mb-2">Új főkategória létrehozása</a>
+<a href="#" OnClick="LoadDataToModal('newMainCat', '', '')" class="btn btn-primary btn-sm float-end mb-2">Új főkategória létrehozása</a>
 <div class="accordion" id="categorys">
   <% if (data[0].length > 0) { %>
     <% for(var i=0; i<data[0].length; i++) {%>
-        <% if (data[0][i].parent == 0) { %>
+        <% if (data[0][i].parent == null) { %>
             <div class="accordion-item" >
                 <h2 class="accordion-header" id="heading<%= i %>">
                     <button class="accordion-button collapsed" id="maincatbtn-<%= data[0][i].id %>" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%= i %>" aria-expanded="false" aria-controls="collapse<%= i %>">
@@ -43,6 +43,8 @@ title="Információ" data-bs-content="Minden teszt egy előre meghatározott kat
                 </h2>
                 <div id="collapse<%= i %>" class="accordion-collapse collapse" aria-labelledby="heading<%= i %>" data-bs-parent="#categorys">
                     <div class="accordion-body">
+                      <a href="#" OnClick="LoadDataToModal('deleteMainCat', '', '<%= data[0][i].id %>')" class="btn btn-danger btn-sm float-end m-2">Főkategória törlése</a>
+                      <a href="#" class="btn btn-secondary btn-sm float-end m-2">Főkategória átnevezése</a>
                       <table class="subcat-tables"     
                       id="table"
                       data-toggle="table"
@@ -59,16 +61,17 @@ title="Információ" data-bs-content="Minden teszt egy előre meghatározott kat
                                 <% if (data[0][i].id == data[0][j].parent) { %>
                                     <tr>
                                         <td><%= data[0][j].name %></td>
-                                        <td>5</td>
+                                        <td><%= data[0][j].TestCount %></td>
                                         <td>
+                                          <a href="#" class="btn btn-warning btn-sm">Teszt lista</a>
                                           <a href="#" class="btn btn-secondary btn-sm">Átnevezés</a>
-                                          <a href="#" data-bs-toggle="modal" data-bs-target="#deleteSubCat" class="btn btn-danger btn-sm">Törlés</a><br>
+                                          <a href="#" OnClick="LoadDataToModal('deleteSubCat', '<%= data[0][j].id %>', '<%= data[0][i].id %>')" class="btn btn-danger btn-sm">Törlés</a><br>
                                         </td>
                                     </tr>
                                 <% } %>
                             <% } %>
                             <tr class="newcat-button">
-                              <td colspan="3"><a href="#" data-bs-toggle="modal" OnClick="LoadDataToModal('<%= data[0][i].id %>')" data-bs-target="#newSubCatModal" class="btn btn-primary btn-sm float-start">Új létrehozása</a></td>
+                              <td colspan="3"><a href="#" OnClick="LoadDataToModal('newSubCat', '','<%= data[0][i].id %>')" class="btn btn-primary btn-sm float-start">Új létrehozása</a></td>
                             </tr>
                             </tbody>
                         </table>
@@ -95,7 +98,7 @@ title="Információ" data-bs-content="Minden teszt egy előre meghatározott kat
               <div class="container">
                   <div class="form-group mb-3 "> 
                     <label class="form-label" for="start_date"><b>Kategória megnevezése:</b></label>
-                    <input class="form-control"  type="text" id="maincatname" name="maincatname">
+                    <input class="form-control"  type="text" id="maincat_name" name="maincat_name">
                     <div class="valid-feedback">
                     <span id="valid-text"></span>
                     </div>
@@ -129,7 +132,7 @@ title="Információ" data-bs-content="Minden teszt egy előre meghatározott kat
       <div class="modal-body">
             <fieldset>
               <div class="container">
-                  <input class="form-control" hidden type="text" id="maincatid" name="maincatid" value=""> 
+                  <input class="form-control" hidden type="text" id="maincat_id_ns" name="maincat_id_ns" value=""> 
                   <div class="form-group mb-3 "> 
                     <label class="form-label" for="start_date"><b>Kategória megnevezése:</b></label>
                     <input class="form-control"  type="text" id="subcatname" name="subcatname">
@@ -154,7 +157,7 @@ title="Információ" data-bs-content="Minden teszt egy előre meghatározott kat
 </div>
 
 <!-- Alkategória törlése Modal -->
-<div class="modal fade" id="deleteSubCat" tabindex="-1" aria-labelledby="deleteSubCat" aria-hidden="true">
+<div class="modal fade" id="deleteSubCatModal" tabindex="-1" aria-labelledby="deleteSubCatModal" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -162,18 +165,47 @@ title="Információ" data-bs-content="Minden teszt egy előre meghatározott kat
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <section class='form'>
-        <form action="deleteSubCat" class="needs-validation" method="post" id="deleteSubCat" novalidate>
+        <form action="/deleteSubCat" class="needs-validation" method="post" id="deleteSubCat" novalidate>
         <div class="modal-body">
-          Az alkategória törlésével a hozzátartozó tesztek is végleg törlésre kerülnek. Biztos, hogy törölni szeretnéd?
+          Az alkategória törlésével a hozzátartozó tesztek is végleg törlésre kerülnek. </br></br><strong>Biztos, hogy törölni szeretnéd?</strong>
           <fieldset>
               <div class="container">
-                  <input class="form-control" hidden type="text" id="subcatid" name="subcatid" value="">
+                  <input class="form-control" hidden type="text" id="subcat_id_ds" name="subcat_id_ds" value="">
+                  <input class="form-control" hidden type="text" id="maincat_id_ds" name="maincat_id_ds" value=""> 
               </div>
           </fieldset>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vissza</button>
-          <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">Törlés</button>
+          <button type="submit" class="btn btn-danger">Törlés</button>
+        </div>
+      </form>
+    </section>
+    </div>
+  </div>
+</div>
+
+<!-- Főkategória törlése Modal -->
+<div class="modal fade" id="deleteMainCatModal" tabindex="-1" aria-labelledby="deleteMainCatModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Figyelem!</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <section class='form'>
+        <form action="/deleteMainCat" class="needs-validation" method="post" id="deleteMainCat" novalidate>
+        <div class="modal-body">
+          A főkategória törlésével a hozzátartozó tesztek is végleg törlésre kerülnek. </br></br><strong>Biztos, hogy törölni szeretnéd?</strong>
+          <fieldset>
+              <div class="container">
+                  <input class="form-control" hidden type="text" id="maincat_id_dm" name="maincat_id_dm" value=""> 
+              </div>
+          </fieldset>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vissza</button>
+          <button type="submit" class="btn btn-danger">Törlés</button>
         </div>
       </form>
     </section>
@@ -182,6 +214,42 @@ title="Információ" data-bs-content="Minden teszt egy előre meghatározott kat
 </div>
 
   <script>
+
+
+//Modalok inicializálása
+var deleteMainCatModal = new bootstrap.Modal(document.getElementById('deleteMainCatModal'));
+var deleteSubCatModal = new bootstrap.Modal(document.getElementById('deleteSubCatModal'));
+var newMainCatModal = new bootstrap.Modal(document.getElementById('newMainCatModal'));
+var newSubCatModal = new bootstrap.Modal(document.getElementById('newSubCatModal'));
+
+
+function LoadDataToModal(modal, subcat_id, maincat_id) {
+
+  switch(modal) {
+  case 'deleteSubCat':
+    $("#subcat_id_ds").val(subcat_id);
+    $("#maincat_id_ds").val(maincat_id);
+    deleteSubCatModal.show();
+    break;
+  case 'deleteMainCat':
+    $("#maincat_id_dm").val(maincat_id);
+    deleteMainCatModal.show();
+    break;
+  case 'newSubCat':
+    $("#maincat_id_ns").val(maincat_id);
+    newSubCatModal.show();
+    break;
+  case 'newMainCat':
+    newMainCatModal.show();
+    break;
+  default:
+    // code block
+}}
+
+
+
+
+
   $(".subcat-tables").bootstrapTable({
 
     onToggle:function(cardView){
@@ -202,9 +270,9 @@ title="Információ" data-bs-content="Minden teszt egy előre meghatározott kat
     });
 
 
-    function LoadDataToModal(target) {
-      $("#maincatid").val(target);
-    }
+    // function LoadDataToModal(target) {
+    //   $("#maincatid").val(target);
+    // }
 
     function ShowRowByID(target) {
       Row = $("#maincatbtn-"+target);  //adott főkategória megkeresése a kategória ID alapján
