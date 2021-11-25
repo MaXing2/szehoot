@@ -205,6 +205,11 @@ console.log(nick);
 socket.on('points',ans => {
   helyes++;
   point += ans; 
+  if (actual == osszvalasz){
+   $("#result_percent").text(Math.round((point/allpoint)*100.0)+"%");          //%
+   $("#result_score").text((point)+"/"+(allpoint));                    //pont
+   // $("#result_rating").text("alma");                                        Osztályzat beállítás (Jeles)
+  }
   // document.getElementById('correct').innerHTML = "A jó válaszok száma: " + helyes;
   // document.getElementById('end').innerHTML = "Elert pontszám: " + point;
 });
@@ -250,9 +255,6 @@ function vezerlo() {
     console.log(allpoint);
 
     console.log(point);
-    $("#result_percent").text(Math.round((point/allpoint)*100.0)+"%");          //%
-    $("#result_score").text((point)+"/"+(allpoint));                    //pont
-    // $("#result_rating").text("alma");                                        Osztályzat beállítás (Jeles)
     }
   }
    

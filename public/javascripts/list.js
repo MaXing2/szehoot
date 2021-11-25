@@ -137,10 +137,10 @@ var instance = sceditor.instance(textarea);
     if (data == "nincs adat"){
       data = [];
       data.push({answer_1:"", answer_2:"", answer_3:"", answer_4:"", correct_answer_no:parseInt(""), image:"", question:"",
-    question_number: 0, score:"1", test_id: pincode,  time:"10", type:parseInt(document.getElementById('task_type').value) });
+    question_number: 0, score:"1", test_id: pincode,  time:"10", extra_score:"0", extra_time:"0", type:parseInt(document.getElementById('task_type').value) });
     }else{
     data.push({answer_1:"", answer_2:"", answer_3:"", answer_4:"", correct_answer_no:parseInt(""), image:"", question:"",
-    question_number: (data[data.length - 1].question_number) + 1, score:"1", test_id:(data[data.length - 1].test_id),  time:"10", type:parseInt(document.getElementById('task_type').value) });
+    question_number: (data[data.length - 1].question_number) + 1, score:"1", test_id:(data[data.length - 1].test_id),  time:"10", extra_score:"0", extra_time:"0", type:parseInt(document.getElementById('task_type').value) });
     }
   $("#tabla_szam").text(bar+1);
     console.log("hozza adva");
@@ -159,24 +159,26 @@ var instance = sceditor.instance(textarea);
     barid++;
      var ido = 10;
      var poi = 1; 
+     var extra = 0;
     if (typeof data[bar] === 'undefined'){
     }else{
       ido=data[bar].time;
-      poi= (data[bar].score);
+      poi=data[bar].score;
+      extra=data[bar].extra_score;
     }
     var slide = `<div class="row g-0 ratio ratio-16x9" onclick="dynamicDivOnClick(`+ bar +`);">
           <div class="card card-taskbar" id=`+ barid +`>
             <div class="card-header task-header">
               <span class="d-inline float-start text-dark">`+ barid +`.</span>
               <span class="iconify reward-icon d-inline float-end ms-1" data-icon="mdi:star-plus"></span>
-              <span  class="d-inline float-end ms-1">0</span>
+              <span id="sextra`+ bar +`" class="d-inline float-end ms-1">` + extra + `</span>
               <span class="iconify star-icon d-inline float-end ms-1" data-icon="bx:bxs-star"></span>
               <span id="spoint`+ bar +`" class="d-inline float-end ms-1">` + poi + `</span>
               <span class="iconify clock-icon d-inline float-end ms-1" data-icon="akar-icons:clock"></span>
               <span  id="stime`+ bar +`" class="d-inline float-end">`+ ido +`</span>
             </div>
             <div class="card-body p-0 m-auto align-middle d-flex task-labels">
-              <span class="m-auto">`+ type +`</span>
+              <span id="stip`+ bar +`" class="m-auto">`+ type +`</span>
             </div>
             <div>
               <span class="iconify modify-icon d-inline float-end" data-icon="eos-icons:content-modified"></span>
@@ -229,7 +231,7 @@ $("#mobile").change(function(e) {
 // point auto change
 $("#points").change(function(e) {
   qsave(elem);
-  temp = 0;
+  let temp = 0;
   data.forEach(calcp => {
     temp = temp + parseInt(calcp.score);
   });
@@ -242,16 +244,39 @@ $("#points").change(function(e) {
 // time auto change
 $("#timeset").change(function(e) {
   qsave(elem);
-  var temp = 0;
+  let temp = 0;
   data.forEach(calcp => {
     temp = temp + parseInt(calcp.time);
   });
-  console.log(temp);
   // $("#CountTime").text(temp);
   alltime(temp);
   $("#stime"+elem).text(data[elem].time);
 });
 
+// extra_points auto change
+$("#extra_points").change(function(e) {
+  qsave(elem);
+  $("#sextra"+elem).text(data[elem].extra_score);
+});
+
+// type auto change
+  function typChange(){
+	qsave(elem);
+  let temp ="";
+  switch(data[elem].type) {
+    case 0:
+      temp=("Igaz/Hamis");
+      break;
+      case 2:
+        temp=("Felelet választós (több megoldás)");
+      break;
+      case 13:
+      case 14:
+        temp=("Felelet választós (egy megoldás)");
+      break;
+  }
+  $("#stip"+elem).text(temp);
+  }
 
 function alldel(){
   var list = document.getElementById("Bar");
@@ -330,6 +355,8 @@ function qsave (modified){
   data[modified].question = instance.getWysiwygEditorValue(false);
   data[modified].time = document.getElementById("timeset").value;
   data[modified].score = (document.getElementById("points").value);
+  data[modified].extra_score = (document.getElementById("extra_points").value);
+  data[modified].extra_time = (document.getElementById("extra_timeset").value);
   data[modified].type = parseInt(document.getElementById('task_type').value);
   if (document.getElementById("kepurl").value != "URL megadása esetén másold ide a teljes címet!"){
     data[modified].image = document.getElementById("kepurl").value;
@@ -503,18 +530,18 @@ ev.preventDefault();
 //delet qest
 function dotrol() {
   for (i = 0; i <bar ; i++) {
-  var tomb=[];
-  tomb[0] =  pincode;
-  tomb[1] = data[i].question_number;
-  $.ajax({
-    type: "POST",
-    url: 'delet',
-    data:  {"del": JSON.stringify(tomb)},
-    success: function (response, error) {
-    },
-    dataType: "json"
-  });
-}
+    var tomb=[];
+    tomb[0] =  pincode;
+    tomb[1] = data[i].question_number;
+    $.ajax({
+      type: "POST",
+      url: 'delet',
+      data:  {"del": JSON.stringify(tomb)},
+      success: function (response, error) {
+      },
+      dataType: "json"
+    });
+  }
  
   console.log(elem);
   console.log(data[elem]);
@@ -588,6 +615,8 @@ function dofunc(szam){
       document.getElementById('type-2-C').value = data[szam].answer_3;
       document.getElementById('type-2-D').value = data[szam].answer_4;
       document.getElementById('timeset').value = data[szam].time;
+      document.getElementById('extra_points').value = data[szam].extra_score;
+      document.getElementById('extra_timeset').value = data[szam].extra_time;
       document.getElementById('points').value = (data[szam].score);
       document.getElementById('task_type').value = data[szam].type;
       if((data[szam].type)==13){

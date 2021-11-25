@@ -1008,10 +1008,10 @@ app.post('/delet', function (req, res) {
 
   var sql = "DELETE FROM test_questions WHERE test_id=" +connection.escape(test[0])+ " and question_number="+connection.escape(test[1])+"";
   connection.query(sql, function (err, result) {
-      if (err) throw err;
-      json = JSON.parse(JSON.stringify(result));
-      // var darab = json[0].db;
-      res.json(json);
+    if (err) throw err;
+    json = JSON.parse(JSON.stringify(result));
+    // var darab = json[0].db;
+    res.json(json);
   });
 });
 
@@ -1020,8 +1020,9 @@ app.post('/delet', function (req, res) {
 app.post('/save', function (req, res) {
   var data = JSON.parse(req.body.ment);
   // console.log(data);
-
+let tmp = 0;
 data.forEach(element => {
+  tmp++;
 // console.log(element.test_id + "  --  " + element.question_number );
   var sql = "SELECT COUNT (*) as 'db' FROM test_questions WHERE test_id=" +connection.escape(element.test_id)+ " and question_number="+connection.escape(element.question_number)+"";
   connection.query(sql, function (err, result) {
@@ -1031,7 +1032,7 @@ data.forEach(element => {
       // console.log(darab);
     if (darab == 0){
       // nincs adat
-      var sql = "INSERT INTO test_questions (test_id ,question,answer_1 ,answer_2 ,answer_3 ,answer_4 ,question_number, time, score, type, correct_answer_no, image) VALUES  ("+connection.escape(element.test_id)+ ","+ connection.escape(element.question)  + ","+ connection.escape(element.answer_1)  +  ","+ connection.escape(element.answer_2)  +  ","+ connection.escape(element.answer_3)  + ","+ connection.escape(element.answer_4)  +  "," + connection.escape(element.question_number)+  ","+connection.escape(element.time)+","+connection.escape(element.score)+","+connection.escape(element.type)+","+connection.escape(element.correct_answer_no)+","+connection.escape(element.image)+")";
+      var sql = "INSERT INTO test_questions (test_id ,question,answer_1 ,answer_2 ,answer_3 ,answer_4 ,question_number, time, score, type, correct_answer_no, image, extra_score, extra_time) VALUES  ("+connection.escape(element.test_id)+ ","+ connection.escape(element.question)  + ","+ connection.escape(element.answer_1)  +  ","+ connection.escape(element.answer_2)  +  ","+ connection.escape(element.answer_3)  + ","+ connection.escape(element.answer_4)  +  "," + connection.escape(element.question_number)+  ","+connection.escape(element.time)+","+connection.escape(element.score)+","+connection.escape(element.type)+","+connection.escape(element.correct_answer_no)+","+connection.escape(element.image)+","+connection.escape(element.extra_score)+","+connection.escape(element.extra_time)+")";
       connection.query(sql, function (err, result) {
           if (err) throw err;
           json = JSON.parse(JSON.stringify(result));
@@ -1039,7 +1040,7 @@ data.forEach(element => {
       });
     }else{
       //van adat
-      var sql = "UPDATE test_questions SET test_id ="+connection.escape(element.test_id)+",question = ?,answer_1="+connection.escape(element.answer_1)+",answer_2="+connection.escape(element.answer_2)+",answer_3="+connection.escape(element.answer_3)+",answer_4="+connection.escape(element.answer_4)+",question_number="+connection.escape(element.question_number)+",time="+connection.escape(element.time)+",score="+connection.escape(element.score)+",type="+connection.escape(element.type)+",correct_answer_no="+connection.escape(element.correct_answer_no)+", image="+connection.escape(element.image)+" WHERE test_id=" +connection.escape(element.test_id)+ " and question_number="+connection.escape(element.question_number)+"";
+      var sql = "UPDATE test_questions SET test_id ="+connection.escape(element.test_id)+",question = ?,answer_1="+connection.escape(element.answer_1)+",answer_2="+connection.escape(element.answer_2)+",answer_3="+connection.escape(element.answer_3)+",answer_4="+connection.escape(element.answer_4)+",question_number="+connection.escape(element.question_number)+",time="+connection.escape(element.time)+",score="+connection.escape(element.score)+",type="+connection.escape(element.type)+",correct_answer_no="+connection.escape(element.correct_answer_no)+", image="+connection.escape(element.image)+ ", extra_score="+connection.escape(element.extra_score)+ ", extra_time="+connection.escape(element.extra_time)+" WHERE test_id=" +connection.escape(element.test_id)+ " and question_number="+connection.escape(element.question_number)+"";
       connection.query(sql,[element.question], function (err, result) {
           if (err) throw err;
           // json = JSON.parse(JSON.stringify(result));
@@ -1049,6 +1050,13 @@ data.forEach(element => {
   };
   });
 });
+
+// db count update
+var sql = "UPDATE test_list SET question_num ="+connection.escape(tmp)+" where id="+connection.escape(data[0].test_id)+"";
+connection.query(sql, function (err, result) {
+    if (err) throw err;
+});
+
 setTimeout(function(){
   var sql = "UPDATE test_questions SET answer_1 = NULL, answer_2 = NULL, answer_3 = NULL, answer_4 = NULL WHERE answer_1 = ''";
   connection.query(sql, function (err, result) {
