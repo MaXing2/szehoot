@@ -206,6 +206,7 @@ socket.on('points',ans => {
   helyes++;
   point += ans; 
   if (actual == osszvalasz){
+    //if you change need to change in valaszolt()
    $("#result_percent").text(Math.round((point/allpoint)*100.0)+"%");          //%
    $("#result_score").text((point)+"/"+(allpoint));                    //pont
    // $("#result_rating").text("alma");                                        Osztályzat beállítás (Jeles)
@@ -253,7 +254,10 @@ function vezerlo() {
     console.log("vége"); //finised test
     showResult();
     console.log(allpoint);
-
+    //if you change need to change in score from sever side
+    $("#result_percent").text(Math.round((point/allpoint)*100.0)+"%");          //%
+    $("#result_score").text((point)+"/"+(allpoint));                            //pont
+    // $("#result_rating").text("alma");                                        Osztályzat beállítás (Jeles)
     console.log(point);
     }
   }
