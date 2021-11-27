@@ -407,8 +407,8 @@ function qsave (modified){
     console.log(data[modified].type);
   break;
   case 0:
-    data[modified].answer_1 ="Igaz";
-    data[modified].answer_2 = "Hamis";
+    // data[modified].answer_1 ="Igaz";
+    // data[modified].answer_2 = "Hamis";
     if(document.getElementById("true").checked){
       fuz=1;
     }
