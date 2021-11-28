@@ -448,7 +448,7 @@ $("#dnd").click(function(e) {
 $("#fileUploadField").on('change', function () {
   var formdata = new FormData($('#uploadForm')[0]);
   formdata.append('tippem', pincode);
-  formdata.append('elem', elem+1);
+  formdata.append('elem', elem);
   //formdata.append('sampleFile', $("#fileUploadField").files[0]);
 
 
@@ -463,7 +463,7 @@ $("#fileUploadField").on('change', function () {
     data: formdata,
     success: function(res){
         alert(res);
-        doAjax().then(function() {
+        doAjax(pincode).then(function() {
           dofunc(elem);
         });
     },
@@ -488,7 +488,7 @@ $("#kepurl").change(function() {
 //kepment
 function preventszar(ev) {
   ev.preventDefault();
-  doAjax();
+  doAjax(pincode)
 }
 
 function dropped(ev) {
@@ -498,7 +498,7 @@ function dropped(ev) {
   //$("#uploadForm").submit();
   var formdata = new FormData($('#uploadForm')[0]);
   formdata.append('tippem', pincode);
-  formdata.append('elem', elem+1);
+  formdata.append('elem', elem);
   //formdata.append('sampleFile', $("#fileUploadField").files[0]);
 
   //useless?!
@@ -515,7 +515,7 @@ function dropped(ev) {
     data: formdata,
     success: function(res){
         alert(res);
-        doAjax().then(function() {
+        doAjax(pincode).then(function() {
           dofunc(elem);
         });
     },
@@ -652,7 +652,7 @@ function dofunc(szam){
      }
 
   if (data[szam].image==null || data[szam].image==""){
-
+      document.getElementById('dnd').innerHTML = '<span class="m-auto">Kattints ide vagy húzd be a képet!</span>';
       document.getElementById('kepurl').value = "URL megadása esetén másold ide a teljes címet!";
     }else{
       document.getElementById('dnd').innerHTML = "<img id='kepBox' class='img-fluid' src='" + data[szam].image + "'/>";
