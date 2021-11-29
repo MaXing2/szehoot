@@ -463,8 +463,9 @@ $("#fileUploadField").on('change', function () {
     data: formdata,
     success: function(res){
         alert(res);
+        work = false;
         doAjax(pincode).then(function() {
-          dofunc(elem);
+          // dofunc(elem-1);
         });
     },
     error: function(){
@@ -515,8 +516,9 @@ function dropped(ev) {
     data: formdata,
     success: function(res){
         alert(res);
+        work = false;
         doAjax(pincode).then(function() {
-          dofunc(elem);
+          // dofunc(elem-1);
         });
     },
     error: function(){
