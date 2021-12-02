@@ -249,11 +249,12 @@ data-pagination-parts="[pageList, pageInfo]">
           <fieldset>
             <div class="container">
                 <input class="form-control" hidden type="text" id="test_id" name="test_id" value="">
+                <input class="form-control" hidden type="text" id="classification" name="classification" value="">
                 <div class="form-group mb-3 mode_select"> 
                   <label class="form-label" for="process_mode"><b>Futtatási mód:</b></label>
                   <div class="row">
                     <div class="col-6">
-                      <select class="form-control" id="mode" name="mode">
+                      <select class="form-select" id="mode" name="mode">
                         <option value="0" selected>Gyakorló mód</option>
                         <option value="1">Tantermi mód</option>
                         <option value="2">Vizsga mód</option>
@@ -293,6 +294,57 @@ data-pagination-parts="[pageList, pageInfo]">
                   <span id="invalid-text"></span>
                   </div>
                 </div>
+
+                <div class="form-group mb-3"> 
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="autoClassificationCheck">
+                    <label class="form-check-label" for="autoClassificationCheck">
+                      Automatikus értékelés bekapcsolása
+                    </label>
+                  </div>
+                </div>
+             
+                <div id="classificationSettings" class="form-group mb-3 d-none"> 
+                  <hr>
+                  <table>
+                    <thead>
+                      <tr>
+                        <td></td>
+                        <td class="text-center">Ettől</td>
+                        <td class="text-center">Eddig</td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Elégtelen</td>
+                        <td><input class="form-control m-auto text-center w-50" disabled type="text" id="c1" value="0"></td>
+                        <td><input class="form-control m-auto text-center w-50" type="text" id="c2" maxlength="2" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" value=""></td>
+                      </tr>
+                      <tr>
+                        <td>Elégséges</td>
+                        <td><input class="form-control m-auto text-center w-50" type="text" id="c3" maxlength="2" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" value=""></td>
+                        <td><input class="form-control m-auto text-center w-50" type="text" id="c4" maxlength="2" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" value=""></td>
+                      </tr>
+                      <tr>
+                        <td>Közepes</td>
+                        <td><input class="form-control m-auto text-center w-50" type="text" id="c5" maxlength="2" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" value=""></td>
+                        <td><input class="form-control m-auto text-center w-50"type="text" id="c6" maxlength="2" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" value=""></td>
+                      </tr>
+                      <tr>
+                        <td>Jó</td>
+                        <td><input class="form-control m-auto text-center w-50" type="text" id="c7" maxlength="2" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" value=""></td>
+                        <td><input class="form-control m-auto text-center w-50" type="text" id="c8" maxlength="2" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" value=""></td>
+                      </tr>
+                      <tr>
+                        <td>Jeles</td>
+                        <td><input class="form-control m-auto text-center w-50" type="text" id="c9" maxlength="2" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" value=""></td>
+                        <td><input class="form-control m-auto text-center w-50" disabled type="text" id="c10" value="100"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                </div>
+
 
             </div>
           </fieldset>
@@ -591,6 +643,7 @@ function EXP(testId) {
   form.trigger('submit', function(){});
 }
 
+
   var courrentLength = 10; //inicializáljuk a jelenlegi értékkel a hosszúságot
 $(document).ready(function() {
   ShowRowByID('<%= test_id %>'); //meghívjuk a függvényt, ezzel lenyitjuk azt a tesztet, amiről új folyamatot hoztunk létre
@@ -844,6 +897,14 @@ $("#printPointsCheck").change(function() {
     }
 });
 
+$("#autoClassificationCheck").change(function() {
+    if(this.checked) {
+      $("#classificationSettings").removeClass("d-none");
+    } else {
+      $("#classificationSettings").addClass("d-none");
+    }
+});
+
 $("#printTestNameCheck").change(function() {
     if(this.checked) {
       $('#print_test_name').val('1');
@@ -856,5 +917,34 @@ $("#printTest").submit(function() {
   //PDF generálás után tűnjön el a modal
 printTestModal.hide();
 });
+
+$('#createTestProcess').submit(function(e) {
+
+  var c1 = $('#c1').val();
+  var c2 = $('#c2').val();
+  var c3 = $('#c3').val();
+  var c4 = $('#c4').val();
+  var c5 = $('#c5').val();
+  var c6 = $('#c6').val();
+  var c7 = $('#c7').val();
+  var c8 = $('#c8').val();
+  var c9 = $('#c9').val();
+  var c10 = $('#c10').val();
+
+  if ($("#autoClassificationCheck").prop("checked")) {
+   if ( (c1 != '') &&  (c2 != '') && (c3 != '') && (c4 != '') && (c5 != '') && (c6 != '') && (c7 != '') && (c8 != '') && (c9 != '') && (c10 != '') ) {
+    if ( (parseInt(c1) < parseInt(c2)) && (parseInt(c2) < parseInt(c3)) && (parseInt(c3) < parseInt(c4)) && (parseInt(c4) < parseInt(c5)) && (parseInt(c5) < parseInt(c6)) && (parseInt(c6) < parseInt(c7)) && (parseInt(c7) < parseInt(c8)) && (parseInt(c8) < parseInt(c9)) && (parseInt(c9) < parseInt(c10)) ) { 
+      var fullString = $('#c1').val()+';'+$('#c2').val()+';'+$('#c3').val()+';'+$('#c4').val()+';'+$('#c5').val()+';'+$('#c6').val()+';'+$('#c7').val()+';'+$('#c8').val()+';'+$('#c9').val()+';'+$('#c10').val();
+      $("#classification").val(fullString);
+
+        } else {alert('Az értékelési tartomány hibás!');   return false;}
+  } else {alert('Nincs meghatározva minden értékelési tartomány!');   return false;}
+} else {
+  $("#classification").val('disabled');
+}
+
+
+  
+})
 
         </script>

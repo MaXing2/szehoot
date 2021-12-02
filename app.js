@@ -177,6 +177,45 @@ app.get('/test/category',function (req, res) {
   } 
   })
 
+
+  //Eredmények
+app.get('/test/results',function (req, res) {
+  var status = 0; //alapállapot
+  if (req.session.loggedIn) { // be van jelentkezve?
+    var test_results;
+    var process_id = req.query.process_id;
+    if (process_id != undefined) {   
+      console.log(process_id);
+      //a tesztfolyamat a felhasználóhoz tartozik?
+      connection.query("CALL GetProcessByIDnUser(?,?)", [req.session.username, process_id], function(err, result, fields) {
+        if (err) throw err;
+        //ha van visszatérő eredmény
+        if (!result[0].length <= 0) {
+          //ha valamelyik vizsgamódban fut
+          if ((result[0][0].mode == 2) || (result[0][0].mode == 3)) {
+            console.log(result[0][0].mode);
+            connection.query("CALL GetResultsByProcessID(?)", [process_id], function(err, result, fields) {
+              if (err) throw err;
+              test_results = result;
+              redirect(5); //minden rendben, megvannak az eredmények
+            })              
+          } else {redirect(4); } //nem vizsgamódban fut a tesztfolyamat
+        } else { redirect(3); } //nem létezik a tesztfolyamat vagy nem hozzá tartozik
+     }) 
+    } else { redirect(2); } //nincs process_id parameter
+  } else { redirect(1); } //nincs bejelentkezve
+  console.log("Ez a statuskód: "+status);
+
+  function redirect(status) {
+    switch (status) {
+    case 5: res.render('main.ejs',{page: 'test_results', test_results: test_results , loggedIn: true, username: req.session.username, status: req.query.status, title: 'Eredmények'});
+    break;
+
+    default: res.redirect('/');
+    break;
+  }}
+})
+
 //Aktív tesztek esetén
 app.get('/test/process',function (req, res) {
 if (req.session.loggedIn) { // be van jelentkezve?
@@ -390,6 +429,7 @@ app.post('/duplicateTest',function (req, res) {
     //nincs bejelentkezve az illető
   }
 })
+
 
 app.post('/deleteSubCat',function (req, res) {
   var userid = req.session.userid;

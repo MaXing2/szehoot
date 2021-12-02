@@ -19,6 +19,7 @@ data-pagination-parts="[pageList, pageInfo]">
       <th data-field="pincode" data-sortable="true">Pinkód</th>
       <th data-field="fullfilled" data-sortable="true">Kitöltések</th>
       <th data-field="status" data-sortable="true">Állapot</th>
+      <th data-field="operations" data-sortable="false">Műveletek</th>
     </tr>
   </thead>
   <tbody>
@@ -60,7 +61,7 @@ data-pagination-parts="[pageList, pageInfo]">
                       <% } %>
                   <% } %>
               </td>
-
+              <td><a href ="/test/results?process_id=<%= process_data[0][i].process_id %>">Eredmények</a></td>
           </tr>
   <% } %>
 <% } %>

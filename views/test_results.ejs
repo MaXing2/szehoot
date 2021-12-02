@@ -1,4 +1,28 @@
-<h1>Tesztfolyamatok</h1>
+<h1>Teszteredmények</h1>
+
+<div id="testinfo" class="row g-0 mb-3">
+	<div id="test_title" class="col-12 m-auto text-center">
+		<h3 class="d-inline"><%= test_info[0][0].test_name %></h3></br>
+    <span>ID: <%= test_info[0][0].process_id %></span>
+    
+	</div>
+</div>
+
+<div id="testinfo" class="row g-0 mb-3">
+	<div class="col-md-4 m-auto text-center">
+		<span>Feladatok száma:</span>
+		<span class="fw-bold"><%= test_info[0][0].question_num %> db</span>
+	</div>
+	<div class="col-md-4 m-auto text-center">
+		<span>Rendelkezésreálló idő:</span>
+		<span class="fw-bold"><%= test_info[0][0].max_time %></span>
+	</div>
+	<div class="col-md-4 m-auto text-center">
+		<span>Összes pontszám:</span>
+		<span class="fw-bold"><%= test_info[0][0].all_point %></span>
+	</div>
+</div>
+
 <table     
 id="table-processlist"
 data-toggle="table"
@@ -11,56 +35,36 @@ data-sortable="true"
 data-pagination-parts="[pageList, pageInfo]">
   <thead>
     <tr>
-      <th data-field="id" data-sortable="true">ID</th>
-      <th data-field="test_name" data-sortable="true">Teszt neve</th>
-      <th data-field="start_date" data-sortable="true">Indítás dátuma</th> 
-      <th data-field="end_date" data-sortable="true">Befejezés dátuma</th>
-      <th data-field="online_count" data-sortable="true">Online</th>
-      <th data-field="fullfilled" data-sortable="true">Kitöltések</th>
-      <th data-field="status" data-sortable="true">Állapot</th>
+      <th data-field="full_name" data-sortable="true">Teljes név</th>
+      <th data-field="eduid" data-sortable="true">Oktatási azonosító</th>
+      <th data-field="start_date" data-sortable="true">Kitöltés kezdete</th> 
+      <th data-field="end_date" data-sortable="true">Kitöltés vége</th>
+      <th data-field="duration" data-sortable="true">Kitöltés időtartama</th>
+      <th data-field="reached_point" data-sortable="true">Alappontszám</th>
+      <th data-field="reached_extrapoint" data-sortable="true">Extra pontszám</th>
+      <th data-field="summed_points" data-sortable="true">Összes pontszám</th>
+      <th data-field="results_percentage" data-sortable="true">Eredmény</th>
+      <th data-field="rating" data-sortable="true">Értékelés</th>
     </tr>
   </thead>
   <tbody>
-<% if (process_data[0].length > 0) { %>
-  <% for(var i=0; i<process_data[0].length; i++) {%>
-          <tr>
-              <td id="t-1"><%= process_data[0][i].process_id %></td>
-              <td id="t-2"><%= process_data[0][i].test_name %></td>
-              <td id="t-3"><%= moment(process_data[0][i].start_date).format("YYYY.MM.DD HH:mm");  %></td>
-              <% if (process_data[0][i].end_date == "0000-00-00 00:00:00") { %>
-              <td id="t-4"> Határozatlan
-              <% }  else { %>
-              <td id="t-4"> <%= moment(process_data[0][i].end_date).format("YYYY.MM.DD HH:mm");  %>
-                <% } %>
-              </td>
-              <td id="t-5"><%= process_data[0][i].online_count %></td>
-              <% fullfilled_value = 0; %>
-              <% if (fullfilledCount[0].length > 0) { %>
-                <% var found = false; %>
-                <% var j = 0; %>
-                <% while (!found && j < fullfilledCount[0].length) { %>
-                  <% if (fullfilledCount[0][j].process_id == process_data[0][i].process_id) { %>
-                    <% fullfilled_value = fullfilledCount[0][j].fullfilledCount; %>
-                    <% found = true; %>
-                  <% } %>
-                <% j++; } %>
-              <% } %>
-               <td><%= fullfilled_value %></td>
-              <%var time_courrent_dif_end = moment.duration(moment(new Date(), "YYYY.MM.DD HH:mm").diff(moment(process_data[0][i].end_date, "YYYY.MM.DD HH:mm")));%>
-              <%var time_courrent_dif_start = moment.duration(moment(new Date(), "YYYY.MM.DD HH:mm").diff(moment(process_data[0][i].start_date, "YYYY.MM.DD HH:mm")));%>
-              <% if (time_courrent_dif_end.asSeconds() >= 0) { %> 
-                <td class="col-sm-1"><span class="iconify" data-icon="carbon:dot-mark" style="color: red;"></span>
-              <% } else { %>
-                <% if (time_courrent_dif_start.asSeconds() >= 0) { %>
-                  <td class="col-sm-1"><span class="iconify" data-icon="carbon:dot-mark" style="color: green;"></span>
-                  <% } else { %>
-                    <td class="col-sm-1"><span class="iconify" data-icon="carbon:dot-mark" style="color: orange"></span
-                      <% } %>
-                  <% } %>
-              </td>
+    <% if (test_results[0].length > 0) { %>
+      <% for(var i=0; i<test_results[0].length; i++) {%>
+              <tr>
+                  <td><%= test_results[0][i].full_name %></td>
+                  <td><%= test_results[0][i].eduid %></td>
+                  <td><%= moment(test_results[0][i].start_date).format("YYYY.MM.DD HH:mm:ss");  %></td>
+                  <td><%= moment(test_results[0][i].end_date).format("YYYY.MM.DD HH:mm:ss");  %></td>
+                  <td><%= test_results[0][i].time %></td>
+                  <td><%= test_results[0][i].reached_point %></td>
+                  <td><%= test_results[0][i].reached_extrapoint %></td>
+                  <td><%= test_results[0][i].summed_points %></td>
+                  <td><%= test_results[0][i].result_percentage %> %</td>
+                  <td id="r10"><script>$("#r10").text(calculateGrade('<%= test_results[0][i].result_percentage %>', '<%= test_info[0][0].classification %>'));</script></td>
+                  
+                </tr>
 
-          </tr>
-  <% } %>
-<% } %>
+         <% } %>     
+      <% } %>
   </tbody>
 </table>

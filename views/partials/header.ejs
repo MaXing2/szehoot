@@ -67,19 +67,43 @@ function InitPopup () {
   // })
 };
 
-            $(document).ready(function() {
-                // A megfelelő navigációs link aktívvá tétele az oldal betöltése után
-                //  $("#<%= page%>").addClass("active"); Villogó effektus miatt nem használandó
+$(document).ready(function() {
+    // A megfelelő navigációs link aktívvá tétele az oldal betöltése után
+    //  $("#<%= page%>").addClass("active"); Villogó effektus miatt nem használandó
 
-                //  Navigációs link aktívvá tétele kattintás után
-                // $(function() {
-                //     $(".main").click(function() {
-                //         $("a").removeClass("active");
-                //         $(this).addClass("active");
-                //     });
-                // });
-                InitPopup();
-            });
+    //  Navigációs link aktívvá tétele kattintás után
+    // $(function() {
+    //     $(".main").click(function() {
+    //         $("a").removeClass("active");
+    //         $(this).addClass("active");
+    //     });
+    // });
+    InitPopup();
+});
+
+function calculateGrade(percentage, classification) {
+  percentage = parseInt(percentage);
+  var gradeText = '';
+  const values = classification.split(";");
+  switch (true) {
+    case (percentage >= parseInt(values[8])):
+      gradeText = "Jeles";
+      break;
+      case percentage >= parseInt(values[6]):
+      gradeText = "Jó";
+      break;
+      case percentage >= parseInt(values[4]):
+      gradeText = "Közepes";
+      break;
+      case percentage >= parseInt(values[2]):
+      gradeText = "Elégséges";
+      break;
+      case percentage >= parseInt(values[0]):
+      gradeText = "Elégtelen";
+      break;
+  }
+  return gradeText;
+}
 
            </script>
 
@@ -108,9 +132,9 @@ function InitPopup () {
                       </li> -->
                     <a id="test_bank" class="nav-link main <%= page === 'test_bank' && 'active' %>" href="/test/bank">Tesztbank</a>
                     <a id="test_category" class="nav-link main <%= page === 'test_category' && 'active' %>" href="/test/category">Kategóriák</a>
-                    <a id="test_process" class="nav-link main <%= page === 'test_process' && 'active' %>" href="/test/process">Aktív tesztek</a>
-                    <a id="test_create" onClick="getMainCategory('newTest');" class="nav-link main <%= page === 'test_create' && 'active' %>" href="#">Teszt létrehozás</a>
-                    <!-- <a id="test_join" onClick="" data-bs-toggle="modal" data-bs-target="#joinTestModal" class="nav-link main" href="#">Csatlakozás</a> -->
+                    <a id="test_process" class="nav-link main <%= page === 'test_process' && 'active' %>" href="/test/process">Tesztfolyamatok</a>
+                    <a id="test_create" onClick="getMainCategory('newTest');" class="nav-link d-lg-none main <%= page === 'test_create' && 'active' %>" href="#">Létrehozás</a>
+                    <a id="test_join" onClick="" data-bs-toggle="modal" data-bs-target="#joinTestModal" class="nav-link d-lg-none main" href="#">Csatlakozás</a>
 
                 <% } %>
 				  
@@ -122,10 +146,15 @@ function InitPopup () {
                     <a class="nav-link main" href="login"><span class="iconify" data-icon="clarity:login-line" data-inline="false"></span> Bejelentkezés</a>
                 <% } else {%>
 
-                  <div class="button d-md-none d-sm-none d-none d-lg-block">
+                  <div class="button btn-create me-1 d-none d-lg-block">
+                    <a class="nav-link main" onClick="getMainCategory('newTest');" class="nav-link main" href="#">
+                      <span class="iconify" data-icon="gridicons:create"></span> Létrehozás
+                    </a>
+                    <div class="mask"></div>
+                  </div>
+                  <div class="button btn-join me-1 d-none d-lg-block">
                     <a class="nav-link main" data-bs-toggle="modal" data-bs-target="#joinTestModal" class="nav-link main" href="#">
-                      Csatlakozás
-                      <!-- <span class="shift">›</span> -->
+                      <span class="iconify" data-icon="radix-icons:enter"></span> Kitöltés
                     </a>
                     <div class="mask"></div>
                   </div>
