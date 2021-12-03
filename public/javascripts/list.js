@@ -450,7 +450,7 @@ $("#fileUploadField").on('change', function () {
   formdata.append('tippem', pincode);
   formdata.append('elem', elem);
   //formdata.append('sampleFile', $("#fileUploadField").files[0]);
-
+  var tmp=elem+1;
 
   console.log("form data:", formdata);
 
@@ -465,7 +465,7 @@ $("#fileUploadField").on('change', function () {
         alert(res);
         work = false;
         doAjax(pincode).then(function() {
-          // dofunc(elem-1);
+          $("#"+tmp).trigger('click');
         });
     },
     error: function(){
@@ -489,7 +489,6 @@ $("#kepurl").change(function() {
 //kepment
 function preventszar(ev) {
   ev.preventDefault();
-  doAjax(pincode)
 }
 
 function dropped(ev) {
@@ -501,7 +500,7 @@ function dropped(ev) {
   formdata.append('tippem', pincode);
   formdata.append('elem', elem);
   //formdata.append('sampleFile', $("#fileUploadField").files[0]);
-
+  var tmp=elem+1;
   //useless?!
   for (var pair of formdata.entries()) {
     console.log(pair[0]+ ', ' + pair[1]); 
@@ -518,7 +517,7 @@ function dropped(ev) {
         alert(res);
         work = false;
         doAjax(pincode).then(function() {
-          // dofunc(elem-1);
+          $("#"+tmp).trigger('click');
         });
     },
     error: function(){
