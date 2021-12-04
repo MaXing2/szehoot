@@ -182,7 +182,8 @@ app.get('/test/category',function (req, res) {
 app.get('/test/results',function (req, res) {
   var status = 0; //alapállapot
   if (req.session.loggedIn) { // be van jelentkezve?
-    var test_results;
+    var test_results; // eredmények
+    var test_info; //egyéb tesztinfók
     var process_id = req.query.process_id;
     if (process_id != undefined) {   
       console.log(process_id);
@@ -191,6 +192,7 @@ app.get('/test/results',function (req, res) {
         if (err) throw err;
         //ha van visszatérő eredmény
         if (!result[0].length <= 0) {
+          test_info = result;
           //ha valamelyik vizsgamódban fut
           if ((result[0][0].mode == 2) || (result[0][0].mode == 3)) {
             console.log(result[0][0].mode);
@@ -208,7 +210,7 @@ app.get('/test/results',function (req, res) {
 
   function redirect(status) {
     switch (status) {
-    case 5: res.render('main.ejs',{page: 'test_results', test_results: test_results , loggedIn: true, username: req.session.username, status: req.query.status, title: 'Eredmények'});
+    case 5: res.render('main.ejs',{page: 'test_results', test_results: test_results, test_info: test_info, loggedIn: true, username: req.session.username, status: req.query.status, title: 'Eredmények'});
     break;
 
     default: res.redirect('/');
@@ -378,10 +380,13 @@ app.post('/createTest',function (req, res) {
   var userid = req.session.userid;
   var test_name = req.body.test_name;
   var sub_category = req.body.sub_category_nt;
+  var valid = req.body.autoValidationCheck;
+  if (valid != "1") {valid = 0};
+  console.log("VALID ÉRTÉKE: "+valid);
 
   if (req.session.loggedIn) { // be van jelentkezve?
     
-    connection.query("CALL CreateTest(?,?,?)", [userid, test_name, '0'], function(err, result, fields) {
+    connection.query("CALL CreateTest(?,?,?)", [userid, test_name, valid], function(err, result, fields) {
       // if (err) throw err;
       if (!result[0].length <= 0) {
         var test_id = result[0][0].test_id;
@@ -558,6 +563,9 @@ app.post('/createTestProcess',function (req, res) {
   var mode = req.body.mode;
   var start_date = req.body.start_date;
   var end_date = req.body.end_date;
+  var classification = req.body.classification;
+
+  if (classification == "disabled") {classification = null};
 
   console.log("Username: "+username+" Test_ID: "+test_id);
   if (req.session.loggedIn) { // be van jelentkezve?
@@ -571,7 +579,7 @@ app.post('/createTestProcess',function (req, res) {
             if (err) throw err;
             var pincode = result[0][0].Pincode;
               //létrehozzuk a folyamatot
-            connection.query("CALL CreateProcess(?,?,?,?,?)",[test_id, mode, pincode, start_date, end_date], function(err, result, fields) {
+            connection.query("CALL CreateProcess(?,?,?,?,?,?)",[test_id, mode, pincode, start_date, end_date, classification], function(err, result, fields) {
               if (err) throw err;
 
 

@@ -220,6 +220,7 @@ resize: none;
   .button {
 	background-color: transparent;
 	border: 1px solid #525a64;
+    border-radius: 10px;
 	cursor: pointer;
 	/* letter-spacing: 0.2125rem; */
 	line-height: 1;
@@ -269,7 +270,7 @@ resize: none;
 }
 
 .button:hover a {
-	color: #fff;
+	color: #fff !important;
 }
 
 .button:hover .mask {
@@ -281,12 +282,37 @@ resize: none;
 	transform: translateX(5px);
 }
 
+.card-view-title {
+    margin-right: 15px;
+}
+
 .button:active {
 	background-color: #fff;
 }
 
 .button:active a {
 	color: #202020;
+}
+
+.btn-join, .btn-create {
+    width: 120px;
+}
+
+
+.btn-join a > svg {
+    color: #7fff0078 !important;
+    }
+
+.btn-create a > svg {
+    color: #00ffff69 !important;
+}
+
+.btn-join:hover svg {
+    color: #7fff00 !important;
+}
+
+.btn-create:hover svg {
+    color: #00ffff !important;
 }
 
 body.show {
