@@ -395,7 +395,7 @@ app.post('/createTest',function (req, res) {
         connection.query("CALL CreateCategoryRelation(?,?)",[test_id, sub_category], function(err, result, fields) {
             // if (err) throw err;
             //megnyitjuk a tesztösszeállító oldalt, és átadjuk a létrehozott test ID -jét
-            res.render('main.ejs',{page: 'test_create', loggedIn: true, username: req.session.username, test_id: test_id, test_name: test_name});
+            res.render('main.ejs',{page: 'test_create', loggedIn: true, username: req.session.username, test_id: test_id, test_name: test_name, valid: valid});
             console.log(result);
         })
       } else {
