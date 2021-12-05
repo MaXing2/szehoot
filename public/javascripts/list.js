@@ -4,6 +4,7 @@ var elem;
 var work = false;
 var pincode;
 window.onload = (event) => {
+  $("#contenteditor").hide();
   console.log(pincode);
   doAjax(pincode);
 }
@@ -69,6 +70,7 @@ function doAjax(testSzoveg) {
             var counttime = 0;
             var countpoint = 0;
             for (i = 0; i <data[0].idtest ; i++) {
+              $("#contenteditor").show();
               counttime = counttime + data[i].time;
               countpoint = countpoint + data[i].score;
               typeselect(i);
@@ -131,6 +133,7 @@ var instance = sceditor.instance(textarea);
 // instance.readOnly(true);
 
   function doadd() {
+    $("#contenteditor").show();
     console.log(data.length + " ez a hossza");
     console.log(data);
     console.log("-------");
@@ -150,6 +153,7 @@ var instance = sceditor.instance(textarea);
 
   function add(type) {
     console.log("barid -- :"+bar);
+    $("#contenteditor").show();
     newTask(bar,type);
     bar++;
   }

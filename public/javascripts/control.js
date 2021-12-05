@@ -86,6 +86,10 @@ function hiv (ered) {
         $(window).resize();
         console.log("ez a tipusa: "+ered[0].type);
         taskType(ered[0].type);
+        if(ered[0].type==0){
+          $("#btn1-text").text("Igaz");
+          $("#btn2-text").text("Hamis");
+        }else{
         $("#btn1-text").text(ered[0].answer_1);
         $("#btn2-text").text(ered[0].answer_2);
         $("#btn3-text").text(ered[0].answer_3);
@@ -95,7 +99,7 @@ function hiv (ered) {
         $("#btn7-text").text(ered[0].answer_3);
         $("#btn8-text").text(ered[0].answer_4);
         $(window).resize();
-
+      }
     }
 }
 
