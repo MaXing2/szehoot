@@ -491,7 +491,7 @@ $("#kepurl").change(function() {
 });
 
 //kepment
-function preventszar(ev) {
+function draganddropsave(ev) {
   ev.preventDefault();
 }
 
