@@ -51,7 +51,7 @@ window.onload = (event) => {
 
 //kerdesek
 function sqlm (){
-    socket.emit('sgetter',actual,pincode,mod);
+    socket.emit('sgetter',actual,pincode,mod,ad);
 }
 
 socket.on('getter',ered => {

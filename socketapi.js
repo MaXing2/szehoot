@@ -33,16 +33,26 @@ io.on('connection', socket => {
 
 
     //getter
-    socket.on('sgetter', (kerdes,nam,gamemode) => {
+    socket.on('sgetter', (kerdes,nam,gamemode,u_id) => {
+        var tmp=false;
+        var sql = "SELECT u_id AS user FROM test_list WHERE id=" + con.escape(nam)+"";
+        con.query(sql, function (err, result) {
+            if (err) console.log(err);
+            res = JSON.parse(JSON.stringify(result));
+        if (u_id == res[0].user){
+            tmp=true;
+        };
+     });
+
         var sql = "SELECT test_id ,question,answer_1 ,answer_2 ,answer_3 ,answer_4 ,question_number, time, score, type, image FROM test_questions WHERE test_id=" + con.escape(nam) + " and question_number="+con.escape(kerdes)+"";
         con.query(sql, function (err, result) {
-            if (err) throw err;
+            if (err) console.log(err);
             res = JSON.parse(JSON.stringify(result));
             socket.join(nam);
             console.log(socket.rooms);
 
             //send for all in room or just one 
-            if (gamemode == 1){
+            if (gamemode == 1 && tmp == true){
                 io.to(nam).emit('getter', res);
             }else{
                 io.to(socket.id).emit('getter', res);

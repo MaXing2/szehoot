@@ -107,14 +107,14 @@ app.post('/pdf', function (req, res) {
             }
             doc.setFontSize(10);
             //answers
+            if(element.type==0){
+              var egesz = "A. "+"Igaz";
+              var tort = doc.splitTextToSize(egesz, 150);
+              last = tort.length - 1;
+              doc.text(tort, 20, (curPos)*2 + i+8);
+              curPos += last;
+            }else{
             if(element.answer_1 != null){
-              if(element.type==0){
-                var egesz = "A. "+"Igaz";
-                var tort = doc.splitTextToSize(egesz, 150);
-                last = tort.length - 1;
-                doc.text(tort, 20, (curPos)*2 + i+8);
-                curPos += last;
-              }else{
               var egesz = "A. "+element.answer_1;
               var tort = doc.splitTextToSize(egesz, 150);
               last = tort.length - 1;
@@ -122,14 +122,14 @@ app.post('/pdf', function (req, res) {
               curPos += last;
               }
             }
+            if(element.type==0){
+              var egesz = "B. "+"Hamis";
+              var tort = doc.splitTextToSize(egesz, 150);
+              doc.text(tort, 20, (curPos)*2 + i + 16);
+              last = tort.length -1;
+              curPos += last;
+            }else{
             if(element.answer_2 != null){
-              if(element.type==0){
-                var egesz = "B. "+"Hamis";
-                var tort = doc.splitTextToSize(egesz, 150);
-                doc.text(tort, 20, (curPos)*2 + i + 16);
-                last = tort.length -1;
-                curPos += last;
-              }else{
               var egesz = "B. "+element.answer_2;
               var tort = doc.splitTextToSize(egesz, 150);
               doc.text(tort, 20, (curPos)*2 + i + 16);

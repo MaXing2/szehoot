@@ -85,7 +85,7 @@ function doAjax(testSzoveg) {
   }
 
 function typeselect(i){
-  console.log("data id:"+i);
+  // console.log("data id:"+i);
   switch(data[i].type) {
     case 0:
         add("Igaz/Hamis");
@@ -134,10 +134,10 @@ var instance = sceditor.instance(textarea);
 
   function doadd() {
     $("#contenteditor").show();
-    console.log(data.length + " ez a hossza");
-    console.log(data);
-    console.log("-------");
-    if (data == "nincs adat"){
+    // console.log(data.length + " ez a hossza");
+    // console.log(data);
+    // console.log("-------");
+    if (data == "nincs adat" || bar==0){
       data = [];
       data.push({answer_1:"", answer_2:"", answer_3:"", answer_4:"", correct_answer_no:parseInt(""), image:"", question:"",
     question_number: 0, score:"1", test_id: pincode,  time:"10", extra_score:"0", extra_time:"0", type:parseInt(document.getElementById('task_type').value) });
@@ -146,8 +146,8 @@ var instance = sceditor.instance(textarea);
     question_number: (data[data.length - 1].question_number) + 1, score:"1", test_id:(data[data.length - 1].test_id),  time:"10", extra_score:"0", extra_time:"0", type:parseInt(document.getElementById('task_type').value) });
     }
   $("#tabla_szam").text(bar+1);
-    console.log("hozza adva");
-    console.log(data);  
+    // console.log("hozza adva");
+    // console.log(data);  
   }
 
 
@@ -370,7 +370,7 @@ function qsave (modified){
 
   //valaszment
   var fuz = 0;
-  console.log("Ez a type: ---- " + document.getElementById('task_type').value);
+  // console.log("Ez a type: ---- " + document.getElementById('task_type').value);
   switch(parseInt(document.getElementById('task_type').value)){
     case 2:
     data[modified].answer_1 = document.getElementById("type-1-A").value;
@@ -450,6 +450,9 @@ $("#dnd").click(function(e) {
 });
 
 $("#fileUploadField").on('change', function () {
+  dosave ()
+  console.log("alma elso fugveny gec");
+  setTimeout(function() {
   var formdata = new FormData($('#uploadForm')[0]);
   formdata.append('tippem', pincode);
   formdata.append('elem', elem);
@@ -478,6 +481,7 @@ $("#fileUploadField").on('change', function () {
   })
   //dofunc(elem);
   //$("#uploadForm").submit();
+}, 1000);
 })
 
 $("#kepurl").click(function() {
@@ -500,6 +504,9 @@ function dropped(ev) {
   var uploadField = document.getElementById("fileUploadField");
   uploadField.files = ev.dataTransfer.files;
   //$("#uploadForm").submit();
+  dosave ()
+  console.log("korte masodik fugveny gecooo");
+  setTimeout(function() { 
   var formdata = new FormData($('#uploadForm')[0]);
   formdata.append('tippem', pincode);
   formdata.append('elem', elem);
@@ -527,7 +534,8 @@ function dropped(ev) {
     error: function(){
         alert('Error: In sending the request!');
     }
-})
+  })
+}, 1000);
 
 ev.preventDefault();
 }
@@ -560,7 +568,7 @@ function dotrol() {
     data[i].question_number=i;
     console.log(data);
   }
-  console.log("data: ", data);
+
   $("#tabla_szam").text(tmpbar);
   alldel();
   var counttime = 0;
@@ -581,6 +589,9 @@ function dotrol() {
 
   document.getElementById("CountPoint").innerHTML = (countpoint); 
   alltime(counttime);
+  if (bar==0){
+    $("#contenteditor").hide();
+  }
 }
 
 

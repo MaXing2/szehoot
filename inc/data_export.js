@@ -11,7 +11,7 @@ exports.exp = function (fs,app,connection) {
             json = JSON.parse(JSON.stringify(result));
             var darab = json[0].db;
           if (darab == 0){
-            res.json("nincs adat");
+            res.json("nincs kérdés mentve");
           }else{
             sql = "SELECT * FROM test_questions WHERE test_id="+connection.escape(test)+ "";
             connection.query(sql, function (err, result) {
