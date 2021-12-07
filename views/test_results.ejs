@@ -3,7 +3,25 @@
 <div id="testinfo" class="row g-0 mb-3">
 	<div id="test_title" class="col-12 m-auto text-center">
 		<h3 class="d-inline"><%= test_info[0][0].test_name %></h3></br>
-    <span>ID: <%= test_info[0][0].process_id %></span>
+    <span>ID: <%= test_info[0][0].process_id %></span></br>
+    <span>Futtatási mód: <% switch (test_info[0][0].mode) {
+      case 0 : %>
+              Gyakorló
+              <% break;
+      
+      case 1 : %>
+              Tantermi
+              <% break;
+      
+      case 2 : %>
+              Vizsga
+              <% break;
+
+      case 3 : %>
+              Vizsga (verseny)
+              <% break;
+      
+      } %></span>
     
 	</div>
 </div>
@@ -35,15 +53,35 @@ data-sortable="true"
 data-pagination-parts="[pageList, pageInfo]">
   <thead>
     <tr>
+      <% if (test_info[0][0].mode == '3') { %>
+        <th data-field="rank" data-sortable="true">Helyezés
+          <img color="green" src="/images/info-circle.svg"
+          tabindex="0" class="btninfo" role="button" data-container="body" data-bs-toggle="popover" data-placement="top" data-bs-trigger="hover focus"
+          title="Információ" data-bs-content="Az elért helyezés az összes pontszám alapján.">
+          </img>
+        </th>
+      <% } %> 
       <th data-field="full_name" data-sortable="true">Teljes név</th>
       <th data-field="eduid" data-sortable="true">Oktatási azonosító</th>
       <th data-field="start_date" data-sortable="true">Kitöltés kezdete</th> 
       <th data-field="end_date" data-sortable="true">Kitöltés vége</th>
       <th data-field="duration" data-sortable="true">Kitöltés időtartama</th>
-      <th data-field="reached_point" data-sortable="true">Alappontszám</th>
-      <th data-field="reached_extrapoint" data-sortable="true">Extra pontszám</th>
+      <% if (test_info[0][0].mode == '3') { %>
+        <th data-field="reached_point" data-sortable="true">Alappontszám</th>
+        <th data-field="reached_extrapoint" data-sortable="true">Extra pontszám
+          <img color="green" src="/images/info-circle.svg"
+          tabindex="0" class="btninfo" role="button" data-container="body" data-bs-toggle="popover" data-placement="top" data-bs-trigger="hover focus"
+          title="Információ" data-bs-content="A villámidőkereten belül leadott helyes válaszokért járó pontszámok összege.">
+          </img>
+        </th>
+      <% } %>
       <th data-field="summed_points" data-sortable="true">Összes pontszám</th>
-      <th data-field="results_percentage" data-sortable="true">Eredmény</th>
+      <th data-field="results_percentage" data-sortable="true">Eredmény 
+        <img color="green" src="/images/info-circle.svg"
+        tabindex="0" class="btninfo" role="button" data-container="body" data-bs-toggle="popover" data-placement="top" data-bs-trigger="hover focus"
+        title="Információ" data-bs-content="Az eredménybe az extra pontszámok nem tartoznak bele!">
+        </img>
+      </th>
       <th data-field="rating" data-sortable="true">Értékelés</th>
     </tr>
   </thead>
@@ -51,19 +89,25 @@ data-pagination-parts="[pageList, pageInfo]">
     <% if (test_results[0].length > 0) { %>
       <% for(var i=0; i<test_results[0].length; i++) {%>
               <tr>
+                  <% if (test_info[0][0].mode == '3') { %>
+                    <td> <%= i+1 %> </td>
+                  <% } %>
                   <td><%= test_results[0][i].full_name %></td>
                   <td><%= test_results[0][i].eduid %></td>
                   <td><%= moment(test_results[0][i].start_date).format("YYYY.MM.DD HH:mm:ss");  %></td>
                   <td><%= moment(test_results[0][i].end_date).format("YYYY.MM.DD HH:mm:ss");  %></td>
                   <td><%= test_results[0][i].time %></td>
-                  <td><%= test_results[0][i].reached_point %></td>
-                  <td><%= test_results[0][i].reached_extrapoint %></td>
-                  <td><%= test_results[0][i].summed_points %></td>
-                  <td><%= test_results[0][i].result_percentage %> %</td>
-                  <td id="r10"><script>$("#r10").text(calculateGrade('<%= test_results[0][i].result_percentage %>', '<%= test_info[0][0].classification %>'));</script></td>
-                  
-                </tr>
+                  <% if (test_info[0][0].mode == '3') { %>
+                    <td><%= test_results[0][i].reached_point %></td>
+                    <td><%= test_results[0][i].reached_extrapoint %></td>
+                    <td><%= test_results[0][i].summed_points %></td>
+                  <% } else { %>
+                    <td><%= test_results[0][i].reached_point %></td> <!-- Az összes pontszám az alappontszámmal egyenlő, ha szimpla vizsgamódban fut-->
+                  <% } %>
 
+                  <td><%= test_results[0][i].result_percentage %> %</td>
+                  <td id="<%= test_results[0][i].user_id %>"><script>$("#<%= test_results[0][i].user_id %>").text(calculateGrade('<%= test_results[0][i].result_percentage %>', '<%= test_info[0][0].classification %>'));</script></td>
+                </tr>
          <% } %>     
       <% } %>
   </tbody>

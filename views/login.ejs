@@ -1,3 +1,12 @@
+<% if (typeof success !== 'undefined') { %>
+	<div class="alert alert-success d-flex alert-dismissible" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+		<div class="float-end">
+			Sikeresen regisztráltál, most már bejelentkezhetsz!
+		</div>
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	  </div>
+	  <% } %>
 <% if (typeof status !== 'undefined') { %>
 	<div class="alert alert-danger d-flex alert-dismissible" role="alert">
 		<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>

@@ -167,10 +167,10 @@ resize: none;
 }
 
 .wrongTask > div:first-of-type:not(:last-child){ 
-    background-color: #ff4d4d8a !important;
+    background-color: #ffc9c5  !important;
 }
 .wrongTask:hover > div:first-of-type:not(:last-child){
-    background-color: #ff4d4dd1 !important;
+    background-color: #e48d7d !important;
 }
 
 .process-table td {
@@ -184,14 +184,14 @@ resize: none;
 
 
 .input-pincode {
-    color: red;
+    color: rgb(0, 142, 207);
     display: block;
     border: none;
     padding: 0;
     margin: auto;
     width: 120px;
     font-size: 1.5rem;
-    background: repeating-linear-gradient(90deg, red 0, red 1ch, transparent 0, transparent 1.5ch) 0 100%/9ch 2px no-repeat;
+    background: repeating-linear-gradient(90deg, rgb(0, 142, 207) 0, rgb(0, 142, 207) 1ch, transparent 0, transparent 1.5ch) 0 100%/9ch 2px no-repeat;
     letter-spacing: 0.5ch;
   }
 
@@ -201,14 +201,14 @@ resize: none;
   }
 
   .input-pincode-loggedin {
-    color: red;
+    color: rgb(0, 142, 207);
     display: block;
     border: none;
     padding: 0;
     margin: auto;
     width: 120px;
     font-size: 1.5rem;
-    background: repeating-linear-gradient(90deg, red 0, red 1ch, transparent 0, transparent 1.5ch) 0 100%/9ch 2px no-repeat;
+    background: repeating-linear-gradient(90deg, rgb(0, 142, 207) 0, rgb(0, 142, 207) 1ch, transparent 0, transparent 1.5ch) 0 100%/9ch 2px no-repeat;
     letter-spacing: 0.5ch;
   }
 

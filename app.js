@@ -35,6 +35,7 @@ const fileUpload = require('express-fileupload');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const { query } = require('express');
 
 
 // view engine setup
@@ -225,7 +226,7 @@ if (req.session.loggedIn) { // be van jelentkezve?
   connection.query("CALL GetAllProcess(?)", [req.session.username], function(err, result, fields) {
     if (err) throw err;
     connection.query("CALL GetFullfilledCountPerProcessByUser(?)", [req.session.username], function(err, result2, fields) {
-      res.render('main.ejs',{page: 'test_process',  process_data: result, fullfilledCount: result2,  loggedIn: true, username: req.session.username, title: 'Tesztfolyamatok'});
+      res.render('main.ejs',{page: 'test_process',  process_data: result, fullfilledCount: result2,  loggedIn: true, username: req.session.username, pincode: req.query.pincode, title: 'Tesztfolyamatok'});
     })
 
     })
@@ -765,7 +766,7 @@ app.post('/signup', function(req, res) {
                   connection.query("INSERT INTO users (username, password, email, title, firstname, lastname, gender, eduid) VALUES (" + connection.escape(username) + ", " + connection.escape(password) + ", " + connection.escape(email) + ", " + connection.escape(title) + ", " + connection.escape(firstname) + ", " + connection.escape(lastname) + ", " + connection.escape(gender) + ", " + connection.escape(eduid) + ")",
                   function(err, result, fields) {
                     if (err) throw err;  
-                  else res.send("Minden ok!"); //sikeres reg
+                  else res.render('main.ejs', {page: 'login', loggedIn: false, success: true});
                   })
                 }) 
               } else res.send("Az e-mail már foglalt");
@@ -853,6 +854,28 @@ app.post('/printTest',function (req, res) {
   }
 })
 
+app.post('/editTest',function (req, res) {
+  var userid = req.session.userid;
+  var username = req.session.username;
+  var test_id = req.body.test_id_et;
+
+  if (req.session.loggedIn) { // be van jelentkezve?
+    connection.query("CALL GetTestByIDnUser(?,?)", [username, test_id], function(err, result, fields) { //hozzá tartozik egyáltalán a teszt?
+      if (err) throw err;
+      if (!result[0].length <= 0) { 
+        var test_name = result[0][0].test_name;
+        var valid = result[0][0].valid;
+        res.render('main.ejs',{page: 'test_create', loggedIn: true, username: req.session.username, test_id: test_id, test_name: test_name, valid: valid});
+      } else {  
+        //nem tartozik ilyen teszt azonosító a felhasználóhoz
+        res.redirect('/test/bank?status=1');
+      }
+    })
+
+  } else {
+    //nincs bejelentkezve az illető
+  }
+})
 
 //--------------------------------------MAIN NAVIGÁCIÓ--------------------------------------------
 //A main -ra érkező postok alapján tölti be az oldal a megfelelő tartalmat (ejs fájlokat) ajax segítségével

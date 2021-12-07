@@ -186,7 +186,7 @@
 		</div>
 	</div>
 
-	<div id="contenteditor" class="col-xl-10 pb-0">
+	<div id="contenteditor" class="col-xl-10 pb-0 d-none">
 		<div class="row">
 			<div class="col-lg text-center">
 				<span id="taskNumber"></span>
@@ -228,10 +228,7 @@
 				</select>
 			</div>
 			<div class="col-lg">
-				<label class="form-label mt-2" for="extrap-info"><b>Extra pontszám (opcionális)</b><img src="images/info_black_24dp.svg" 
-				tabindex="0" id="extrap-info" class="btninfo" role="button" data-bs-toggle="popover" data-bs-trigger="hover focus" 
-				title="Információ" data-bs-content="A leggyorsabb kitöltő az alappontszámon felül az itt meghatározott pontszámot is elnyeri. Csak versenymódban érvényes!">
-				</img></label>
+				<label class="form-label mt-2" for="extrap-info"><b>Extra pontszám (opcionális)</b></label>
 				<select id="extra_points" class="form-select">
 					<option selected value="0">Nincs</option>
 					<option value="1">1</option>
@@ -589,7 +586,7 @@ function ShowToastMsg(event) {
 	}
 
 	var html=
-		`<div id="liveToast" class="toast hide" role="alert" data-bs-delay="500000" aria-live="assertive" aria-atomic="true">
+		`<div id="liveToast" class="toast hide" role="alert" data-bs-delay="5000" aria-live="assertive" aria-atomic="true">
 		<div class="toast-header" style="background-color: rgb(33 37 41); color: white;">
 			<span class="iconify notification-icon" data-icon="carbon:popup" data-width="24"></span>
 			<strong class="me-auto">${event_title}</strong>
@@ -705,6 +702,10 @@ function parser (content){
 	content = content.replace(/:[^:\s]*(?:::[^:\s]*)*:/g, ""); //további szmájlikra
 	return content;
 }
+
+$(document).ready(function() {
+
+});
 
 var answerCount = 4;
 function answerCountChange(count) {
