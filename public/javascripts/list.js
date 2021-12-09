@@ -5,7 +5,6 @@ var work = false;
 var pincode;
 window.onload = (event) => {
   // $("#contenteditor").hide();
-  console.log(pincode);
   doAjax(pincode);
 }
 
@@ -205,7 +204,9 @@ var instance = sceditor.instance(textarea);
     elem=bars;
     if (work){
       qsave (modified);
-      qsupervision(modified);
+      if (validate==1){
+        qsupervision(modified);
+      }
     }else{
       work=true;
     }
@@ -218,19 +219,20 @@ var instance = sceditor.instance(textarea);
 
 //mobile list
 function mobile(type) {
-  $("#mobile").append(new Option( (bar+1) +". feladat | " + type, bar));
+  $("#mobile").append(new Option( (bar+1) +". feladat | " + type, bar+1));
+  $("#mobile").val(bar+1);
 }
 
 $("#mobile").change(function(e) {
   var i =($("#mobile").val());
-  if(i == "plus"){
-    console.log("hozza ad");
-    $("#newTaskBtn").trigger('click');
-  }else{
   $("#"+ i).trigger('click');
-  }
 });
 
+
+function Removemobile(){
+  $('#mobile')
+    .empty()
+}
 
 // point auto change
 $("#points").change(function(e) {
@@ -283,6 +285,7 @@ $("#extra_points").change(function(e) {
   }
 
 function alldel(){
+  Removemobile();
   var list = document.getElementById("Bar");
   console.log(list);
   while (list.hasChildNodes()) {

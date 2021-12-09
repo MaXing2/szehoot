@@ -11,12 +11,20 @@ var time = 0 ;
 var char;
 var allpoint = 0;
 window.onload = (event) => {
+  last(courrentQuestion,mod,ad,cname);
   socket.emit('scode',pincode);
   $(".test-title").text(testname);
   console.log(cname + " - ez a neve");
   console.log(pincode + " - ez a szama");
   console.log(mod + " - ez a jatek modja");
   };
+
+//for test continue
+function last(courrentQuestion,mod,ad,cname) {
+  if((mod==2 || mod==3) && ad != cname){
+    actual=courrentQuestion+1;
+  }
+}
 
   socket.on('code',ered => {
     console.log(ered);
@@ -56,6 +64,7 @@ function sqlm (){
 
 socket.on('getter',ered => {
   actual++;
+  nextbutton();
   taskDuration("start")
     show();
     hiv(ered);
@@ -239,6 +248,14 @@ socket.on('online', (onliNum)  => {
   $("#users_count").text(onliNum);
 });
 
+//button test change next
+function nextbutton(){
+  if (actual == osszvalasz){
+    $("#next").text("Befejezés")
+  }else{
+    $("#next").text("Következő »")
+  }
+}
 
 //control_hide
 function vezerlo() {
@@ -255,6 +272,9 @@ function vezerlo() {
     }  
   }
   if (actual == osszvalasz){
+    if (ad == cname){
+      window.location.replace("/");      //redirect test owner
+    }else{
     console.log("vége"); //finised test
     showResult();
     console.log(allpoint);
@@ -264,6 +284,7 @@ function vezerlo() {
     // $("#result_rating").text("alma");                                        Osztályzat beállítás (Jeles)
     console.log(point);
     }
+  }
   }
    
   function show(){

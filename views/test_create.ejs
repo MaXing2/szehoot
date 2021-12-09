@@ -627,7 +627,10 @@ $("#type-2 textarea, #type-1 textarea").each(function () {
 	}
 });
 
-var pincode = JSON.parse('<%- JSON.stringify(test_id) %>')
+var validate = '<%= valid %>';
+// if (validate == '1') { alert('A hibaellenőrző be van kapcsolva!') } else {alert('A hibaellenőrző ki van kapcsolva!')}
+
+var pincode ='<%= test_id %>';
 console.log(pincode);
 
 
