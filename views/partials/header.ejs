@@ -82,6 +82,67 @@ $(document).ready(function() {
     InitPopup();
 });
 
+
+function LoadDataToModal(modal, id, test_subcategory) {
+
+  if (modal != 'deleteTestProcess') { //A tesztfolyamat törléséhez erre nincs szükség, és több helyről is lehetséges, ahol nem létezik a táblázat
+  var td = $('#table td').filter( ":nth-child(1)" ).filter(function(){
+    return $(this).text() === id;
+  })
+  var Row = td.parent('tr'); 
+  var test_name = Row.find("td:eq(1)").text(); // teszt neve
+  }
+
+switch(modal) {
+
+case 'newTestProcess':
+  $("#test_id").val(id);
+  createTestProcessModal.show();
+  break;
+
+  case 'deleteTestProcess':
+  $("#process_id_dp").val(id);
+  $("#page_dp").val(window.location.pathname);
+  deleteTestProcessModal.show();
+  break;
+
+case 'duplicateTest':
+  $('#test_name_dt').val(test_name + ' - másolat');  //a tr 1. td eleme a teszt neve
+  $('#newCatCheck').prop('checked', false);
+  $("#test_id_dt").val(id);
+  $("#cat_id_dt").val(test_subcategory);
+  originalCatId = $('#cat_id_dt').val(); //eredeti kategória ID eltárolása
+  $('#duplicateTestModal .maincat').addClass('d-none');
+  $('#duplicateTestModal .subcat').addClass('d-none');  
+  duplicateTestModal.show();
+  break;
+
+case 'renameTest':
+  $("#test_id_rt").val(id);
+  $("#test_name_rt").attr('placeholder', test_name);
+  renameTestModal.show();
+  break;
+
+case 'moveTest':
+  $("#test_id_mt").val(id);
+  getMainCategory('moveTest');
+  moveTestModal.show();
+  break;
+
+case 'printTest':
+  $("#test_id_pt").val(id);
+  printTestModal.show();
+  break;
+
+case 'deleteTest':
+  $("#test_id_delt").val(id);
+  deleteTestModal.show();
+  break;
+
+default:
+  // code block
+}}
+
 function calculateGrade(percentage, classification) {
   percentage = parseInt(percentage);
   var gradeText = '';
@@ -163,7 +224,7 @@ function calculateGrade(percentage, classification) {
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="iconify" data-icon="ant-design:user-outlined" data-inline="false"></span> <%= username%></a>
                         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarScrollingDropdown">
-                          <li><a class="dropdown-item" href="#">Profilom</a></li>
+                          <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editProfileModal" href="#">Profilom</a></li>
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/logout">Kijelentkezés</a></li>
                         </ul>

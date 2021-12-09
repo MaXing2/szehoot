@@ -16,7 +16,7 @@
 					<label class="form-label" for="fullname"><b>Teljes név:</b></label>
 					<div name="fullname" id="fullname" class="row">
 						<div class="col-2">
-							<select class="form-control" id="title" name="title">
+							<select class="form-select" id="title" name="title">
 								<option value="0" selected>-</option>
 								<option value="1">Dr.</option>
 							</select>
@@ -35,7 +35,7 @@
 				
 				<div class="form-group mb-3 gender"> 
 					<label class="form-label" for="gender"><b>Neme:</b></label>
-					<select onchange="gender_validator()" class="form-control" id="gender" name="gender">
+					<select onchange="gender_validator()" class="form-select" id="gender" name="gender">
 						<option hidden disabled selected value>Kérem válasszon!</option>
 						<option value="1">Nő</option>
 						<option value="2">Férfi</option>
@@ -93,19 +93,13 @@
 
 				  
 				<div class="form-group mb-3 eduid"> 
-					<label class="form-label" for="email"><b>Azonosító (opcionális)</b></label>
+					<label class="form-label" for="eduid"><b>Azonosító (opcionális)</b></label>
 					<img src="images/info_black_24dp.svg" 
 					tabindex="0" id="eduid-info" class="btninfo" role="button" data-bs-toggle="popover" data-bs-trigger="focus" 
 					title="Információ" data-bs-content="Az azonosító megadásával az egyes oktatási intézmények oktatói direkt módon azonosíthatják a hallgatókat. 
 					Ez lehet akár a neptun kód, vagy attól eltérő, az intézmények saját formátumú azonosítója is.">
 			   		</img>
-					<input class="form-control" onblur="email_validator()"  type="text" id="eduid" name="eduid">
-					<div class="valid-feedback">
-					<span id="valid-text"></span>
-					</div>
-					<div class="invalid-feedback">
-					<span id="invalid-text"></span>
-					</div>
+					<input class="form-control"  type="text" id="eduid" name="eduid">
 				</div>
 
 				<div class="form-groupp mb-3 terms">
@@ -126,7 +120,7 @@
 
 				</div>
 
-				<button class="btn btn-primary mt-2" type="submit" id="gomb" >Regisztráció</button>
+				<button class="btn btn-primary mt-2" type="submit">Regisztráció</button>
 			</div>
 		</div>
 		</fieldset>

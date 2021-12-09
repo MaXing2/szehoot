@@ -121,7 +121,7 @@ if (req.session.loggedIn) { // be van jelentkezve?
             connection.query("CALL GetQuestionCount(?)", [req.session.username], function(err, result5, fields) {
               if (err) throw err;
               connection.query("CALL GetFullFilledCountByUser(?)", [req.session.username], function(err, result6, fields) {
-                res.render('main.ejs',{page: 'home', loggedIn: true, test_data: result, process_data: result2, testCount: result3, processCount: result4, questionCount: result5, fullfilledCount: result6, username: req.session.username, status: req.query.status, title: 'Kezdőlap'}); // ebben az esetben a main.ejs sablonban a home.ejs nyílik meg
+                res.render('main.ejs',{page: 'home', userData: req.session.userData, loggedIn: true, test_data: result, process_data: result2, testCount: result3, processCount: result4, questionCount: result5, fullfilledCount: result6, username: req.session.username, status: req.query.status, title: 'Kezdőlap'}); // ebben az esetben a main.ejs sablonban a home.ejs nyílik meg
             })
           })
         })
@@ -147,12 +147,28 @@ if (req.session.loggedIn) { // be van jelentkezve?
 //Test_create esetén
 app.get('/test/create',function (req, res) {
   if (req.session.loggedIn) { // be van jelentkezve?
-    res.render('main.ejs',{page: 'test_create', test_name: 'Teszt cím példa', loggedIn: true, username: req.session.username, title: 'Teszt létrehozása'});
+    res.render('main.ejs',{page: 'test_create', userData: req.session.userData, test_name: 'Teszt cím példa', loggedIn: true, username: req.session.username, title: 'Teszt létrehozása'});
   } else {
     res.redirect('/');
   }
   })
 
+//Test_create esetén
+app.get('/test/profile',function (req, res) {
+  if (req.session.loggedIn) { // be van jelentkezve?
+    connection.query("CALL GetUserData(?)", [req.session.username], function(err, result, fields) {
+      if (err) throw err;
+      if (!result[0].length <= 0) {
+        res.render('main.ejs',{page: 'test_profile', userData: req.session.userData, loggedIn: true, username: req.session.username, user_data: result, title: 'Profiladatok módosítása'});
+      } else {
+        //nem létezik a felhasználó
+      }
+   })
+  } else {
+    res.redirect('/');
+  }
+  })
+// -------------------------EZ A TEST JOIN MAJD TÖRLENDŐ--------------------------
   app.get('/test/join',function (req, res) {
     res.render('test_join.ejs');
       })
@@ -168,9 +184,9 @@ app.get('/test/category',function (req, res) {
           //const resultok = Object.values(JSON.parse(JSON.stringify(result)));
           console.log(result);
           console.log("Hossz:" + result[0].length);
-          res.render('main.ejs',{page: 'test_category',data: result, loggedIn: true, username: req.session.username, status: req.query.status, maincatid: req.query.maincatid, title: 'Kategóriák'});
+          res.render('main.ejs',{page: 'test_category', userData: req.session.userData, data: result, loggedIn: true, username: req.session.username, status: req.query.status, maincatid: req.query.maincatid, title: 'Kategóriák'});
         } else {
-          res.render('main.ejs',{page: 'test_category',data: result, loggedIn: true, username: req.session.username, status: '4', maincatid: req.query.maincatid, title: 'Kategóriák'});
+          res.render('main.ejs',{page: 'test_category', userData: req.session.userData, data: result, loggedIn: true, username: req.session.username, status: '4', maincatid: req.query.maincatid, title: 'Kategóriák'});
         }
      })
   } else {
@@ -211,7 +227,7 @@ app.get('/test/results',function (req, res) {
 
   function redirect(status) {
     switch (status) {
-    case 5: res.render('main.ejs',{page: 'test_results', test_results: test_results, test_info: test_info, loggedIn: true, username: req.session.username, status: req.query.status, title: 'Eredmények'});
+    case 5: res.render('main.ejs',{page: 'test_results', userData: req.session.userData, test_results: test_results, test_info: test_info, loggedIn: true, username: req.session.username, status: req.query.status, title: 'Eredmények'});
     break;
 
     default: res.redirect('/');
@@ -226,7 +242,7 @@ if (req.session.loggedIn) { // be van jelentkezve?
   connection.query("CALL GetAllProcess(?)", [req.session.username], function(err, result, fields) {
     if (err) throw err;
     connection.query("CALL GetFullfilledCountPerProcessByUser(?)", [req.session.username], function(err, result2, fields) {
-      res.render('main.ejs',{page: 'test_process',  process_data: result, fullfilledCount: result2,  loggedIn: true, username: req.session.username, pincode: req.query.pincode, title: 'Tesztfolyamatok'});
+      res.render('main.ejs',{page: 'test_process', userData: req.session.userData, process_data: result, fullfilledCount: result2,  loggedIn: true, username: req.session.username, pincode: req.query.pincode, title: 'Tesztfolyamatok'});
     })
 
     })
@@ -252,10 +268,10 @@ app.get('/test/bank',function (req, res) {
       }
       console.log('Noprocess értéke: '+noprocess)
       console.log(result2[0]);
-      res.render('main.ejs',{page: 'test_bank', test_data: result, noprocess: noprocess, process_data: result2, loggedIn: true, username: req.session.username, test_id: req.query.test_id, pincode: req.query.pincode, status: req.query.status, title: 'Tesztbank'});
+      res.render('main.ejs',{page: 'test_bank', userData: req.session.userData, test_data: result, noprocess: noprocess, process_data: result2, loggedIn: true, username: req.session.username, test_id: req.query.test_id, pincode: req.query.pincode, status: req.query.status, title: 'Tesztbank'});
       })
     } else { //nincs egyetlen teszt sem...
-    res.render('main.ejs',{page: 'test_bank', test_data: result, loggedIn: true, username: req.session.username, test_id: req.query.test_id, pincode: req.query.pincode, status: req.query.status, title: 'Tesztbank'});
+    res.render('main.ejs',{page: 'test_bank', userData: req.session.userData, test_data: result, loggedIn: true, username: req.session.username, test_id: req.query.test_id, pincode: req.query.pincode, status: req.query.status, title: 'Tesztbank'});
     }
     })
   } else {
@@ -268,7 +284,7 @@ app.get('/test/bank',function (req, res) {
 //Login esetén
 app.get('/login',function (req, res) {
   if (req.session.loggedIn) { // be van jelentkezve?
-      res.render('main.ejs',{page: 'home', loggedIn: true, username: req.session.username});
+      res.render('main.ejs',{page: 'home', userData: req.session.userData, loggedIn: true, username: req.session.username});
   } else {
       res.render('main.ejs', {page: 'login', loggedIn: false, title: 'Bejelentkezés'}); //Login betöltése
   } 
@@ -286,7 +302,7 @@ app.get('/home2',function (req, res) {
 //Signup esetén
 app.get('/signup',function (req, res) {
 if (req.session.loggedIn) { // be van jelentkezve?
-  res.render('main.ejs',{page: 'home', loggedIn: true, username: req.session.username});
+  res.redirect('/home');
 } 
 else {
   res.render('main.ejs', {page: 'signup', loggedIn: false, title: 'Regisztráció'}); //Regisztrációs oldal betöltése
@@ -340,14 +356,14 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
             switch(status) {
               
               case 5:
-                res.render('test_join.ejs',{'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, 'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'userid': null,  'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
+                res.render('test_join.ejs',{userData: req.session.userData, 'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, 'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'userid': null,  'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
                 break;
               case 6:
                 if (result[0][0].mode == 2 || result[0][0].mode == 3) { // ha a mód valamelyik vizsgamód egyike
                     connection.query("CALL GetResultsAttemptIdByUsernProcessId(?,?)",[username, process_id], function(err, result3, fields) { //megnézzük, hogy van -e már megkezdett kitöltése
                       if (!result3[0].length <= 0) { //ha van, akkor megnézzük, hogy befejezte-e már a tesztet (hányadik kérdésnél tart)
                         console.log(result3[0][0].answer_number+ " és "+result[0][0].question_num);
-                        if (result3[0][0].answer_number == result[0][0].question_num) { //az utolsó leadott válasz száma egyenlő az utolsó kérdés számával a tesztből, tehát befejezte
+                        if (result3[0][0].answer_number == result[0][0].question_num-1) { //az utolsó leadott válasz száma egyenlő az utolsó kérdés számával a tesztből, tehát befejezte
                           //jelezni kell, hogy nincs tovább status=7
                           status=7;
                           res.redirect('/home?status=' + (status));
@@ -356,17 +372,17 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
                         attemptId = result3[0][0].attempt_id; //megváltoztatjuk az attemptId változó értékét a már korábban elkezdettekre
                         //átadjuk, hogy hol tart jelenleg
                         var courrentQuestion = result3[0][0].answer_number;
-                        res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, courrentQuestion: courrentQuestion,  'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'nickname': null}); //bejelentkezett felhasználó esetében   
+                        res.render('test_join.ejs',{userData: req.session.userData, 'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, courrentQuestion: courrentQuestion,  'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'nickname': null}); //bejelentkezett felhasználó esetében   
                         //mehet tovább
                       }
                     } else { //nem kezdte még el, mehet a teszt 
                       //új teszt
                       //minden megy rendesen
-                      res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, courrentQuestion: '0', 'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'nickname': null}); //bejelentkezett felhasználó esetében   
+                      res.render('test_join.ejs',{userData: req.session.userData, 'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, courrentQuestion: '0', 'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'nickname': null}); //bejelentkezett felhasználó esetében   
                     } 
                   })
                 } else {//bejelentkezett felhasználó és gyakorló vagy tantermi módban van a tesztfolyamat
-                  res.render('test_join.ejs',{'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, 'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'nickname': null}); //bejelentkezett felhasználó esetében   
+                  res.render('test_join.ejs',{userData: req.session.userData, 'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, 'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'nickname': null}); //bejelentkezett felhasználó esetében   
                 }
                break;
               default:
@@ -396,7 +412,7 @@ app.post('/createTest',function (req, res) {
         connection.query("CALL CreateCategoryRelation(?,?)",[test_id, sub_category], function(err, result, fields) {
             // if (err) throw err;
             //megnyitjuk a tesztösszeállító oldalt, és átadjuk a létrehozott test ID -jét
-            res.render('main.ejs',{page: 'test_create', loggedIn: true, username: req.session.username, test_id: test_id, test_name: test_name, valid: valid});
+            res.render('main.ejs',{page: 'test_create', userData: req.session.userData, loggedIn: true, username: req.session.username, test_id: test_id, test_name: test_name, valid: valid});
             console.log(result);
         })
       } else {
@@ -598,6 +614,36 @@ app.post('/createTestProcess',function (req, res) {
   }
 })
 
+app.post('/deleteTestProcess',function (req, res) {
+  var userid = req.session.userid;
+  var username = req.session.username;
+  var process_id = req.body.process_id_dp;
+  var page = req.body.page_dp;
+
+  if (req.session.loggedIn) { // be van jelentkezve?
+    //
+    
+    connection.query("CALL GetProcessByIDnUser(?,?)", [username, process_id], function(err, result, fields) {
+      if (err) throw err;
+      if (!result[0].length <= 0) { 
+        connection.query("CALL DeleteProcess(?)", [process_id], function(err, result, fields) {
+          if (err) throw err;
+          console.log(result);
+          // res.redirect(req.get('referer'));
+          // res.redirect(req.originalUrl);
+          res.redirect(page);
+        })
+      } else {  
+        //nem tartozik ilyen tesztfolymaat azonosító a felhasználóhoz
+        res.redirect(page);
+      }
+    })
+
+  } else {
+    //nincs bejelentkezve az illető
+  }
+})
+
 //Főkategória létrehozása
 app.post('/newMainCategory',function (req, res) {
   var username = req.session.username;
@@ -712,12 +758,20 @@ app.post('/', function(req, res) {
           var userid = result[0].uid;
           var result = bcrypt.compareSync(password, result[0].password); //szinkron módban hasonlítjuk össze
           if (result) { //ha a tárolt jelszó hash és a beírt jelszó hash egyezik..
+
               console.log("Sikeres bejelentkezés: "+username);
               req.session.loggedIn = true; // a sessionban a loggedIn bool mostantól igaz értékű lesz
               req.session.username = username; // username bekerül a sessionba
               req.session.userid = userid; // userid szintén bekerül
+
+              connection.query("CALL GetUserData(?)", [req.session.username], function(err, result, fields) {
+                if (err) throw err;
+                req.session.userData = result;
+                res.redirect('/home'); //minden rendben, így be lehet jelentkeztetni a felhasználót
+              })
+
               console.log(req.session);
-              res.redirect('/home'); //minden rendben, így be lehet jelentkeztetni a felhasználót
+
           } else { 
               status = 3; //nem egyezik a két jelszó..
               console.log("Hibás jelszó: "+username);
@@ -777,6 +831,49 @@ app.post('/signup', function(req, res) {
   }
   )} else res.send("Súlyos hiba!");
 });
+
+// Signup post esetén
+app.post('/editProfile', function(req, res) {
+  var username = req.session.username;
+  var password = req.body.password_ep;
+  var passwordc = req.body.passwordc_ep;
+  var gender = req.body.gender_ep;
+  var firstname = req.body.firstname_ep;
+  var lastname = req.body.lastname_ep;
+  var title = req.body.title_ep;
+  var email = req.body.email_ep;
+
+
+  if ((password == passwordc) && (password !== '') && (password !== null) && (password !== undefined)) { //backend ellenőrzések (EZT MÉG KI KELL EGÉSZÍTENI!!!)
+    const saltRounds = 10;
+    bcrypt.hash(password, saltRounds, function(err, hash) {// hashelés
+    password = hash;
+    console.log('KIBASZOTT QUERY: '+"UPDATE users SET password="+connection.escape(password)+", email="+connection.escape(email)+", title="+connection.escape(title)+", firstname="+connection.escape(firstname)+", lastname="+connection.escape(lastname)+", gender="+connection.escape(gender)+" WHERE users.username = "+ connection.escape(username)+"")
+    console.log("JELSZÓ: "+password)
+    connection.query("UPDATE users SET password="+connection.escape(password)+", email="+connection.escape(email)+", title="+connection.escape(title)+", firstname="+connection.escape(firstname)+", lastname="+connection.escape(lastname)+", gender="+connection.escape(gender)+" WHERE users.username = "+ connection.escape(username)+"",
+    function(err, result, fields) {
+    if (err) throw err;  
+      connection.query("CALL GetUserData(?)", [req.session.username], function(err, result, fields) {
+        if (err) throw err;
+        req.session.userData = result;
+        res.redirect('/home'); //minden rendben, így be lehet jelentkeztetni a felhasználót
+      })
+    })
+    }) 
+  } else {
+    
+    connection.query("UPDATE users SET email="+connection.escape(email)+", title="+connection.escape(title)+", firstname="+connection.escape(firstname)+", lastname="+connection.escape(lastname)+", gender="+connection.escape(gender)+" WHERE users.username = "+ connection.escape(username)+"",
+    function(err, result, fields) {
+    if (err) throw err; 
+    connection.query("CALL GetUserData(?)", [req.session.username], function(err, result, fields) {
+      if (err) throw err;
+      req.session.userData = result;
+      res.redirect('/home'); //minden rendben, így be lehet jelentkeztetni a felhasználót
+    })
+    })
+  };
+});
+
 //Ezt hívja meg az AJAX a regisztráció során
 app.post('/signup_validator',function (req, res) {
   if (req.body.target == 'username') {//felhasználónév létezik -e?
@@ -865,7 +962,10 @@ app.post('/editTest',function (req, res) {
       if (!result[0].length <= 0) { 
         var test_name = result[0][0].test_name;
         var valid = result[0][0].valid;
-        res.render('main.ejs',{page: 'test_create', loggedIn: true, username: req.session.username, test_id: test_id, test_name: test_name, valid: valid});
+        valid = valid.readUIntLE();
+        console.log(result[0][0])
+        res.render('main.ejs',{page: 'test_create', userData: req.session.userData, loggedIn: true, username: req.session.username, test_id: test_id, test_name: test_name, valid: valid});
+        console.log('VALID ÉRTÉKE 2:' +valid);
       } else {  
         //nem tartozik ilyen teszt azonosító a felhasználóhoz
         res.redirect('/test/bank?status=1');

@@ -195,7 +195,7 @@
 		</div>
 		<div class="row">
 			<div class="col-lg">
-				<label class="form-label mt-2" for="timeset"><b>Időkeret</b></label>
+				<label class="form-label mt-2" for="timeset"><b>Időkeret <%= valid %></b></label>
 				<select id="timeset" class="form-select">
 					<option selected disabled value="">Kérlek válassz!</option>
 					<optgroup label="Másodperc"></optgroup>
@@ -265,7 +265,7 @@
 			<div class="col-lg-6 mt-3">
 				<span class="labels">Megjelenítendő kép</span>
 				<div id="imageDiv">
-					<form ref='uploadForm' id='uploadForm' action='/upload' method='post' encType="multipart/form-data" accept=".gif, .jpg, .png, .doc">
+					<form ref='uploadForm' id='uploadForm' action='/upload' method='post' encType="multipart/form-data" accept=".gif, .jpg, .png">
 						<div class="d-flex align-items-center" id="dnd" ondragover="draganddropsave(event)" ondragenter="draganddropsave(event)" ondrop="dropped(event)">
 							<span class="m-auto">Kattints ide vagy húzd be a képet!</span>
 						</div>

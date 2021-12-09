@@ -180,7 +180,7 @@ data-pagination-parts="[pageList, pageInfo]">
                                       <td class="col-sm-2">
                                         <a href="/test/process?pincode=<%= process_data[0][j].pincode %>"><span style="color: #617ab8;" class="iconify d-inline me-1" data-icon="carbon:information" data-width="18" data-height="18"></span></a>
                                         <span style="color: #bf9b25;" class="iconify d-inline me-1" data-icon="carbon:pen" data-width="18" data-height="18"></span>
-                                        <span style="color: red;" class="iconify d-inline" data-icon="carbon:delete" data-width="18" data-height="18"></span>
+                                        <a href="#" OnClick="LoadDataToModal('deleteTestProcess', '<%= process_data[0][j].process_id %>','')"><span style="color: red;" class="iconify d-inline" data-icon="carbon:delete" data-width="18" data-height="18"></span></a>
                                       </td>
                                     </tr>                
                                     <% } %>
@@ -357,34 +357,6 @@ data-pagination-parts="[pageList, pageInfo]">
       </div>
     </form>
   </section>
-    </div>
-  </div>
-</div>
-
-<!-- Teszt folyamat törlése Modal -->
-<div class="modal fade" id="deleteTestProcessModal" tabindex="-1" aria-labelledby="deleteTestProcessModal" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Figyelem!</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <section class='form'>
-        <form action="deleteTestProcess" class="needs-validation" method="post" id="deleteTestProcess" novalidate>
-        <div class="modal-body">
-          A teszt törlése maga után vonja a teszt példányainak, és az azokhoz tartozó eredmények végleges törlését is.   
-          <fieldset>
-              <div class="container">
-                  <input class="form-control" hidden type="text" id="test_id" name="test_id" value="">
-              </div>
-              </fieldset>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vissza</button>
-          <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">Törlés</button>
-        </div>
-      </form>
-    </section>
     </div>
   </div>
 </div>
@@ -812,69 +784,6 @@ function ShowRowByID(target) {
 
 
 }
-
-//Modalok inicializálása
-var createTestProcessModal = new bootstrap.Modal(document.getElementById('createTestProcessModal'));
-var printTestModal = new bootstrap.Modal(document.getElementById('printTestModal'), {})
-var duplicateTestModal = new bootstrap.Modal(document.getElementById('duplicateTestModal'));
-var renameTestModal = new bootstrap.Modal(document.getElementById('renameTestModal'));
-var moveTestModal = new bootstrap.Modal(document.getElementById('moveTestModal'));
-var printTestModal = new bootstrap.Modal(document.getElementById('printTestModal'));
-var deleteTestModal = new bootstrap.Modal(document.getElementById('deleteTestModal'));
-
-function LoadDataToModal(modal, test_id, test_subcategory) {
-
-  var td = $('#table td').filter( ":nth-child(1)" ).filter(function(){
-      return $(this).text() === test_id;
-    })
-    var Row = td.parent('tr'); 
-    var test_name = Row.find("td:eq(1)").text(); // teszt neve
-
-
-  switch(modal) {
-
-  case 'newTestProcess':
-
-    $("#test_id").val(test_id);
-    createTestProcessModal.show();
-    break;
-
-  case 'duplicateTest':
-    $('#test_name_dt').val(test_name + ' - másolat');  //a tr 1. td eleme a teszt neve
-    $('#newCatCheck').prop('checked', false);
-    $("#test_id_dt").val(test_id);
-    $("#cat_id_dt").val(test_subcategory);
-    originalCatId = $('#cat_id_dt').val(); //eredeti kategória ID eltárolása
-    $('#duplicateTestModal .maincat').addClass('d-none');
-    $('#duplicateTestModal .subcat').addClass('d-none');  
-    duplicateTestModal.show();
-    break;
-
-  case 'renameTest':
-    $("#test_id_rt").val(test_id);
-    $("#test_name_rt").attr('placeholder', test_name);
-    renameTestModal.show();
-    break;
-
-  case 'moveTest':
-    $("#test_id_mt").val(test_id);
-    getMainCategory('moveTest');
-    moveTestModal.show();
-    break;
-
-  case 'printTest':
-    $("#test_id_pt").val(test_id);
-    printTestModal.show();
-    break;
-
-  case 'deleteTest':
-    $("#test_id_delt").val(test_id);
-    deleteTestModal.show();
-    break;
- 
-  default:
-    // code block
-}}
 
 var originalCatId; //globális változóba tároljuk az eredeti kategória azonosítóját
 $("#newCatCheck").change(function() {

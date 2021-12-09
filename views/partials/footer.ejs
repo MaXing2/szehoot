@@ -2,6 +2,149 @@
 
 </footer>
 
+<!--Adatmódosítás Modal  -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Profiladatok módosítása</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <section class='form'>
+        <form action="/editProfile" class="needs-validation" method="post" id="editProfile" novalidate>
+          <fieldset>
+          <div class="editProfileDiv">
+            <div class="card">
+              <div class="form-group mb-3 fullname_ep"> 
+                <label class="form-label" for="fullname_ep"><b>Teljes név:</b></label>
+                <div name="fullname_ep" id="fullname_ep" class="row g-1">
+                  <div class="col-4">
+                    <select class="form-select" id="title_ep" name="title_ep">   
+                      <option value="0"
+                      <% if(loggedIn) { %> 
+                        <% if (userData[0][0].title == '0') { %>
+                           selected 
+                          <% } %>
+                      <% } %>
+                      >-</option>
+                      <option value="1"
+                      <% if(loggedIn) { %> 
+                        <% if (userData[0][0].title == '1') { %>
+                           selected
+                          <% } %>
+                      <% } %>
+                      >Dr.</option>
+                    </select>
+                  </div>
+                  <div class="col-4"><input onblur="name_validator_ep()" class="form-control" onchange="" type="text" id="lastname_ep" name="lastname_ep" value="<% if(loggedIn) { %><%=userData[0][0].lastname%><% } %>"></div>
+                  <div class="col-4"><input onblur="name_validator_ep()" class="form-control" onchange="" type="text" id="firstname_ep" name="firstname_ep" value="<% if(loggedIn) { %><%=userData[0][0].firstname%><% } %>"></div>
+                </div>
+                <div class="valid-feedback">
+                <span id="valid-text"></span>
+                </div>
+                <div class="invalid-feedback">
+                <span id="invalid-text"></span>
+                </div>
+              </div>
+      
+              
+              <div class="form-group mb-3 select gender"> 
+                <label class="form-label" for="gender_ep"><b>Neme:</b></label>
+                <select onchange="gender_validator_ep()" class="form-select" id="gender_ep" name="gender_ep">
+                  <option value="1"
+                  <% if(loggedIn) { %> 
+                    <% if (userData[0][0].gender == '1') { %>
+                       selected
+                      <% } %>
+                  <% } %>
+                  >Nő</option>
+                  <option value="2"
+                  <% if(loggedIn) { %> 
+                    <% if (userData[0][0].gender == '2') { %>
+                       selected
+                      <% } %>
+                  <% } %>
+                  >Férfi</option>
+                  <option value="3"
+                  <% if(loggedIn) { %> 
+                    <% if (userData[0][0].gender == '3') { %>
+                       selected
+                      <% } %>
+                  <% } %>
+                  >Egyéni</option>
+                </select>
+                <div class="valid-feedback">
+                <span id="valid-text"></span>
+                </div>
+                <div class="invalid-feedback">
+                <span id="invalid-text"></span>
+                </div>
+              </div>
+      
+              <div class="form-group mb-3 username_ep"> 
+                <label class="form-label" for="username_ep"><b>Felhasználónév:</b></label>
+                <input class="form-control" type="text" disabled id="username_ep" name="username_ep" value="<% if(loggedIn) { %> <%= userData[0][0].username %> <% } %>">
+              </div>
+                      <div class="form-groupp mb-3 pwCheck">
+                <input class="form-check-input" type="checkbox" id="pwCheck" name="pwCheck">
+                <label class="form-check-label" for="pwCheck">
+                  Jelszó módosítása
+                </label>
+                
+                <div class="invalid-feedback">
+                  <span id="invalid-text"></span>
+                </div>
+              </div>
+              <div class="form-group mb-3 password_ep"> 
+                <label class="form-label" for="password_ep"><b>Új elszó</b></label>
+                <input class="form-control" onblur="pw_validator_ep()" disabled  type="password" id="password_ep" name="password_ep">
+                <div class="valid-feedback">
+                <span id="valid-text"></span>
+                </div>
+                <div class="invalid-feedback">
+                <span id="invalid-text"></span>
+                </div>
+              </div>
+              <div class="form-group mb-3 passwordc_ep"> 
+                <label class="form-label" for="passwordc_ep"><b>Új jelszó megerősítése</b></label>
+                <input class="form-control" onblur="pw_validator_ep()" disabled  type="password" id="passwordc_ep" name="passwordc_ep">
+                <div class="valid-feedback">
+                <span id="valid-text"></span>
+                </div>
+                <div class="invalid-feedback">
+                <span id="invalid-text"></span>
+                </div>
+              </div>
+              <div class="form-group mb-3 email_ep"> 
+                <label class="form-label" for="email_ep"><b>E-mail cím</b></label>
+                <input class="form-control" onblur="email_validator_ep()"  type="email" id="email_ep" name="email_ep" value="<% if(loggedIn) { %> <%= userData[0][0].email %> <% } %>">
+                <div class="valid-feedback">
+                <span id="valid-text"></span>
+                </div>
+                <div class="invalid-feedback">
+                <span id="invalid-text"></span>
+                </div>
+              </div>
+      
+                
+              <div class="form-group mb-3 eduid_ep"> 
+                <label class="form-label" for="eduid"><b>Azonosító</b></label>
+                <input class="form-control" disabled  type="text" id="eduid_ep" name="eduid_ep" value="<% if(loggedIn) { %> <%= userData[0][0].eduid %> <% } %>">
+              </div>
+      
+              <button class="btn btn-primary mt-2" type="submit">Módosítás</button>
+            </div>
+          </div>
+          </fieldset>
+        </form>
+      </section>
+
+
+    </div>
+  </div>
+</div>
+
 <!--Új teszt létrehozása Modal  -->
   <div class="modal fade" id="newTestModal" tabindex="-1" aria-labelledby="newTestModal" aria-hidden="true">
     <div class="modal-dialog">
@@ -65,6 +208,37 @@
     </div>
   </div>
 
+  <!-- Tesztfolyamat törlése Modal -->
+<div class="modal fade" id="deleteTestProcessModal" tabindex="-1" aria-labelledby="deleteTestProcessModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Figyelem!</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <section class='form'>
+        <form action="/deleteTestProcess" class="needs-validation" method="post" id="deleteTestProcess" novalidate>
+        <div class="modal-body">
+          A tesztfolyamat törlése maga után vonja a hozzákapcsolódó kitöltések adatait, beleértve az eredményeket is! </br></br>
+          <storng>Valóban törlöd a tesztfolyamatot?</storng> 
+          <fieldset>
+              <div class="container">
+                  <input class="form-control" hidden type="text" id="process_id_dp" name="process_id_dp" value="">
+                  <input class="form-control" hidden type="text" id="page_dp" name="page_dp" value="">
+              </div>
+              </fieldset>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vissza</button>
+          <button type="submit" class="btn btn-danger">Törlés</button>
+        </div>
+      </form>
+    </section>
+    </div>
+  </div>
+</div>
+
+
   <!--Csatlakozás teszthez Modal  -->
   <div class="modal fade" id="joinTestModal" tabindex="-1" aria-labelledby="joinTestModal" aria-hidden="true">
     <div class="modal-dialog">
@@ -91,7 +265,7 @@
             </fieldset>
           </div>
         <div class="modal-footer">
-          <button type="submit" id="joinTestBtn" class="btn btn-primary rainbow-button">Csatlakozás</button>
+          <button type="submit" id="joinTestBtn" class="btn btn-primary rainbow-button">Indítás</button>
         </div>
         </form>
     </section>
@@ -244,3 +418,220 @@
         }
 
 </script>
+
+
+<script>
+//Adatmódosítás ellenőrző
+	var pw_valid_ep = false
+	var name_valid_ep = false
+	var gender_valid_ep = false
+	var email_valid_ep = false
+
+
+		function name_validator_ep()
+		{
+			if  ($( "#lastname_ep" ).val() != "" && $( "#firstname_ep" ).val() != "")  {
+			//név mezők nem üresek
+					$('#fullname_ep').removeClass('is-invalid');
+					$('#fullname_ep').addClass('is-valid');
+					$('#title_ep').addClass('is-valid');
+					$('#lastname_ep').removeClass('is-invalid');
+					$('#lastname_ep').addClass('is-valid');
+					$('#firstname_ep').removeClass('is-invalid');
+					$('#firstname_ep').addClass('is-valid');
+
+					$(".fullname_ep #valid-text").text( "Elfogadva!" );
+					name_valid_ep = true;
+				} else {
+					if ($( "#lastname_ep" ).val() == "") {
+						$('#lastname_ep').addClass('is-invalid'); 
+						$('#lastname_ep').removeClass('is-valid');
+					} else {
+						$('#lastname_ep').addClass('is-valid'); 
+						$('#lastname_ep').removeClass('is-invalid');
+					}
+
+					if ($( "#firstname_ep" ).val() == "") {
+						$('#firstname_ep').addClass('is-invalid'); 
+						$('#firstname_ep').removeClass('is-valid');
+					} else {
+						$('#firstname_ep').addClass('is-valid'); 
+						$('#firstname_ep').removeClass('is-invalid');
+					}
+					//nincs kitöltve a mező
+					$(".fullname_ep #invalid-text").text( "Mindkét mező kitöltése kötelező!" );
+					$('#fullname_ep').removeClass('is-valid');
+					$('#fullname_ep').addClass('is-invalid');
+					name_valid_ep = false;
+				}	
+		};
+
+		function gender_validator_ep()
+		{
+			if ( $( "#gender_ep" ).val() != "" && $( "#gender_ep" ).val() != null) {
+			//gender választó nem üres
+						//nincs kitöltve a mező
+						$(".gender_ep #valid-text").text( "Elfogadva!" );
+						$('#gender_ep').removeClass('is-invalid');
+						$('#gender_ep').addClass('is-valid');
+						gender_valid_ep = true;
+				//nincs kitöltve a mező
+			} else {
+						//nincs kitöltve a mező
+						$(".gender_ep #invalid-text").text( "A mező kitöltése kötelező!" );
+						$('#gender_ep').removeClass('is-valid');
+						$('#gender_ep').addClass('is-invalid');
+						gender_valid_ep = false;
+				//nincs kitöltve a mező
+			}
+		};
+
+		function pw_validator_ep()
+		{
+			if ($( "#password_ep" ).val() != "") {
+				//jelszó nem üres
+				if ($("#password_ep").val().match(/^(?=.*\d)(?=.*[a-zaáeéiíoóöőuúüű])(?=.*[A-ZAÁEÉIÍOÓÖŐUÚÜŰ])[0-9a-zA-ZaáeéiíoóöőuúüűAÁEÉIÍOÓÖŐUÚÜŰ]{8,}$/))
+				{
+					//a jelszó megfelel az elvártaknak
+					$(".password_ep #valid-text").text( "Elfogadva!" );
+						$('#password_ep').removeClass('is-invalid');
+						$('#password_ep').addClass('is-valid');
+					if ($("#password_ep").val() == $("#passwordc_ep").val()) {
+						//a két jelszó egyezik
+						$(".password_ep #valid-text").text( "Elfogadva!" );
+						$('#password_ep').removeClass('is-invalid');
+						$('#password_ep').addClass('is-valid');
+						$(".passwordc_ep #valid-text").text( "Elfogadva!" );
+						$('#passwordc_ep').removeClass('is-invalid');
+						$('#passwordc_ep').addClass('is-valid');
+						pw_valid_ep = true;
+					} else {
+						//a két jelszó nem egyezik
+						// $(".password #invalid-text").text( "A két jelszó nem egyezik!" );
+						// $('#password').removeClass('is-valid');
+						// $('#password').addClass('is-invalid');
+						if ($( "#passwordc_ep" ).val() != '') {
+						$(".passwordc_ep #invalid-text").text( "A két jelszó nem egyezik!" );
+						$('#passwordc_ep').removeClass('is-valid');
+						$('#passwordc_ep').addClass('is-invalid');
+						pw_valid_ep = false;
+					} 
+					}
+				} else {
+					//a jelszó nem megfelelő
+					$(".password_ep #invalid-text").text( "A jelszónak legalább 8 karaktert kell tartalmaznia, melyben van legalább egy kisbetű és nagybetű, valamint egy szám." );
+						$('#password_ep').removeClass('is-valid');
+						$('#password_ep').addClass('is-invalid');
+						pw_valid_ep = false;
+				}
+			} else {
+				//a jelszó üres
+				$('#password_ep').removeClass('is-valid');
+			    $('#password_ep').addClass('is-invalid');
+                $('#passwordc_ep').removeClass('is-valid');
+                $('#passwordc_ep').addClass('is-invalid');
+				$( ".password_ep #invalid-text" ).text( "A mező kitöltése kötelező!" );
+				pw_valid_ep = false;
+			}
+		};
+
+		function email_validator_ep()
+		{
+			if ($( "#email_ep" ).val() != "") {
+				//ha nem üres
+				if ($("#email_ep").val().match(/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/)){
+					//ha megfelel az e-mail
+					//Regexp: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
+					$.ajax({url:"/signup_validator", type:"POST", data: ({target: 'email', email: $("#email_ep").val()}), async:false, cache:false, success:function(result)
+						{
+						var data = JSON.parse(JSON.stringify(result));
+						console.log(data);
+						if (data.exists && $("#email_ep").val() !== '<% if(loggedIn) { %><%=userData[0][0].email%><% } %>' ) {
+							//létezik már az email
+							$(".email_ep #invalid-text").text( "Az e-mail cím már foglalt!" );
+							$('#email_ep').removeClass('is-valid');
+							$('#email_ep').addClass('is-invalid');
+							email_valid_ep = false;
+						} else {
+							//nem létezik még
+							$(".email_ep #invalid-text").text( "Elfogadva!" );
+							$('#email_ep').removeClass('is-invalid');
+							$('#email_ep').addClass('is-valid');
+							email_valid_ep = true;
+						}
+					}});
+				} else {
+				//ha nem felel meg
+				$(".email_ep #invalid-text").text( "Az e-mail cím nem felel meg a formai követelményeknek! Minta: user@domain.hu" );
+				$('#email_ep').removeClass('is-valid');
+				$('#email_ep').addClass('is-invalid');
+				email_valid_ep = false;
+				}
+			} else {
+				//üres
+				$(".email_ep #invalid-text").text( "A mező kitöltése kötelező!" );
+				$('#email_ep').removeClass('is-valid');
+				$('#email_ep').addClass('is-invalid');
+				email_valid_ep = false;
+			}
+		};
+  
+    $("#pwCheck").change(function() {
+            $('#password_ep').val('');
+            $('#passwordc_ep').val('');
+            if(this.checked) {
+                $('#password_ep').prop('disabled','');
+                $('#passwordc_ep').prop('disabled','');
+                $('#password_ep').removeClass('is-valid is-invalid');
+                $('#passwordc_ep').removeClass('is-valid is-invalid');
+            } else {
+                $('#password_ep').prop('disabled','disabled');
+                $('#passwordc_ep').prop('disabled','disabled');
+                $('#password_ep').removeClass('is-valid is-invalid');
+                $('#passwordc_ep').removeClass('is-valid is-invalid');
+            }
+        });
+
+     function editSubmit(event) {
+      name_validator_ep();
+      gender_validator_ep();
+      if ($("#pwCheck").prop('checked')) {pw_validator_ep();}
+      email_validator_ep();
+
+      if ($("#pwCheck").prop('checked')) {
+          if (name_valid_ep && gender_valid_ep && pw_valid_ep  && email_valid_ep) {
+            console.log('Minden ok!');
+            return;
+          } else {
+            console.log('Lassú vagyok!')
+          }
+      } else {
+        if (name_valid_ep && gender_valid_ep  && email_valid_ep) {
+        console.log('Minden ok!');
+        return;
+        }
+      }
+
+    event.preventDefault();
+    }
+
+		const form = document.getElementById('editProfile');
+        form.addEventListener('submit', editSubmit);
+
+        
+
+
+
+
+
+
+      //Modalok inicializálása
+      var createTestProcessModal = new bootstrap.Modal(document.getElementById('createTestProcessModal'));
+      var deleteTestProcessModal = new bootstrap.Modal(document.getElementById('deleteTestProcessModal'));
+      var printTestModal = new bootstrap.Modal(document.getElementById('printTestModal'), {})
+      var duplicateTestModal = new bootstrap.Modal(document.getElementById('duplicateTestModal'));
+      var renameTestModal = new bootstrap.Modal(document.getElementById('renameTestModal'));
+      var moveTestModal = new bootstrap.Modal(document.getElementById('moveTestModal'));
+      var printTestModal = new bootstrap.Modal(document.getElementById('printTestModal'));
+      var deleteTestModal = new bootstrap.Modal(document.getElementById('deleteTestModal'));
+	</script>

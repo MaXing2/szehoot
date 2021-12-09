@@ -1,8 +1,16 @@
 
 
 .signup {
-	max-width: 500px;
+	max-width: 600px;
 }
+
+.editProfileDiv {
+    padding: 15px;
+}
+.editProfileDiv > .card {
+    border: none;
+}
+
 .dropdown-menu {
     right: 0 !important;
     left: auto !important;

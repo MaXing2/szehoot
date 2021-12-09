@@ -55,7 +55,7 @@ data-pagination-parts="[pageList, pageInfo]">
               <% } %>
               <td><%= process_data[0][i].pincode %></td>
               <td><%= fullfilled_value %></td>
-              <td></td>
+              <td>-</td>
               <td><% switch (process_data[0][i].mode) {
                 case 0 : %>
                         Gyakorló
@@ -92,8 +92,8 @@ data-pagination-parts="[pageList, pageInfo]">
                 <!-- <a href ="/test/results?process_id=<%= process_data[0][i].process_id %>"><span class="iconify" data-icon="carbon:result" data-width="20" data-height="20"></span></a> -->
               <% } %> 
               <span style="color: #bf9b25;" class="iconify d-inline me-1" data-icon="carbon:pen" data-width="20" data-height="20"></span>
-              <span style="color: red;" class="iconify d-inline" data-icon="carbon:delete" data-width="20" data-height="20"></span>
-              </td>
+              <a href="#" OnClick="LoadDataToModal('deleteTestProcess', '<%= process_data[0][i].process_id %>','')"><span style="color: red;" class="iconify d-inline" data-icon="carbon:delete" data-width="20" data-height="20"></span></a>
+            </td>
           </tr>
   <% } %>
 <% } %>
