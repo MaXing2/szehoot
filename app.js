@@ -961,8 +961,7 @@ app.post('/editTest',function (req, res) {
       if (err) throw err;
       if (!result[0].length <= 0) { 
         var test_name = result[0][0].test_name;
-        var valid = result[0][0].valid;
-        valid = valid.readUIntLE();
+        var valid = result[0][0].valid_int;
         console.log(result[0][0])
         res.render('main.ejs',{page: 'test_create', userData: req.session.userData, loggedIn: true, username: req.session.username, test_id: test_id, test_name: test_name, valid: valid});
         console.log('VALID ÉRTÉKE 2:' +valid);
