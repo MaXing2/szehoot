@@ -7,7 +7,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Profiladatok módosítása</h5>
+        <h5 class="modal-title">Fiókadatok módosítása</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
@@ -133,12 +133,16 @@
                 <input class="form-control" disabled  type="text" id="eduid_ep" name="eduid_ep" value="<% if(loggedIn) { %> <%= userData[0][0].eduid %> <% } %>">
               </div>
       
-              <button class="btn btn-primary mt-2" type="submit">Módosítás</button>
+              <button class="btn btn-primary mt-2" type="submit">Módosítás</button> 
+              <button id="deleteAccount" class="btn btn-danger mt-2">Fiók törlése</button>
+              <button class="btn btn btn-secondary mt-2" data-bs-dismiss="modal">Vissza</button>
             </div>
           </div>
           </fieldset>
         </form>
+
       </section>
+
 
 
     </div>
@@ -220,7 +224,7 @@
         <form action="/deleteTestProcess" class="needs-validation" method="post" id="deleteTestProcess" novalidate>
         <div class="modal-body">
           A tesztfolyamat törlése maga után vonja a hozzákapcsolódó kitöltések adatait, beleértve az eredményeket is! </br></br>
-          <storng>Valóban törlöd a tesztfolyamatot?</storng> 
+          <strong>Valóban törlöd a tesztfolyamatot?</strong> 
           <fieldset>
               <div class="container">
                   <input class="form-control" hidden type="text" id="process_id_dp" name="process_id_dp" value="">
@@ -237,6 +241,33 @@
     </div>
   </div>
 </div>
+
+<!-- Felhasználóifiók törlése Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Figyelem!</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <section class='form'>
+        <form action="/deleteAccount" class="needs-validation" method="post" id="deleteAccount" novalidate>
+        <div class="modal-body">
+          A felhasználói fiók törlése maga után vonja a hozzákapcsolódó összes adatot! </br></br>
+          <strong>Valóban törlöd a fiókodat?</strong> 
+          <fieldset>
+              </fieldset>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vissza</button>
+          <button type="submit" class="btn btn-danger">Törlés</button>
+        </div>
+      </form>
+    </section>
+    </div>
+  </div>
+</div>
+
 
 
   <!--Csatlakozás teszthez Modal  -->
@@ -619,10 +650,12 @@
         form.addEventListener('submit', editSubmit);
 
         
-
-
-
-
+$( "#deleteAccount" ).click(function() {
+  var deleteAccountModal = new bootstrap.Modal(document.getElementById('deleteAccountModal'), {})
+  $('#editProfileModal').modal('hide');
+  deleteAccountModal.show();
+  event.preventDefault();
+});
 
 
       //Modalok inicializálása

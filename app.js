@@ -372,6 +372,7 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
                         attemptId = result3[0][0].attempt_id; //megváltoztatjuk az attemptId változó értékét a már korábban elkezdettekre
                         //átadjuk, hogy hol tart jelenleg
                         var courrentQuestion = result3[0][0].answer_number;
+                        console.log('AZ AKTUÁLIS FELADAT ÉRTÉKE: '+courrentQuestion);
                         res.render('test_join.ejs',{userData: req.session.userData, 'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, courrentQuestion: courrentQuestion,  'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'nickname': null}); //bejelentkezett felhasználó esetében   
                         //mehet tovább
                       }
@@ -492,6 +493,19 @@ app.post('/deleteMainCat',function (req, res) {
   }
 })
 
+app.post('/deleteAccount',function (req, res) {
+  var username = req.session.username;
+  if (req.session.loggedIn) { // be van jelentkezve?
+    //
+    connection.query("CALL DeleteUser(?)", [username], function(err, result, fields) {
+      if (err) throw err;
+      req.session.destroy();
+      res.redirect('/');
+    })
+  } else {
+    //nincs bejelentkezve az illető
+  }
+})
 
 app.post('/deleteTest',function (req, res) {
   var userid = req.session.userid;
