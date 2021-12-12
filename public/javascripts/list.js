@@ -545,6 +545,7 @@ ev.preventDefault();
 
 //delet qest
 function dotrol() {
+  //del from db 
   for (i = 0; i <bar ; i++) {
     var tomb=[];
     tomb[0] =  pincode;
@@ -558,7 +559,7 @@ function dotrol() {
       dataType: "json"
     });
   }
- 
+ //delet from local mem
   console.log(elem);
   console.log(data[elem]);
   data.splice(elem, 1);
@@ -566,12 +567,12 @@ function dotrol() {
   work = false;
   console.log(data[elem]);
   var tmpbar= bar -1;
-
+//renumber local qest 
   for (i = 0; i <tmpbar ; i++) {
     data[i].question_number=i;
     console.log(data);
   }
-
+//visual bar delet and rebuild
   $("#tabla_szam").text(tmpbar);
   alldel();
   var counttime = 0;
@@ -580,16 +581,17 @@ function dotrol() {
     counttime = counttime + parseInt(data[i].time);
     countpoint = countpoint + data[i].score;
     typeselect(i);
-    $("#"+ i).trigger('click');
+    //click qest bar
+    $("#"+ (i+1)).trigger('click');
   }
-
+//save change to db
   $.ajax({
     type: "POST",
     url: 'save',
     data:  {"ment": JSON.stringify(data)},
     dataType: "json",
   });
-
+//update osszesites
   document.getElementById("CountPoint").innerHTML = (countpoint); 
   alltime(counttime);
   if (bar==0){
