@@ -71,6 +71,9 @@ background-color: beige !important;
 
 <table     
 id="table"
+<% if (typeof fullcat !== 'undefined') { %>
+  data-search-text="<%= fullcat %>"
+<% } %>
 data-toggle="table"
 data-mobile-responsive="true"
 data-search="true"

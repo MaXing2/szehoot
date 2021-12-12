@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: localhost
--- Létrehozás ideje: 2021. Dec 10. 00:48
+-- Létrehozás ideje: 2021. Dec 12. 18:30
 -- Kiszolgáló verziója: 10.1.48-MariaDB-0+deb9u1
 -- PHP verzió: 7.2.34-18+0~20210223.60+debian9~1.gbpb21322
 
@@ -235,7 +235,7 @@ GROUP BY users.username) x
 ORDER BY summed_points desc;
 END$$
 
-CREATE DEFINER=`max`@`%` PROCEDURE `GetSubCategorys` (IN `username` VARCHAR(100))  BEGIN
+CREATE DEFINER=`max`@`%` PROCEDURE `GetSubCategorys` (IN `username` VARCHAR(255))  BEGIN
 	SELECT *  FROM test_category_names
     JOIN users ON users.uid = test_category_names.u_id WHERE users.username = username AND test_category_names.parent IS NOT NULL;
 END$$
@@ -262,11 +262,16 @@ CREATE DEFINER=`max`@`%` PROCEDURE `GetUserData` (IN `username` VARCHAR(255))  B
 SELECT * FROM users WHERE users.username = username;
 END$$
 
-CREATE DEFINER=`max`@`%` PROCEDURE `MoveTest` (IN `test_id` INT(5), IN `cat_id` INT(5))  BEGIN
+CREATE DEFINER=`max`@`%` PROCEDURE `MoveTest` (IN `test_id` INT(11), IN `cat_id` INT(11))  BEGIN
 UPDATE test_category_relation SET test_category_relation.category_id=cat_id WHERE test_category_relation.test_id = test_id;
 END$$
 
-CREATE DEFINER=`max`@`%` PROCEDURE `RenameTest` (IN `test_id` INT(5), IN `new_test_name` VARCHAR(200))  BEGIN
+CREATE DEFINER=`max`@`%` PROCEDURE `RenameCategory` (IN `category_id` INT(11), IN `name` VARCHAR(255), IN `user_id` INT(11))  BEGIN
+UPDATE test_category_names SET test_category_names.name = name
+WHERE test_category_names.id = category_id && test_category_names.u_id = user_id;
+END$$
+
+CREATE DEFINER=`max`@`%` PROCEDURE `RenameTest` (IN `test_id` INT(11), IN `new_test_name` VARCHAR(255))  BEGIN
 UPDATE test_list SET test_list.test_name = new_test_name WHERE test_list.id = test_id;
 END$$
 

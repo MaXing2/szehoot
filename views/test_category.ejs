@@ -44,7 +44,7 @@ title="Információ" data-bs-content="Minden teszt egy előre meghatározott kat
                 <div id="collapse<%= i %>" class="accordion-collapse collapse" aria-labelledby="heading<%= i %>" data-bs-parent="#categorys">
                     <div class="accordion-body">
                       <a href="#" OnClick="LoadDataToModal('deleteMainCat', '', '<%= data[0][i].id %>')" class="btn btn-danger btn-sm float-end m-2">Főkategória törlése</a>
-                      <a href="#" class="btn btn-secondary btn-sm float-end m-2">Főkategória átnevezése</a>
+                      <a href="#" OnClick="LoadDataToModal('renameCat', '', '<%= data[0][i].id %>')" class="btn btn-secondary btn-sm float-end m-2">Főkategória átnevezése</a>
                       <table class="subcat-tables"     
                       id="table"
                       data-toggle="table"
@@ -63,8 +63,8 @@ title="Információ" data-bs-content="Minden teszt egy előre meghatározott kat
                                         <td><%= data[0][j].name %></td>
                                         <td><%= data[0][j].TestCount %></td>
                                         <td>
-                                          <a href="#" class="btn btn-warning btn-sm">Teszt lista</a>
-                                          <a href="#" class="btn btn-secondary btn-sm">Átnevezés</a>
+                                          <a href="/test/bank?fullcat=<%= data[0][i].name %>/<%= data[0][j].name %>" class="btn btn-warning btn-sm">Teszt lista</a>
+                                          <a href="#" OnClick="LoadDataToModal('renameCat', '<%= data[0][j].id %>', '<%= data[0][i].id %>')" class="btn btn-secondary btn-sm">Átnevezés</a>
                                           <a href="#" OnClick="LoadDataToModal('deleteSubCat', '<%= data[0][j].id %>', '<%= data[0][i].id %>')" class="btn btn-danger btn-sm">Törlés</a><br>
                                         </td>
                                     </tr>
@@ -156,6 +156,44 @@ title="Információ" data-bs-content="Minden teszt egy előre meghatározott kat
   </div>
 </div>
 
+<!--Kategória átnevezése Modal  -->
+<div class="modal fade" id="renameCatModal" tabindex="-1" aria-labelledby="renameCatModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="">Kategória átnevezése</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <section class='form'>
+      <form action="/renameCat" class="needs-validation" method="post" id="renameCat" name="renameCat" novalidate>
+      <div class="modal-body">
+            <fieldset>
+              <div class="container">
+                  <input class="form-control" hidden type="text" id="cat_id_rc" name="cat_id_rc" value=""> 
+                  <input class="form-control" hidden type="text" id="maincat_id_rc" name="maincat_id_rc" value=""> 
+                  <div class="form-group mb-3 "> 
+                    <label class="form-label" for="start_date"><b>Kategória új neve:</b></label>
+                    <input class="form-control"  type="text" id="catname" name="catname">
+                    <div class="valid-feedback">
+                    <span id="valid-text"></span>
+                    </div>
+                    <div class="invalid-feedback">
+                    <span id="invalid-text"></span>
+                    </div>
+                  </div>
+              </div>
+            </fieldset>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Kilépés</button>
+        <button type="submit" class="btn btn-primary">Létrehozás</button>
+      </div>
+    </form>
+  </section>
+    </div>
+  </div>
+</div>
+
 <!-- Alkategória törlése Modal -->
 <div class="modal fade" id="deleteSubCatModal" tabindex="-1" aria-labelledby="deleteSubCatModal" aria-hidden="true">
   <div class="modal-dialog">
@@ -171,7 +209,7 @@ title="Információ" data-bs-content="Minden teszt egy előre meghatározott kat
           <fieldset>
               <div class="container">
                   <input class="form-control" hidden type="text" id="subcat_id_ds" name="subcat_id_ds" value="">
-                  <input class="form-control" hidden type="text" id="maincat_id_ds" name="maincat_id_ds" value=""> 
+                  <input class="form-control" hidden type="text" id="maincat_id_ds" name="maincat_id_ds" value="">
               </div>
           </fieldset>
         </div>
@@ -221,6 +259,7 @@ var deleteMainCatModal = new bootstrap.Modal(document.getElementById('deleteMain
 var deleteSubCatModal = new bootstrap.Modal(document.getElementById('deleteSubCatModal'));
 var newMainCatModal = new bootstrap.Modal(document.getElementById('newMainCatModal'));
 var newSubCatModal = new bootstrap.Modal(document.getElementById('newSubCatModal'));
+var renameCatModal = new bootstrap.Modal(document.getElementById('renameCatModal'));
 
 
 function LoadDataToModal(modal, subcat_id, maincat_id) {
@@ -241,6 +280,11 @@ function LoadDataToModal(modal, subcat_id, maincat_id) {
     break;
   case 'newMainCat':
     newMainCatModal.show();
+    break;
+  case 'renameCat':
+    renameCatModal.show();
+    (subcat_id != '') ? $("#cat_id_rc").val(subcat_id) :$("#cat_id_rc").val(maincat_id);
+    $("#maincat_id_rc").val(maincat_id);
     break;
   default:
     // code block

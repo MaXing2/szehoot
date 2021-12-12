@@ -268,10 +268,10 @@ app.get('/test/bank',function (req, res) {
       }
       console.log('Noprocess értéke: '+noprocess)
       console.log(result2[0]);
-      res.render('main.ejs',{page: 'test_bank', userData: req.session.userData, test_data: result, noprocess: noprocess, process_data: result2, loggedIn: true, username: req.session.username, test_id: req.query.test_id, pincode: req.query.pincode, status: req.query.status, title: 'Tesztbank'});
+      res.render('main.ejs',{page: 'test_bank', userData: req.session.userData, test_data: result, noprocess: noprocess, process_data: result2, loggedIn: true, username: req.session.username, test_id: req.query.test_id, pincode: req.query.pincode, status: req.query.status, pincode: req.query.pincode, fullcat: req.query.fullcat, title: 'Tesztbank'});
       })
     } else { //nincs egyetlen teszt sem...
-    res.render('main.ejs',{page: 'test_bank', userData: req.session.userData, test_data: result, loggedIn: true, username: req.session.username, test_id: req.query.test_id, pincode: req.query.pincode, status: req.query.status, title: 'Tesztbank'});
+    res.render('main.ejs',{page: 'test_bank', userData: req.session.userData, test_data: result, loggedIn: true, username: req.session.username, test_id: req.query.test_id, pincode: req.query.pincode, status: req.query.status, fullcat: req.query.fullcat, title: 'Tesztbank'});
     }
     })
   } else {
@@ -453,6 +453,25 @@ app.post('/duplicateTest',function (req, res) {
   }
 })
 
+app.post('/renameCat',function (req, res) {
+  var userid = req.session.userid;
+  var cat_id = req.body.cat_id_rc; //ez lehet alkategória és főkategória azonosító is egyaránt
+  var maincat_id = req.body.maincat_id_rc; //ez továbbra is csak amiatt kell, hogy le lehessen nyitni a főkategóriát az oldalfrissítés után
+  var cat_name = req.body.catname;
+
+  if (req.session.loggedIn) { // be van jelentkezve?
+    //
+        connection.query("CALL RenameCategory(?,?,?)", [cat_id, cat_name, userid], function(err, result, fields) {
+          if (err) throw err;
+          console.log(result);
+          res.redirect('/test/category?maincatid='+ (maincat_id)); 
+        })
+
+
+  } else {
+    //nincs bejelentkezve az illető
+  }
+})
 
 app.post('/deleteSubCat',function (req, res) {
   var userid = req.session.userid;
