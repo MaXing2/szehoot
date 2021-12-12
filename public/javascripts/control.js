@@ -22,7 +22,7 @@ window.onload = (event) => {
 //for test continue
 function last(courrentQuestion,mod,ad,cname) {
   if((mod==2 || mod==3) && ad != cname){
-    actual=courrentQuestion+1;
+    actual=(parseInt(courrentQuestion)+1);
   }
 }
 
