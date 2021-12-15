@@ -32,6 +32,40 @@ io.on('connection', socket => {
     // });
 
 
+    socket.on('slast', (pincode,attempt) => {
+        // console.log("most keri az adatokat");
+        // console.log(pincode);
+        var rawdata=[];
+        var tmp = 0;
+        var all = 0;
+        console.log(attempt);
+        var sql = "SELECT * FROM test_results WHERE attempt_id=" + con.escape(attempt) +"";
+        con.query(sql, function (err, result) {
+            if (err) throw err;
+           rawdata = JSON.parse(JSON.stringify(result));
+           console.log(rawdata);
+           rawdata.forEach(element => {
+            var sql = "SELECT correct_answer_no AS correct , score AS points FROM test_questions WHERE test_id=" + con.escape(pincode) + " and question_number="+con.escape(element.answer_number)+"";
+            con.query(sql, function (err, result) {
+                if (err) throw err;
+                res = JSON.parse(JSON.stringify(result));
+                // console.log(res);
+                // console.log("most iratja ki");
+                // console.log(element.answers);
+                // console.log(res[0].correct);
+                all=res[0].points;
+                if (res[0].correct==element.answers){
+                    socket.join(socket.id);      
+                    tmp=res[0].points;
+                    console.log(tmp);
+                    io.to(socket.id).emit('last', tmp,all);
+                }
+            });
+            } );
+        });
+    })
+
+
     //getter
     socket.on('sgetter', (kerdes,nam,gamemode,u_id) => {
         var tmp=false;

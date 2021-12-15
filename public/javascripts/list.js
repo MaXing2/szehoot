@@ -54,6 +54,42 @@ function MAIL(testSzoveg) {
 }
 
 
+//IMPORT
+$("#testImportBtn").change(function () {
+  //var file = document.getElementsByName("gpxFile");
+  var file = $("input[name='importFile']")[0];
+  if (file.files.length == 0) {
+      alert("Kérlek válaszd ki a fájlt a feltöltéshez!");
+  } else {
+      var filesGood = true;
+      for(var i = 0; i < file.files.length; i++) {
+          if (!file.files.item(i).name.endsWith(".json")){
+              filesGood = false;
+              alert("Csak json kiterjesztésű fájl feltöltésére van lehetőség!");
+          }
+      }
+
+      if (filesGood) {
+        var importData = new FormData($('#importForm')[0]);  
+          importData.append("kerdesszam", pincode);
+          //$("#importForm").submit();
+
+          $.ajax({
+            type: "POST",
+            url: 'IMPORT',
+            contentType: false,
+            processData: false,
+            cache: false,
+            data: importData,
+            success: function (response, error) {
+                console.log("IMPORTALAS SIKERESEE!!!!!!!!");
+                doAjax(pincode).then(dosave())
+            },
+          });
+      }
+  }
+});
+
 function doAjax(testSzoveg) {
   alldel();
     // testSzoveg = document.getElementById("tippem").value;

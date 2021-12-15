@@ -1083,6 +1083,7 @@ app.post('/chart', function (req, res) {
 }
 });
 });
+app.use(fileUpload({ fileSize: 5 * 1024 * 1024 , responseOnLimit: 'File size limit has been reached', abortOnLimit: true, safeFileNames: true, preserveExtension: true }));
 
 
 // scores data reqest
@@ -1151,7 +1152,6 @@ app.post('/list', function (req, res) {
 
 
 //file upload
-app.use(fileUpload({ fileSize: 5 * 1024 * 1024 , responseOnLimit: 'File size limit has been reached', abortOnLimit: true, safeFileNames: true, preserveExtension: true }));
 app.post('/upload', function(req, res) {
   
   let sampleFile;

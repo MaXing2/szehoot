@@ -11,7 +11,8 @@ var time = 0 ;
 var char;
 var allpoint = 0;
 window.onload = (event) => {
-  last(courrentQuestion,mod,ad,cname);
+  console.log("a keresett szam:");
+  console.log(courrentQuestion);
   socket.emit('scode',pincode);
   $(".test-title").text(testname);
   console.log(cname + " - ez a neve");
@@ -22,13 +23,26 @@ window.onload = (event) => {
 //for test continue
 function last(courrentQuestion,mod,ad,cname) {
   if((mod==2 || mod==3) && ad != cname){
+    if(courrentQuestion!=0){
     actual=(parseInt(courrentQuestion)+1);
+    socket.emit('slast',pincode,attempt);
+  }
   }
 }
+
+socket.on('last',(resul, all) => {
+  point += resul;
+  // console.log(resul);
+  // console.log("pontja::");
+  // console.log(point);
+  allpoint= allpoint+all;
+});
+
 
   socket.on('code',ered => {
     console.log(ered);
     pincode=ered;
+    last(courrentQuestion,mod,ad,cname);
     kerdesadatok(pincode);
     if (ad != cname){       //tanár teszt vezerlo!!
       vezerlo();
@@ -77,6 +91,7 @@ function hiv (ered) {
         display = document.querySelector('#time');
         clearInterval(globalid);
         startTimer(idom);
+        console.log("ez most elobb lefut??!!");
         allpoint +=  ered[0].score;
         // startTimer(idom, display);
         starterbutton();
