@@ -171,20 +171,20 @@
 			<div class="col-12">
 
 				<div class="card text-dark bg-light h-100">
-					<div class="card-header text-center">Kitöltött tesztek száma</div>
+					<div class="card-header text-center">Tesztkitöltések száma</div>
 					<div class="card-body text-center">
 						<div class="row">
 							<div class="col-4">
 								<span>Gyakorló</span>
-							<p class="card-text fs-2">0</p>
+							<p class="card-text fs-2"><%= myfullfilledCount[0][0].gyakorloCount%></p>
 							</div>
 							<div class="col-4">
 								<span>Vizsga</span>
-							<p class="card-text fs-2">0</p>
+							<p class="card-text fs-2"><%= myfullfilledCount[0][0].vizsgaCount%></p>
 							</div>
 							<div class="col-4">
 								<span>Vizsga (verseny)</span>
-							<p class="card-text fs-2">0</p>
+							<p class="card-text fs-2"><%= myfullfilledCount[0][0].vizsgavCount%></p>
 							</div>
 						</div>
 					</div>

@@ -53,7 +53,6 @@ function MAIL(testSzoveg) {
   form.trigger('submit', function(){});
 }
 
-
 //IMPORT
 $("#testImportBtn").change(function () {
   //var file = document.getElementsByName("gpxFile");
@@ -583,6 +582,7 @@ ev.preventDefault();
 function dotrol() {
   //del from db 
   for (i = 0; i <bar ; i++) {
+
     var tomb=[];
     tomb[0] =  pincode;
     tomb[1] = data[i].question_number;

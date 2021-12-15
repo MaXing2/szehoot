@@ -376,7 +376,6 @@
             <div class="col-12 text-center">
               <button type="button" id="back" class="btn me-1 btn-control btn-sm">&laquo; Előző</button>
               <button type="button" id="next" class="btn ms-1 btn-control btn-sm">Következő &raquo;</button>
-              <button type="button" class="btn ms-1 btn-control btn-sm d-none">Befejezés</button>
             </div>
             </div>
             <div class="row gx-0 answer-content-group">
@@ -522,10 +521,13 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
         <div class="modal-body">
-            <span>Az általad elért eredmény:</span><span id="result_percent" class="float-end fw-bold">95%</span><br>
-            <span>Elért/összes pontszám:</span><span id="result_score" class="float-end fw-bold">52 / 55</span><br>
-            <hr>
+            <span>Az általad elért eredmény:</span><span id="result_percent" class="float-end fw-bold"></span><br>
+            <span>Kitöltési idő:</span><span id="result_duration" class="float-end fw-bold">Jeles</span><br>
+            <span>Elért/összes pontszám:</span><span id="result_reached" class="float-end fw-bold"></span><br>
             <span>Értékelés:</span><span id="result_rating" class="float-end fw-bold">Jeles</span><br>
+            <span class="extra" style="color: red;">Figyelem! Az extra pontszám nem számít bele az értékelésbe!</span>
+            <hr class="extra">
+            <span class="extra">Elért/összes extra pontszám:</span><span id="result_extrareached" class="float-end fw-bold"></span><br>
             
         </div>
       <div class="modal-footer">
@@ -796,8 +798,16 @@ var attempt = JSON.parse('<%- JSON.stringify(attempt_id) %>');  // send attempt
 var nick = JSON.parse('<%- JSON.stringify(nickname) %>'); // send nickname
 var test_id = '<%= test_id %>';
 var process_id = '<%= process_id %>';
-var courrentQuestion = '<%= courrentQuestion %>';
+
+
+var classification = '<%= classification %>';
 </script>
+
+<% if (typeof courrentQuestion !== 'undefined') { %>
+<script>var courrentQuestion = '<%= courrentQuestion %>';</script>
+<% } else { %>
+  <script>var courrentQuestion = 0;</script>
+  <% } %>
 
 <script src="../javascripts/control.js"></script>
 <!-- 

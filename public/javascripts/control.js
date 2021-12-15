@@ -11,8 +11,7 @@ var time = 0 ;
 var char;
 var allpoint = 0;
 window.onload = (event) => {
-  console.log("a keresett szam:");
-  console.log(courrentQuestion);
+  last(courrentQuestion,mod,ad,cname);
   socket.emit('scode',pincode);
   $(".test-title").text(testname);
   console.log(cname + " - ez a neve");
@@ -22,27 +21,14 @@ window.onload = (event) => {
 
 //for test continue
 function last(courrentQuestion,mod,ad,cname) {
-  if((mod==2 || mod==3) && ad != cname){
-    if(courrentQuestion!=0){
+  if((mod==2 || mod==3) && courrentQuestion != 0 && ad != cname){
     actual=(parseInt(courrentQuestion)+1);
-    socket.emit('slast',pincode,attempt);
-  }
   }
 }
-
-socket.on('last',(resul, all) => {
-  point += resul;
-  // console.log(resul);
-  // console.log("pontja::");
-  // console.log(point);
-  allpoint= allpoint+all;
-});
-
 
   socket.on('code',ered => {
     console.log(ered);
     pincode=ered;
-    last(courrentQuestion,mod,ad,cname);
     kerdesadatok(pincode);
     if (ad != cname){       //tanár teszt vezerlo!!
       vezerlo();
@@ -91,7 +77,6 @@ function hiv (ered) {
         display = document.querySelector('#time');
         clearInterval(globalid);
         startTimer(idom);
-        console.log("ez most elobb lefut??!!");
         allpoint +=  ered[0].score;
         // startTimer(idom, display);
         starterbutton();
@@ -229,20 +214,37 @@ console.log(nick);
     socket.emit('rogzit',ertek,pincode,actual,ad,attempt,pond,nick,process_id);   
   };
 
-//score from sever side
-socket.on('points',ans => {
-  helyes++;
-  point += ans; 
-  if (actual == osszvalasz){
-    //if you change need to change in valaszolt()
-   $("#result_percent").text(Math.round((point/allpoint)*100.0)+"%");          //%
-   $("#result_score").text((point)+"/"+(allpoint));                    //pont
-   // $("#result_rating").text("alma");                                        Osztályzat beállítás (Jeles)
-  }
-  // document.getElementById('correct').innerHTML = "A jó válaszok száma: " + helyes;
-  // document.getElementById('end').innerHTML = "Elert pontszám: " + point;
-});
+// //score from sever side
+// socket.on('points',ans => {
+//   helyes++;
+//   point += ans; 
+//   if (actual == osszvalasz){
+//     //if you change need to change in valaszolt()
+   
+//    $("#result_percent").text(Math.round((point/allpoint)*100)+"%");          //%
+//    $("#result_score").text((point)+"/"+(allpoint));                    //pont
+//    //Értékelés beállítása
+//    if (classification == '') { $("#result_rating").text('-') } else { $("#result_rating").text(calculateGrade(Math.round((point/allpoint)*100), classification)); }
+//   }
+//   // document.getElementById('correct').innerHTML = "A jó válaszok száma: " + helyes;
+//   // document.getElementById('end').innerHTML = "Elert pontszám: " + point;
+// });
 
+socket.on('sendResult', result => {
+   result = JSON.parse(JSON.stringify(result[0][0]));
+   $("#result_percent").text(result.result_percentage+"%");
+   $("#result_duration").text(result.time);result_reached
+   $("#result_reached").text(result.reached_point+'/'+result.all_point);
+   if (classification == '') { $("#result_rating").text('-') } else { $("#result_rating").text(calculateGrade(result.result_percentage, classification)); }
+   if (mod == 3) {
+     $("#result_extrareached").text(result.reached_extrapoint+'/'+result.all_extrapoint);
+     $("#result_extrareached").show();
+     $(".extra").show();
+    } else {
+      $("#result_extrareached").hide();
+      $(".extra").hide();
+    }
+});
 
 //kerdesadatok
 function kerdesadatok(kod){
@@ -293,11 +295,12 @@ function vezerlo() {
     console.log("vége"); //finised test
     showResult();
     console.log(allpoint);
-    //if you change need to change in score from sever side
-    $("#result_percent").text(Math.round((point/allpoint)*100.0)+"%");          //%
-    $("#result_score").text((point)+"/"+(allpoint));                            //pont
-    // $("#result_rating").text("alma");                                        Osztályzat beállítás (Jeles)
-    console.log(point);
+    socket.emit('getResult',attempt); 
+  //   //if you change need to change in score from sever side
+  //   $("#result_percent").text(Math.round((point/allpoint)*100)+"%");          //%
+  //   $("#result_score").text((point)+"/"+(allpoint));                            //pont
+  //  //Értékelés beállítása
+  //   if (classification == '') { $("#result_rating").text('-') } else { $("#result_rating").text(calculateGrade(Math.round((point/allpoint)*100), classification)); }
     }
   }
   }
@@ -386,3 +389,27 @@ document.getElementById("next").onclick = function next () {
     }
      //subm(0);       
 };
+// ------------------------------Értékelés kalkuláció--------------------------
+function calculateGrade(percentage, classification) {
+  percentage = parseInt(percentage);
+  var gradeText = '';
+  const values = classification.split(";");
+  switch (true) {
+    case (percentage >= parseInt(values[8])):
+      gradeText = "Jeles";
+      break;
+      case percentage >= parseInt(values[6]):
+      gradeText = "Jó";
+      break;
+      case percentage >= parseInt(values[4]):
+      gradeText = "Közepes";
+      break;
+      case percentage >= parseInt(values[2]):
+      gradeText = "Elégséges";
+      break;
+      case percentage >= parseInt(values[0]):
+      gradeText = "Elégtelen";
+      break;
+  }
+  return gradeText;
+}

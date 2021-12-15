@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: localhost
--- Létrehozás ideje: 2021. Dec 12. 18:30
+-- Létrehozás ideje: 2021. Dec 15. 20:27
 -- Kiszolgáló verziója: 10.1.48-MariaDB-0+deb9u1
 -- PHP verzió: 7.2.34-18+0~20210223.60+debian9~1.gbpb21322
 
@@ -148,6 +148,18 @@ CREATE DEFINER=`max`@`%` PROCEDURE `GetMainCategorys` (IN `username` VARCHAR(255
     JOIN users ON users.uid = test_category_names.u_id WHERE users.username = username AND test_category_names.parent is NULL;
 END$$
 
+CREATE DEFINER=`max`@`%` PROCEDURE `GetMyFullFilledCountByUser` (IN `username` VARCHAR(255))  BEGIN
+SELECT COUNT(*) as fullfilledCount,
+COUNT(CASE test_process_list.mode WHEN '1' THEN 1 ELSE NULL END) as gyakorloCount,
+COUNT(CASE test_process_list.mode WHEN '2' THEN 1 ELSE NULL END) as vizsgaCount,
+COUNT(CASE test_process_list.mode WHEN '3' THEN 1 ELSE NULL END) as vizsgavCount
+FROM test_process_list
+JOIN test_list ON test_list.id = test_process_list.test_id
+JOIN test_results ON test_results.process_id = test_process_list.id
+JOIN users ON users.uid = test_results.u_id
+WHERE (test_results.answer_number = test_list.question_num-1 AND users.username = username);
+END$$
+
 CREATE DEFINER=`max`@`%` PROCEDURE `GetProcessByIDnUser` (IN `username` VARCHAR(255), IN `process_id` INT(11))  BEGIN
 SELECT 
 test_process_list.mode, test_process_list.id as process_id,
@@ -211,18 +223,37 @@ ORDER BY test_results.answer_number DESC
 LIMIT 1;
 END$$
 
+CREATE DEFINER=`max`@`%` PROCEDURE `GetResultsByAttemptID` (IN `attempt_id` VARCHAR(255))  BEGIN
+SELECT *, reached_point+reached_extrapoint as summed_points FROM (
+SELECT
+ROUND(SUM(CASE WHEN test_questions.correct_answer_no = test_results.answers THEN test_questions.score ELSE '0' END) / SUM(test_questions.score) *100,0) as "result_percentage", 
+SUM(test_questions.score) as "all_point", SUM(test_questions.extra_score) as "all_extrapoint", 
+SUM(CASE WHEN test_questions.correct_answer_no = test_results.answers THEN test_questions.score ELSE '0' END) as reached_point, 
+SEC_TO_TIME(ROUND(SUM(test_results.response_time),1)) as 'time', 
+ROUND(SUM(test_results.response_time),1) as 'time2', 
+SUM(CASE WHEN test_questions.correct_answer_no = test_results.answers AND test_results.response_time <= test_questions.extra_time THEN test_questions.extra_score ELSE '0' END) as reached_extrapoint
+
+
+FROM test_results
+JOIN test_process_list ON test_process_list.id = test_results.process_id
+JOIN test_list ON test_list.id = test_process_list.test_id
+JOIN test_questions ON test_questions.question_number = test_results.answer_number AND test_questions.test_id = test_process_list.test_id
+WHERE test_results.attempt_id = attempt_id
+GROUP BY test_results.attempt_id) x;
+END$$
+
 CREATE DEFINER=`max`@`%` PROCEDURE `GetResultsByProcessID` (IN `process_id` INT(11))  BEGIN
 SELECT *, reached_point+reached_extrapoint as summed_points FROM (
 SELECT
 users.uid as user_id,
 CONCAT(users.lastname, " ", users.firstname) as full_name, 
 users.username, MIN(test_results.ts) as start_date, MAX(test_results.ts) as end_date, 
-users.eduid, ROUND(SUM(CASE WHEN test_questions.correct_answer_no = test_results.answers THEN test_questions.score END) / SUM(test_questions.score) *100,0) as "result_percentage", 
+users.eduid, ROUND(SUM(CASE WHEN test_questions.correct_answer_no = test_results.answers THEN test_questions.score ELSE '0' END) / SUM(test_questions.score) *100,0) as "result_percentage", 
 SUM(test_questions.score) as "all_point", SUM(test_questions.extra_score) as "all_extrapoint", 
-SUM(CASE WHEN test_questions.correct_answer_no = test_results.answers THEN test_questions.score END) as reached_point, 
+SUM(CASE WHEN test_questions.correct_answer_no = test_results.answers THEN test_questions.score ELSE '0' END) as reached_point, 
 SEC_TO_TIME(ROUND(SUM(test_results.response_time),1)) as 'time', 
 ROUND(SUM(test_results.response_time),1) as 'time2', 
-SUM(CASE WHEN test_questions.correct_answer_no = test_results.answers AND test_results.response_time <= test_questions.extra_time THEN test_questions.extra_score END) as reached_extrapoint
+SUM(CASE WHEN test_questions.correct_answer_no = test_results.answers AND test_results.response_time <= test_questions.extra_time THEN test_questions.extra_score ELSE '0' END) as reached_extrapoint
 
 
 FROM test_results

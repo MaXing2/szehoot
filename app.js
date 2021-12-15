@@ -121,13 +121,17 @@ if (req.session.loggedIn) { // be van jelentkezve?
             connection.query("CALL GetQuestionCount(?)", [req.session.username], function(err, result5, fields) {
               if (err) throw err;
               connection.query("CALL GetFullFilledCountByUser(?)", [req.session.username], function(err, result6, fields) {
-                res.render('main.ejs',{page: 'home', userData: req.session.userData, loggedIn: true, test_data: result, process_data: result2, testCount: result3, processCount: result4, questionCount: result5, fullfilledCount: result6, username: req.session.username, status: req.query.status, title: 'Kezdőlap'}); // ebben az esetben a main.ejs sablonban a home.ejs nyílik meg
+                if (err) throw err;
+                connection.query("CALL GetMyFullFilledCountByUser(?)", [req.session.username], function(err, result7, fields) {
+                  if (err) throw err;
+                  res.render('main.ejs',{page: 'home', userData: req.session.userData, loggedIn: true, test_data: result, process_data: result2, testCount: result3, processCount: result4, questionCount: result5, fullfilledCount: result6, myfullfilledCount: result7, username: req.session.username, status: req.query.status, title: 'Kezdőlap'}); // ebben az esetben a main.ejs sablonban a home.ejs nyílik meg
+                })
+              })
             })
           })
         })
       })
     })
-  })
     
 
 
@@ -356,7 +360,7 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
             switch(status) {
               
               case 5:
-                res.render('test_join.ejs',{userData: req.session.userData, 'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, 'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'userid': null,  'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
+                res.render('test_join.ejs',{userData: req.session.userData, 'access': true, 'fastjoin': true, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, 'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'userid': null, 'classification': result[0][0].classification, 'nickname': nickname});  //elküldjük, hogy engedélyezett a csatlakozás és mellé a pinkódot    
                 break;
               case 6:
                 if (result[0][0].mode == 2 || result[0][0].mode == 3) { // ha a mód valamelyik vizsgamód egyike
@@ -373,17 +377,17 @@ app.post('/joinTest',function (req, res) { //-----------------------------------
                         //átadjuk, hogy hol tart jelenleg
                         var courrentQuestion = result3[0][0].answer_number;
                         console.log('AZ AKTUÁLIS FELADAT ÉRTÉKE: '+courrentQuestion);
-                        res.render('test_join.ejs',{userData: req.session.userData, 'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, courrentQuestion: courrentQuestion,  'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'nickname': null}); //bejelentkezett felhasználó esetében   
+                        res.render('test_join.ejs',{userData: req.session.userData, 'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, courrentQuestion: courrentQuestion,  'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'classification': result[0][0].classification, 'nickname': null}); //bejelentkezett felhasználó esetében   
                         //mehet tovább
                       }
                     } else { //nem kezdte még el, mehet a teszt 
                       //új teszt
                       //minden megy rendesen
-                      res.render('test_join.ejs',{userData: req.session.userData, 'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, courrentQuestion: '0', 'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'nickname': null}); //bejelentkezett felhasználó esetében   
+                      res.render('test_join.ejs',{userData: req.session.userData, 'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, courrentQuestion: '0', 'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'classification': result[0][0].classification, 'nickname': null}); //bejelentkezett felhasználó esetében   
                     } 
                   })
                 } else {//bejelentkezett felhasználó és gyakorló vagy tantermi módban van a tesztfolyamat
-                  res.render('test_join.ejs',{userData: req.session.userData, 'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, 'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'nickname': null}); //bejelentkezett felhasználó esetében   
+                  res.render('test_join.ejs',{userData: req.session.userData, 'access': true, 'fastjoin': false, 'pincode': pincode, 'mode': result[0][0].mode, 'attempt_id': attemptId, 'process_id': result[0][0].process_id, 'test_id': result[0][0].test_id, 'username': username, 'userid': userid,  'owner': result[0][0].u_id, 'test_name': result[0][0].test_name, 'classification': result[0][0].classification, 'nickname': null}); //bejelentkezett felhasználó esetében   
                 }
                break;
               default:
@@ -1085,7 +1089,6 @@ app.post('/chart', function (req, res) {
 });
 app.use(fileUpload({ fileSize: 5 * 1024 * 1024 , responseOnLimit: 'File size limit has been reached', abortOnLimit: true, safeFileNames: true, preserveExtension: true }));
 
-
 // scores data reqest
 app.post('/scores', function (req, res) {
   var test = JSON.parse(req.body.scores);
@@ -1152,6 +1155,7 @@ app.post('/list', function (req, res) {
 
 
 //file upload
+
 app.post('/upload', function(req, res) {
   
   let sampleFile;
