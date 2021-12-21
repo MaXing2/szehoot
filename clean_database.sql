@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: localhost
--- Létrehozás ideje: 2021. Dec 15. 20:27
+-- Létrehozás ideje: 2021. Dec 21. 11:06
 -- Kiszolgáló verziója: 10.1.48-MariaDB-0+deb9u1
 -- PHP verzió: 7.2.34-18+0~20210223.60+debian9~1.gbpb21322
 
@@ -150,7 +150,7 @@ END$$
 
 CREATE DEFINER=`max`@`%` PROCEDURE `GetMyFullFilledCountByUser` (IN `username` VARCHAR(255))  BEGIN
 SELECT COUNT(*) as fullfilledCount,
-COUNT(CASE test_process_list.mode WHEN '1' THEN 1 ELSE NULL END) as gyakorloCount,
+COUNT(CASE test_process_list.mode WHEN '0' THEN 1 ELSE NULL END) as gyakorloCount,
 COUNT(CASE test_process_list.mode WHEN '2' THEN 1 ELSE NULL END) as vizsgaCount,
 COUNT(CASE test_process_list.mode WHEN '3' THEN 1 ELSE NULL END) as vizsgavCount
 FROM test_process_list
