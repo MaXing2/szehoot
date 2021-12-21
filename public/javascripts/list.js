@@ -73,6 +73,21 @@ $("#testImportBtn").change(function () {
           importData.append("kerdesszam", pincode);
           //$("#importForm").submit();
 
+          //delet exist test
+          for (i = 0; i <bar ; i++) {
+            var tomb=[];
+            tomb[0] =  pincode;
+            tomb[1] = data[i].question_number;
+            $.ajax({
+              type: "POST",
+              url: 'delet',
+              data:  {"del": JSON.stringify(tomb)},
+              success: function (response, error) {
+              },
+              dataType: "json"
+            });
+          }
+
           $.ajax({
             type: "POST",
             url: 'IMPORT',
@@ -81,8 +96,17 @@ $("#testImportBtn").change(function () {
             cache: false,
             data: importData,
             success: function (response, error) {
-                console.log("IMPORTALAS SIKERESEE!!!!!!!!");
-                doAjax(pincode).then(dosave())
+              if(response=="OK"){
+                // console.log("IMPORT SUCCESS!!!!!!!!");
+                doAjax(pincode);
+                ShowToastMsg('import');
+                setTimeout(function() {
+                dosave()
+                }, 1000)
+              }else{
+                // console.log("IMPORT FAIL!!!!!!");
+                ShowToastMsg('fail_import');
+              }
             },
           });
       }

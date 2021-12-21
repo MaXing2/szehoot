@@ -16,6 +16,7 @@ var bcrypt = require('bcrypt');
 var moment = require('moment');
 //mail sender
 const nodemailer = require("nodemailer");
+const Ajv = require("ajv")
 
 
 //PDF
@@ -1125,7 +1126,7 @@ setTimeout(function(){
 pdfmaker.adat(jsPDF,app,connection,fs);
 data_export.exp(fs,app,connection);
 result_export.resexp(fs,app,connection);
-data_import.imp(fs,app,connection)
+data_import.imp(fs,app,connection,Ajv)
 email_sender.to(app,nodemailer);
 
 //list post kezelese
