@@ -215,14 +215,14 @@ data-pagination-parts="[pageList, pageInfo]">
                     <div class="card h-100">
                       <div class="card-body">
                         <h5 class="card-title">Műveletek</h5>
-                          <a href="#" OnClick="LoadDataToModal('newTestProcess', '<%= test_data[0][i].test_id %>','')" class="btn btn-start btn-sm">Indítás</a>
-                          <a href="#" OnClick="LoadDataToModal('duplicateTest', '<%= test_data[0][i].test_id %>','<%= test_data[0][i].category_id %>')" class="btn btn-duplicate btn-sm">Duplikálás</a>
-                          <a href="#" OnClick="LoadDataToModal('deleteTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-danger btn-sm">Törlés</a><br>
-                          <a href="#" OnClick="editTest('<%= test_data[0][i].test_id %>');" class="btn btn-secondary btn-sm mt-2">Szerkesztés</a>
-                          <a href="#" OnClick="LoadDataToModal('renameTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-secondary btn-sm mt-2">Átnevezés</a>
-                          <a href="#" OnClick="LoadDataToModal('moveTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-secondary btn-sm mt-2">Áthelyezés</a><br>
-                          <a href="#" OnClick="EXP('<%= test_data[0][i].test_id %>');" class="btn btn-outline-warning btn-sm mt-2">Exportálás</a>
-                          <a href="#" OnClick="LoadDataToModal('printTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-outline-warning btn-sm mt-2">Nyomtatás</a>
+                          <button OnClick="LoadDataToModal('newTestProcess', '<%= test_data[0][i].test_id %>','')" class="btn btn-start btn-sm">Indítás</button>
+                          <button OnClick="LoadDataToModal('duplicateTest', '<%= test_data[0][i].test_id %>','<%= test_data[0][i].category_id %>')" class="btn btn-duplicate btn-sm">Duplikálás</button>
+                          <button OnClick="LoadDataToModal('deleteTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-danger btn-sm">Törlés</button><br>
+                          <button OnClick="editTest('<%= test_data[0][i].test_id %>');" class="btn btn-secondary btn-sm mt-2">Szerkesztés</button>
+                          <button OnClick="LoadDataToModal('renameTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-secondary btn-sm mt-2">Átnevezés</button>
+                          <button OnClick="LoadDataToModal('moveTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-secondary btn-sm mt-2">Áthelyezés</button><br>
+                          <button <%= test_data[0][i].question_num === 0 && 'disabled' %> OnClick="EXP('<%= test_data[0][i].test_id %>');" class="btn btn-outline-warning btn-sm mt-2">Exportálás</button>
+                          <button <%= test_data[0][i].question_num === 0 && 'disabled' %> OnClick="LoadDataToModal('printTest', '<%= test_data[0][i].test_id %>','')" class="btn btn-outline-warning btn-sm mt-2">Nyomtatás</button>
                       </div>
                     </div>
                   </div>

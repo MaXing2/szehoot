@@ -163,6 +163,8 @@ function calculateGrade(percentage, classification) {
       case percentage >= parseInt(values[0]):
       gradeText = "Elégtelen";
       break;
+      default:
+      gradeText = '-';
   }
   return gradeText;
 }
@@ -196,6 +198,7 @@ function calculateGrade(percentage, classification) {
                     <a id="test_bank" class="nav-link main <%= page === 'test_bank' && 'active' %>" href="/test/bank"><span class="iconify" data-icon="feather:database"></span> Tesztbank</a>
                     <a id="test_category" class="nav-link main <%= page === 'test_category' && 'active' %>" href="/test/category"><span class="iconify" data-icon="bx:bx-category-alt"></span> Kategóriák</a>
                     <a id="test_process" class="nav-link main <%= page === 'test_process' && 'active' %>" href="/test/process"><span class="iconify" data-icon="ant-design:unordered-list-outlined"></span> Tesztfolyamatok</a>
+                    <a id="test_myresults" class="nav-link main <%= page === 'test_myresults' && 'active' %>" href="/test/myresults"><span class="iconify" data-icon="carbon:result"></span> Eredményeim</a>
                     <a id="test_create" onClick="getMainCategory('newTest');" class="nav-link d-lg-none main <%= page === 'test_create' && 'active' %>" href="#">Létrehozás</a>
                     <a id="test_join" onClick="" data-bs-toggle="modal" data-bs-target="#joinTestModal" class="nav-link d-lg-none main" href="#">Csatlakozás</a>
 

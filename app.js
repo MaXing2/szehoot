@@ -10,13 +10,36 @@ var config = require('./inc/db.js');
 var get = require ('./inc/get_request.js');
 // Post kérések
 //var post = require ('./inc/post_request.js');
-var connection = mysql.createConnection(config.databaseOptions);
+// var connection = mysql.createPool(config.databaseOptions);
+
+var connection;
+function handleDisconnect() {
+    connection = mysql.createConnection(config.databaseOptions);  // Recreate the connection, since the old one cannot be reused.
+    connection.connect( function onConnect(err) {   // The server is either down
+        if (err) {                                  // or restarting (takes a while sometimes).
+            console.log('error when connecting to db:', err);
+            setTimeout(handleDisconnect, 10000);    // We introduce a delay before attempting to reconnect,
+        }                                           // to avoid a hot loop, and to allow our node script to
+    });                                             // process asynchronous requests in the meantime.
+                                                    // If you're also serving http, display a 503 error.
+    connection.on('error', function onError(err) {
+        console.log('db error', err);
+        if (err.code == 'PROTOCOL_CONNECTION_LOST') {   // Connection to the MySQL server is usually
+            handleDisconnect();                         // lost due to either server restart, or a
+        } else {                                        // connnection idle timeout (the wait_timeout
+            throw err;                                  // server variable configures this)
+        }
+    });
+}
+handleDisconnect();
+
+
 var bcrypt = require('bcrypt');
 //dátum formázás
 var moment = require('moment');
 //mail sender
 const nodemailer = require("nodemailer");
-const Ajv = require("ajv")
+const Ajv = require("ajv");
 
 
 //PDF
@@ -125,7 +148,10 @@ if (req.session.loggedIn) { // be van jelentkezve?
                 if (err) throw err;
                 connection.query("CALL GetMyFullFilledCountByUser(?)", [req.session.username], function(err, result7, fields) {
                   if (err) throw err;
-                  res.render('main.ejs',{page: 'home', userData: req.session.userData, loggedIn: true, test_data: result, process_data: result2, testCount: result3, processCount: result4, questionCount: result5, fullfilledCount: result6, myfullfilledCount: result7, username: req.session.username, status: req.query.status, title: 'Kezdőlap'}); // ebben az esetben a main.ejs sablonban a home.ejs nyílik meg
+                  connection.query("CALL GetResultsByUser(?)", [req.session.userid], function(err, result8, fields) {
+                    if (err) throw err;
+                    res.render('main.ejs',{page: 'home', userData: req.session.userData, loggedIn: true, test_data: result, process_data: result2, testCount: result3, processCount: result4, questionCount: result5, fullfilledCount: result6, myfullfilledCount: result7, myresults: result8,username: req.session.username, status: req.query.status, title: 'Kezdőlap'}); // ebben az esetben a main.ejs sablonban a home.ejs nyílik meg
+                  })
                 })
               })
             })
@@ -233,6 +259,28 @@ app.get('/test/results',function (req, res) {
   function redirect(status) {
     switch (status) {
     case 5: res.render('main.ejs',{page: 'test_results', userData: req.session.userData, test_results: test_results, test_info: test_info, loggedIn: true, username: req.session.username, status: req.query.status, title: 'Eredmények'});
+    break;
+
+    default: res.redirect('/');
+    break;
+  }}
+})
+
+ //Eredmények (kitöltő részéről)
+ app.get('/test/myresults',function (req, res) {
+  var status = 0; //alapállapot
+  if (req.session.loggedIn) { // be van jelentkezve?
+    connection.query("CALL GetResultsByUser(?)", [req.session.userid], function(err, result, fields) {
+      if (err) throw err;
+      test_results = result;
+      redirect(2); 
+    })
+  } else { redirect(1); } //nincs bejelentkezve
+  console.log("Ez a statuskód: "+status);
+
+  function redirect(status) {
+    switch (status) {
+    case 2: res.render('main.ejs',{page: 'test_myresults', userData: req.session.userData, test_results: test_results, loggedIn: true, username: req.session.username, title: 'Eredményeim'});
     break;
 
     default: res.redirect('/');
@@ -1126,7 +1174,7 @@ setTimeout(function(){
 pdfmaker.adat(jsPDF,app,connection,fs);
 data_export.exp(fs,app,connection);
 result_export.resexp(fs,app,connection);
-data_import.imp(fs,app,connection,Ajv)
+data_import.imp(fs,app,connection,Ajv);
 email_sender.to(app,nodemailer);
 
 //list post kezelese

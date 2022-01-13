@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: localhost
--- Létrehozás ideje: 2021. Dec 21. 11:06
+-- Létrehozás ideje: 2022. Jan 13. 08:56
 -- Kiszolgáló verziója: 10.1.48-MariaDB-0+deb9u1
 -- PHP verzió: 7.2.34-18+0~20210223.60+debian9~1.gbpb21322
 
@@ -264,6 +264,34 @@ JOIN test_questions ON test_questions.question_number = test_results.answer_numb
 WHERE test_results.process_id = process_id
 GROUP BY users.username) x
 ORDER BY summed_points desc;
+END$$
+
+CREATE DEFINER=`max`@`%` PROCEDURE `GetResultsByUser` (IN `user_id` INT(11))  BEGIN
+SELECT
+SUM(test_questions.score) as "all_point", SUM(test_questions.extra_score) as "all_extrapoint", 
+test_list.test_name,
+MIN(test_results.ts) as start_date,
+MAX(test_results.ts) as end_date,
+test_process_list.mode,
+ROUND(SUM(CASE WHEN test_questions.correct_answer_no = test_results.answers THEN test_questions.score ELSE '0' END) / SUM(test_questions.score) *100,0) as "result_percentage", 
+SUM(CASE WHEN test_questions.correct_answer_no = test_results.answers THEN test_questions.score ELSE '0' END) as reached_point, 
+SUM(CASE WHEN test_questions.correct_answer_no = test_results.answers THEN '1' ELSE '0' END) as correct_answer_count, 
+SUM(CASE WHEN test_questions.correct_answer_no != test_results.answers THEN '1' ELSE '0' END) as incorrect_answer_count, 
+SEC_TO_TIME(ROUND(SUM(test_results.response_time),1)) as 'time', 
+ROUND(SUM(test_results.response_time),1) as 'time2', 
+SUM(CASE WHEN test_questions.correct_answer_no = test_results.answers AND test_results.response_time <= test_questions.extra_time THEN test_questions.extra_score ELSE '0' END) as reached_extrapoint,
+test_results.ts,
+test_results.attempt_id,
+test_process_list.classification
+
+
+FROM test_results
+JOIN users ON users.uid = test_results.u_id
+JOIN test_process_list ON test_process_list.id = test_results.process_id
+JOIN test_list ON test_list.id = test_process_list.test_id
+JOIN test_questions ON test_questions.question_number = test_results.answer_number AND test_questions.test_id = test_process_list.test_id
+WHERE test_results.u_id = user_id
+GROUP BY test_results.attempt_id;
 END$$
 
 CREATE DEFINER=`max`@`%` PROCEDURE `GetSubCategorys` (IN `username` VARCHAR(255))  BEGIN

@@ -94,7 +94,7 @@
 										<tr>
 											<td data-field="id"><%= test_data[0][i].test_id %></td>
 											<td style="width:60%" data-field="name"><%= test_data[0][i].test_name %></td>
-											<td class="text-center "data-field="date"><%= moment(test_data[0][i].modified_date).format("YYYY.MM.DD HH:mm");  %></td>
+											<td data-field="date"><%= moment(test_data[0][i].modified_date).format("YYYY.MM.DD HH:mm");  %></td>
 											<td class="text-center"><a href="/test/bank?test_id=<%= test_data[0][i].test_id %>"><span style="color: #617ab8;" class="iconify d-inline" data-icon="carbon:information" data-width="18" data-height="18"></span></a></td>
 									</tr>
 									<% } }%>
@@ -145,12 +145,12 @@
 												<%var time_courrent_dif_end = moment.duration(moment(new Date(), "YYYY.MM.DD HH:mm").diff(moment(process_data[0][i].end_date, "YYYY.MM.DD HH:mm")));%>
 												<%var time_courrent_dif_start = moment.duration(moment(new Date(), "YYYY.MM.DD HH:mm").diff(moment(process_data[0][i].start_date, "YYYY.MM.DD HH:mm")));%>
 												<% if (time_courrent_dif_end.asSeconds() >= 0) { %> 
-												  <td class="col-sm-1 text-center"><span class="iconify" data-icon="carbon:dot-mark" style="color: red;"></span>
+												  <td class="col-sm-1"><span class="iconify" data-icon="carbon:dot-mark" style="color: red;"></span>
 												<% } else { %>
 												  <% if (time_courrent_dif_start.asSeconds() >= 0) { %>
-													<td class="col-sm-1 text-center"><span class="iconify" data-icon="carbon:dot-mark" style="color: green;"></span>
+													<td class="col-sm-1"><span class="iconify" data-icon="carbon:dot-mark" style="color: green;"></span>
 													<% } else { %>
-													  <td class="col-sm-1 text-center"><span class="iconify" data-icon="carbon:dot-mark" style="color: orange"></span
+													  <td class="col-sm-1"><span class="iconify" data-icon="carbon:dot-mark" style="color: orange"></span
 														<% } %>
 													<% } %>
 										  </td>
@@ -199,24 +199,52 @@
 						<span class="h5 float-start m-0">Utolsó 5</span>
 					</div>
 				</div>
-				<div class="row mt-3">
+				<div class="row mt-3 mb-3">
 					<div class="col-lg-12">
-						<table data-toggle="table" data-mobile-responsive="true" id="test_table">
+						<table data-toggle="table" data-mobile-responsive="true" id="results_table">
 							<thead>
 								<tr>
-									<th class="text-center p-1" colspan="6">Teszteredmények</th>
+									<th class="text-center p-1" colspan="5">Teszteredmények</th>
 								</tr>
 								<tr>
-									<th>Létrehozó neve</th>
 									<th>Teszt neve</th>
 									<th>Futtatási mód</th>
 									<th>Pontszám</th>
 									<th>Eredmény</th>
 									<th>Értékelés</th>
+
 								</tr>
 							</thead>
 							<tbody>
-								
+								<% if (myresults[0].length > 0) { %>
+								<% for(var i=0; i<myresults[0].length; i++) {%>
+										<tr>
+											<td><%= myresults[0][i].test_name %></td>
+											<td><% switch (myresults[0][i].mode) {
+												case 0 : %>
+													Gyakorló
+													<% break;
+												
+												case 1 : %>
+													Tantermi
+													<% break;
+												
+												case 2 : %>
+													Vizsga
+													<% break;
+
+												case 3 : %>
+													Vizsga (verseny)
+													<% break;
+												
+												} %>
+											</td>
+											<td><%= myresults[0][i].reached_point %></td>
+											<td><%= myresults[0][i].result_percentage %> %</td>
+											<td id="<%= myresults[0][i].attempt_id %>"><script>$("#<%= myresults[0][i].attempt_id %>").text(calculateGrade('<%= myresults[0][i].result_percentage %>', '<%= myresults[0][i].classification %>'));</script></td>
+											</tr>
+									<% } %>     
+								<% } %>
 							</tbody>
 						</table>
 					</div>

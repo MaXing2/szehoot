@@ -1,0 +1,67 @@
+<h1>Eredményeim</h1>
+<table     
+id="table-processlist"
+data-toggle="table"
+data-mobile-responsive="true"
+data-search="true"
+data-pagination="true"
+data-page-number="1"
+data-page-size="10"
+data-sortable="true"
+data-pagination-parts="[pageList, pageInfo]">
+  <thead>
+    <tr>
+      <th data-field="test_name" data-sortable="true">Teszt neve</th> 
+      <th data-field="mode" data-sortable="true">Futtatási mód</th> 
+      <th data-field="start_date" data-sortable="true">Kitöltés kezdete</th> 
+      <th data-field="end_date" data-sortable="true">Kitöltés vége</th>
+      <th data-field="duration" data-sortable="true">Kitöltés időtartama</th>
+      <th data-field="reached_point" data-sortable="true">Pontszám</th>
+      <th data-field="correct_answer_count" data-sortable="true">Helyes válaszok</th>
+      <th data-field="incorrect_answer_count" data-sortable="true">Hibás válaszok</th>
+      <th data-field="results_percentage" data-sortable="true">Eredmény 
+        <img color="green" src="/images/info-circle.svg"
+        tabindex="0" class="btninfo" role="button" data-container="body" data-bs-toggle="popover" data-placement="top" data-bs-trigger="hover focus"
+        title="Információ" data-bs-content="Az eredménybe az extra pontszámok nem tartoznak bele!">
+        </img>
+      </th>
+      <th data-field="rating" data-sortable="true">Értékelés</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (test_results[0].length > 0) { %>
+      <% for(var i=0; i<test_results[0].length; i++) {%>
+              <tr>
+                  <td><%= test_results[0][i].test_name %></td>
+                  <td><% switch (test_results[0][i].mode) {
+                    case 0 : %>
+                        Gyakorló
+                        <% break;
+                    
+                    case 1 : %>
+                        Tantermi
+                        <% break;
+                    
+                    case 2 : %>
+                        Vizsga
+                        <% break;
+
+                    case 3 : %>
+                        Vizsga (verseny)
+                        <% break;
+                    
+                    } %>
+                  </td>
+                  <td><%= moment(test_results[0][i].start_date).format("YYYY.MM.DD HH:mm:ss");  %></td>
+                  <td><%= moment(test_results[0][i].end_date).format("YYYY.MM.DD HH:mm:ss");  %></td>
+                  <td><%= test_results[0][i].time %></td>
+                  <td><%= test_results[0][i].reached_point %></td>
+                  <td><%= test_results[0][i].correct_answer_count %></td>
+                  <td><%= test_results[0][i].incorrect_answer_count %></td>
+                  <td><%= test_results[0][i].result_percentage %> %</td>
+                  <td id="<%= test_results[0][i].attempt_id %>"><script>$("#<%= test_results[0][i].attempt_id %>").text(calculateGrade('<%= test_results[0][i].result_percentage %>', '<%= test_results[0][i].classification %>'));</script></td>
+                </tr>
+         <% } %>     
+      <% } %>
+  </tbody>
+</table>

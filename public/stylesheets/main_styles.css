@@ -195,7 +195,7 @@ resize: none;
 }
 
 .process-table td {
-    padding-left: 0px;
+    padding-left: 0px !important;
     padding-right: 15px;
 }
 .process-table td:last-child {
@@ -203,6 +203,9 @@ resize: none;
     text-align: center;
 }
 
+/* .table > td .text-center {
+    padding: 0px !important;
+} */
 
 .input-pincode {
     color: rgb(0, 142, 207);
@@ -350,6 +353,10 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.table td:not(.text-center){
+    padding-left:0.75rem;
 }
 
 /*
